@@ -25,7 +25,11 @@
     <div class="page-content">
         <div class="container-fluid">
 
-
+            <?php if($this->session->flashdata('successMsg')) {?>
+                <div class="alert alert-success">
+                    <?= $this->session->flashdata('successMsg');?>
+                </div>
+            <?php } ?>
             <div class="row">
                 <div class="col-xl-12">
                     <div class="row">
@@ -43,12 +47,15 @@
                                     <p class="card-title-desc">Create beautifully simple form labels that float over
                                         your input fields.</p>
 
-                                    <?= form_open(); ?>
+                                    <?= form_open_multipart(); ?>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating mb-3">
                                                     <select class="form-select" id="parent_id" name="parent_id">
                                                         <option value="" selected>Select Parent Category</option>
+                                                        <?php foreach($categories as $category) {?>
+                                                            <option value="<?= $category->category_id ?>"><?= $category->category_name?></option>
+                                                        <?php } ?>
                                                     </select>
                                                     <label for="parent_id">Parent Category</label>
                                                 </div>
@@ -70,6 +77,13 @@
                                                     </select>
                                                     <label for="statusSelect">Status</label>
                                                     <?= form_error('status')?>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                   <input type="file" class="form-control" id="image" name="image">
+                                                    <label for="image">Image</label>
+                                                    <?= form_error('image')?>
                                                 </div>
                                             </div>
                                         </div>

@@ -100,3 +100,21 @@
 <!-- Mirrored from themesdesign.in/tocly/layouts/5.3.1/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 24 Nov 2023 08:52:54 GMT -->
 
 </html>
+
+
+<script>
+    function get_subcategories(category_id) {
+        if(category_id != ""){
+            $.ajax({
+                url: '<?php echo base_url('category/get_sub_categories')?>',
+                method: 'post',
+                data: {category_id: category_id},
+                success: function (data){
+                    $('.sub_category').html(data);
+                }
+            });
+        } else {
+            $('.sub_category').html('<option value="" selected>Select Sub Category</option>');
+        }
+    }
+</script>
