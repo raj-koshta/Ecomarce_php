@@ -18,4 +18,9 @@ class Home extends CI_Controller
         $this->load->view('frontend/index',$data);
     }
 
+    public function product_details($slug = null){
+        $data['product'] = $this->HomeModel->get_product_details($slug);
+        $this->load->view('frontend/product_details',$data);
+    }
+
 }
