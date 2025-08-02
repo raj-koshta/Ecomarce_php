@@ -172,7 +172,6 @@
                                                     </svg>
                                                 </span>
                                                 <input class="tp-cart-input" name="product_qty" type="text" value="1">
-                                                <input class="tp-cart-input" name="product_id" type="hidden" value="<?= $product->product_id?>">
                                                 <span class="tp-cart-plus">
                                                     <svg width="11" height="12" viewBox="0 0 11 12" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -185,6 +184,7 @@
                                             </div>
                                         </div>
                                         <div class="tp-product-details-add-to-cart mb-15 w-100">
+                                            <input class="" name="product_id" type="hidden" value="<?= $product->product_id?>">
                                             <button class="tp-product-details-add-to-cart-btn w-100">Add To
                                                 Cart</button>
                                         </div>

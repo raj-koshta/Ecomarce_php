@@ -51,7 +51,7 @@
         <div class="offcanvas__content">
             <div class="offcanvas__top mb-70 d-flex justify-content-between align-items-center">
                 <div class="offcanvas__logo logo">
-                    <a href="index.html">
+                    <a href="">
                         <img src="assets/frontend/img/logo/logo.svg" alt="logo">
                     </a>
                 </div>
@@ -351,7 +351,7 @@
                 <div class="row align-items-center">
                     <div class="col-xl-2 col-lg-2 col-md-4 col-6">
                         <div class="logo">
-                            <a href="index.html">
+                            <a href="">
                                 <img src="assets/frontend/img/logo/logo.svg" alt="logo">
                             </a>
                         </div>
@@ -430,7 +430,24 @@
                                     </a>
                                 </div>
                                 <div class="tp-header-action-item">
-                                    <button type="button" class="tp-header-action-btn cartmini-open-btn">
+                                    <a href="cart" class="">
+                                        <svg width="21" height="22" viewBox="0 0 21 22" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M6.48626 20.5H14.8341C17.9004 20.5 20.2528 19.3924 19.5847 14.9348L18.8066 8.89359C18.3947 6.66934 16.976 5.81808 15.7311 5.81808H5.55262C4.28946 5.81808 2.95308 6.73341 2.4771 8.89359L1.69907 14.9348C1.13157 18.889 3.4199 20.5 6.48626 20.5Z"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <path
+                                                d="M6.34902 5.5984C6.34902 3.21232 8.28331 1.27803 10.6694 1.27803V1.27803C11.8184 1.27316 12.922 1.72619 13.7362 2.53695C14.5504 3.3477 15.0081 4.44939 15.0081 5.5984V5.5984"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <path d="M7.70365 10.1018H7.74942" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M13.5343 10.1018H13.5801" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                    <!-- <button type="button" class="tp-header-action-btn cartmini-open-btn">
                                         <svg width="21" height="22" viewBox="0 0 21 22" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -447,7 +464,7 @@
                                                 stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <span class="tp-header-action-badge">13</span>
-                                    </button>
+                                    </button> -->
                                 </div>
                                 <div class="tp-header-action-item d-lg-none">
                                     <button type="button" class="tp-header-action-btn tp-offcanvas-open-btn">
@@ -810,7 +827,7 @@
             <div class="row align-items-center">
                 <div class="col-xl-3 col-lg-3 col-md-3 col-6">
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="">
                             <img src="assets/frontend/img/logo/logo.svg" alt="logo">
                         </a>
                     </div>
@@ -1070,7 +1087,24 @@
                             </a>
                         </div>
                         <div class="tp-header-action-item">
-                            <button type="button" class="tp-header-action-btn cartmini-open-btn">
+                            <a href="cart">
+                                <svg width="21" height="22" viewBox="0 0 21 22" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M6.48626 20.5H14.8341C17.9004 20.5 20.2528 19.3924 19.5847 14.9348L18.8066 8.89359C18.3947 6.66934 16.976 5.81808 15.7311 5.81808H5.55262C4.28946 5.81808 2.95308 6.73341 2.4771 8.89359L1.69907 14.9348C1.13157 18.889 3.4199 20.5 6.48626 20.5Z"
+                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M6.34902 5.5984C6.34902 3.21232 8.28331 1.27803 10.6694 1.27803V1.27803C11.8184 1.27316 12.922 1.72619 13.7362 2.53695C14.5504 3.3477 15.0081 4.44939 15.0081 5.5984V5.5984"
+                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M7.70365 10.1018H7.74942" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M13.5343 10.1018H13.5801" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                            <!-- <button type="button" class="tp-header-action-btn cartmini-open-btn">
                                 <svg width="21" height="22" viewBox="0 0 21 22" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -1087,7 +1121,7 @@
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <span class="tp-header-action-badge">13</span>
-                            </button>
+                            </button> -->
                         </div>
                         <div class="tp-header-action-item d-lg-none">
                             <button type="button" class="tp-header-action-btn tp-offcanvas-open-btn">
