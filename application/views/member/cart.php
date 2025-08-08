@@ -8,12 +8,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <?php $this->load->view('frontend/links'); ?>
+    <?php $this->load->view('member/links'); ?>
 </head>
 
 <body>
 
-    <?php $this->load->view('frontend/header') ?>
+    <?php $this->load->view('member/header') ?>
 
 
     <main>
@@ -201,7 +201,7 @@
 
     </main>
 
-    <?php $this->load->view('frontend/footer') ?>
+    <?php $this->load->view('member/footer') ?>
 
 </body>
 

@@ -59,7 +59,7 @@ class Product extends CI_Controller
             }
             $data['categories'] = $this->CategoryModel->get_all_categories();
             $data['product_id'] = $product_id;
-            $this->load->view('product', $data);
+            $this->load->view('admin/product', $data);
         }
     }
 }

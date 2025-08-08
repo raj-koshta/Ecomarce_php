@@ -14,8 +14,8 @@ class Category extends CI_Controller
     {
         $this->form_validation->set_rules('category_name', 'category name', 'required|trim');
         $this->form_validation->set_rules('status', 'status', 'required|trim');
-        
-        if(empty($_FILES['image']['name'])){
+
+        if (empty($_FILES['image']['name'])) {
             $this->form_validation->set_rules('image', 'Category Image', 'required|trim');
         }
 
@@ -29,11 +29,11 @@ class Category extends CI_Controller
             $this->load->library('upload', $config);
             $this->upload->do_upload('image');
             $data = $this->upload->data();
-            $post['image'] = $data['raw_name'].$data['file_ext'];
+            $post['image'] = $data['raw_name'] . $data['file_ext'];
 
             $check = $this->CategoryModel->add_category($post);
 
-            if($check){
+            if ($check) {
                 $this->session->set_flashdata('successMsg', "Data Inserted successfully");
                 redirect('Category');
             } else {
@@ -41,14 +41,15 @@ class Category extends CI_Controller
             }
         } else {
             $data['categories'] = $this->CategoryModel->get_all_categories();
-            $this->load->view('category', $data);
+            $this->load->view('admin/category', $data);
         }
 
     }
 
-    public function get_sub_categories(){
-        $category_id =  $this->input->post('category_id');
-        echo $this->CategoryModel->get_subcategories($category_id);
-        
+    public function get_sub_categories()
+    {
+        $category_id = $this->input->post('category_id');
+        echo $this->CategoryModel->get_subcategories($category_id); // Echo only here
     }
+
 }

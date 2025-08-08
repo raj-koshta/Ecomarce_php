@@ -12,11 +12,11 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
     <base href="<?php echo base_url() ?>">
-    <?php $this->load->view('links'); ?>
+    <?php $this->load->view('admin/links'); ?>
 
 </head>
 
-<?php $this->load->view('header'); ?>
+<?php $this->load->view('admin/header'); ?>
 <!-- ============================================================== -->
 <!-- Start right Content here -->
 <!-- ============================================================== -->
@@ -118,4 +118,4 @@
     </div>
     <!-- End Page-content -->
 
-    <?php $this->load->view('footer'); ?>
+    <?php $this->load->view('admin/footer'); ?>

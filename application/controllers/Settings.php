@@ -26,7 +26,7 @@ class Settings extends CI_Controller
 
             }
         } else {
-            $this->load->view('pincode');
+            $this->load->view('admin/pincode');
         }
     }
 
@@ -59,7 +59,7 @@ class Settings extends CI_Controller
 
             }
         } else {
-            $this->load->view('banner');
+            $this->load->view('admin/banner');
         }
     }
 }

@@ -55,3 +55,6 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = true;
 
 $route['product/(:any)'] = 'home/product_details/$1';
+$route['category/get_sub_categories'] = 'category/get_sub_categories';
+$route['category/(:any)'] = 'member/product/product_by_category/$1';
+$route['category/(:any)/(:any)'] = 'member/product/product_by_category/$1/$2';

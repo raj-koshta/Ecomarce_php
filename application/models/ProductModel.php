@@ -16,27 +16,34 @@ class ProductModel extends CI_Model
         return false;
     }
 
-    public function slug($string){
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/','-', $string)));
-        return $slug;
+
+    public function fetch_category_id($slug)
+    {
+        $qry = $this->db->select('category_id')->where('slug', $slug)->get('tbl_category');
+        if ($qry->num_rows()) {
+            return $qry->row()->category_id;
+        } else {
+            return false;
+        }
     }
 
-    // public function get_all_categories() {
-    //     $qry = $this->db->where(['status'=> 1, 'parent_id'=>''])->get('tbl_category');
-    //     if($qry->num_rows()){
-    //         return $qry->result();
-    //     }
-    // }
+    public function fetch_product($category_id)
+    {
+        $this->db->where(['status'=>1]);
+        $this->db->like(['category'=>$category_id]);
+        $this->db->or_like(['sub_category'=>$category_id]);
+        $qry = $this->db->get('tbl_product');
+        if ($qry->num_rows()) {
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
 
-    // public function get_subcategories($category_id) {
-    //     $qry = $this->db->where(['status'=> 1, 'parent_id'=>$category_id])->get('tbl_category');
-    //     if($qry->num_rows()){
-    //         $output = ' <option value="" selected>Select Sub Category</option>';
-    //         foreach($qry->result() as $sub_cat){
-    //             $output.='<option value="'.$sub_cat->category_id.'">'.$sub_cat->category_name.'</option>';
-    //         }
-    //         echo $output;
-    //     }
-    // }
+    public function slug($string)
+    {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+        return $slug;
+    }
 
 }

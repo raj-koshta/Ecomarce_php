@@ -8,12 +8,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <?php $this->load->view('frontend/links'); ?>
+    <?php $this->load->view('member/links'); ?>
 </head>
 
 <body>
 
-    <?php $this->load->view('frontend/header') ?>
+    <?php $this->load->view('member/header') ?>
 
     <main>
 
@@ -35,7 +35,7 @@
                                 <span><a href="#">Home</a></span>
                                 <!-- <span><a href="#">Electronics</a></span>
                                 <span><a href="#">Computers & Tablets</a></span> -->
-                                <span><?= $product->product_name?></span>
+                                <span><?= $product->product_name ?></span>
                             </div>
                         </div>
                     </div>
@@ -85,8 +85,7 @@
                                     <div class="tab-pane fade show active" id="nav-1" role="tabpanel"
                                         aria-labelledby="nav-1-tab" tabindex="0">
                                         <div class="tp-product-details-nav-main-thumb">
-                                            <img src="uploads/products/<?= $product->product_main_image?>"
-                                                alt="">
+                                            <img src="uploads/products/<?= $product->product_main_image ?>" alt="">
                                         </div>
                                     </div>
                                     <!-- <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab"
@@ -123,17 +122,18 @@
                         <div class="col-xl-5 col-lg-6">
                             <div class="tp-product-details-wrapper">
                                 <div class="tp-product-details-category">
-                                    <span><?= $this->HomeModel->get_category_name($product->category)?></span>
+                                    <span><?= $this->HomeModel->get_category_name($product->category) ?></span>
                                 </div>
-                                <h3 class="tp-product-details-title"><?= $product->product_name?></h3>
+                                <h3 class="tp-product-details-title"><?= $product->product_name ?></h3>
 
                                 <!-- inventory details -->
                                 <div class="tp-product-details-inventory d-flex align-items-center mb-10">
                                     <div class="tp-product-details-stock mb-10">
-                                        <?php if($product->stock > 0) {?>
+                                        <?php if ($product->stock > 0) { ?>
                                             <span>In Stock</span>
-                                        <?php } else {?>
-                                                <span style="color: red; background-color: rgb(255 9 9 / 6%);">Out Of Stock</span>
+                                        <?php } else { ?>
+                                            <span style="color: red; background-color: rgb(255 9 9 / 6%);">Out Of
+                                                Stock</span>
                                         <?php } ?>
                                     </div>
                                     <div class="tp-product-details-rating-wrapper d-flex align-items-center mb-10">
@@ -149,20 +149,22 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p><?= $product->highlights?></p>
+                                <p><?= $product->highlights ?></p>
 
                                 <!-- price -->
                                 <div class="tp-product-details-price-wrapper mb-20">
-                                    <span class="tp-product-details-price old-price">$<?= number_format($product->mrp,2)?></span>
-                                    <span class="tp-product-details-price new-price">$<?= number_format($product->selling_price,2)?></span>
+                                    <span
+                                        class="tp-product-details-price old-price">$<?= number_format($product->mrp, 2) ?></span>
+                                    <span
+                                        class="tp-product-details-price new-price">$<?= number_format($product->selling_price, 2) ?></span>
                                 </div>
 
                                 <!-- actions -->
-                                <?= form_open('cart/add-to-cart')?>    
+                                <?= form_open('cart/add-to-cart') ?>
                                 <div class="tp-product-details-action-wrapper">
                                     <h3 class="tp-product-details-action-title">Quantity</h3>
                                     <div class="tp-product-details-action-item-wrapper d-flex align-items-center">
-                                    <div class="tp-product-details-quantity">
+                                        <div class="tp-product-details-quantity">
                                             <div class="tp-product-quantity mb-15 mr-15">
                                                 <span class="tp-cart-minus">
                                                     <svg width="11" height="2" viewBox="0 0 11 2" fill="none"
@@ -183,17 +185,31 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="tp-product-details-add-to-cart mb-15 w-100">
-                                            <input class="" name="product_id" type="hidden" value="<?= $product->product_id?>">
+                                        <div class="tp-product-details-add-to-cart mb-15 mr-15 w-100">
+                                            <input class="" name="product_id" type="hidden"
+                                                value="<?= $product->product_id ?>">
                                             <button class="tp-product-details-add-to-cart-btn w-100">Add To
                                                 Cart</button>
+                                        </div>
+                                        <div class="tp-product-details-add-to-cart mb-15 w-25">
+                                            <button type="button" class="tp-product-details-wishlist-btn">
+                                                <svg width="18" height="16" viewBox="0 0 18 16" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M1.52624 7.48527C2.69896 11.0641 7.33213 13.9579 8.5634 14.6742C9.79885 13.9505 14.4655 11.0248 15.6006 7.48855C16.3458 5.20273 15.6541 2.30731 12.9055 1.43844C11.5738 1.01918 10.0205 1.27434 8.94817 2.08824C8.724 2.25726 8.41284 2.26054 8.18699 2.09317C7.05107 1.25547 5.56719 1.01015 4.21463 1.43844C1.47019 2.30649 0.780949 5.20191 1.52624 7.48527ZM8.56367 16C8.45995 16 8.35706 15.9754 8.26338 15.9253C8.00157 15.785 1.83433 12.4507 0.331203 7.86098C0.330366 7.86098 0.330366 7.86016 0.330366 7.86016C-0.613163 4.97048 0.437434 1.3391 3.82929 0.266748C5.42192 -0.238659 7.15758 -0.0163125 8.56116 0.852561C9.92125 0.009122 11.728 -0.22389 13.2888 0.266748C16.684 1.34074 17.738 4.9713 16.7953 7.86016C15.3407 12.3973 9.12828 15.7818 8.86479 15.9237C8.77111 15.9746 8.66739 16 8.56367 16Z"
+                                                        fill="currentColor"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M13.5155 6.78932C13.1918 6.78932 12.9174 6.54564 12.8906 6.22402C12.8354 5.5496 12.3754 4.9802 11.7204 4.77262C11.39 4.6676 11.2094 4.32054 11.3156 3.9981C11.4235 3.67483 11.774 3.49926 12.1052 3.60099C13.2453 3.96282 14.0441 4.95312 14.142 6.12393C14.1696 6.46278 13.9128 6.75979 13.5673 6.78686C13.5498 6.7885 13.5331 6.78932 13.5155 6.78932Z"
+                                                        fill="currentColor"></path>
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
                                     <!-- <button class="tp-product-details-buy-now-btn w-100">Buy Now</button> -->
                                 </div>
-                                <?= form_close()?>
-                                <div class="tp-product-details-action-sm">
-                                    
+                                <?= form_close() ?>
+                                <!-- <div class="tp-product-details-action-sm">
+
                                     <button type="button" class="tp-product-details-action-sm-btn">
                                         <svg width="17" height="16" viewBox="0 0 17 16" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -212,8 +228,8 @@
                                         </svg>
                                         Add Wishlist
                                     </button>
-                                    
-                                </div>
+
+                                </div> -->
                                 <div class="tp-product-details-query">
                                     <!-- <div class="tp-product-details-query-item d-flex align-items-center">
                                         <span>SKU: </span>
@@ -221,14 +237,14 @@
                                     </div> -->
                                     <div class="tp-product-details-query-item d-flex align-items-center">
                                         <span>Brand: </span>
-                                        <p><?= $product->brand?></p>
+                                        <p><?= $product->brand ?></p>
                                     </div>
                                     <div class="tp-product-details-query-item d-flex align-items-center">
                                         <span>Category: </span>
-                                        <p><?= $this->HomeModel->get_category_name($product->category)?></p>
+                                        <p><?= $this->HomeModel->get_category_name($product->category) ?></p>
                                     </div>
                                 </div>
-                    
+
                                 <div class="tp-product-details-msg mb-15">
                                     <ul>
                                         <li>30 days easy returns</li>
@@ -238,7 +254,7 @@
                                 <div
                                     class="tp-product-details-payment d-flex align-items-center flex-wrap justify-content-between">
                                     <p>Guaranteed safe <br> & secure checkout</p>
-                                    <img src="assets/img/product/icons/payment-option.png" alt="">
+                                    <img src="assets/frontend/img/product/icons/payment-option.png" alt="">
                                 </div>
                             </div>
                         </div>
@@ -277,9 +293,10 @@
                                                         <div class="row">
                                                             <div class="col-lg-12">
                                                                 <div class="tp-product-details-desc-content pt-25">
-                                                                    <span><?= $product->brand?></span>
-                                                                    <h3 class="tp-product-details-desc-title"><?= $product->product_name?></h3>
-                                                                    <p><?=$product->description?></p>
+                                                                    <span><?= $product->brand ?></span>
+                                                                    <h3 class="tp-product-details-desc-title">
+                                                                        <?= $product->product_name ?></h3>
+                                                                    <p><?= $product->description ?></p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1187,7 +1204,7 @@
 
     </main>
 
-    <?php $this->load->view('frontend/footer') ?>
+    <?php $this->load->view('member/footer') ?>
 
 </body>
 

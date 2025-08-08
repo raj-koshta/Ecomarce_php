@@ -12,8 +12,8 @@ class HomeModel extends CI_Model {
         }
     }
 
-    public function get_categories(){
-        $qry = $this->db->where('status', '1')->get('tbl_category');
+    public function get_parent_categories(){
+        $qry = $this->db->where(['status'=> '1', 'parent_id' => ''])->get('tbl_category');
    
         if($qry->num_rows()){
             return $qry->result();
@@ -46,6 +46,26 @@ class HomeModel extends CI_Model {
    
         if($qry->num_rows()){
             return $qry->row();
+        } else {
+            return false;
+        }
+    }
+
+    public function check_subcategory($category_id){
+        $qry = $this->db->where(['status'=> '1', 'parent_id' => $category_id])->get('tbl_category');
+   
+        if($qry->num_rows()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function get_sub_categories($category_id){
+        $qry = $this->db->where(['status'=> '1', 'parent_id' => $category_id])->get('tbl_category');
+   
+        if($qry->num_rows()){
+            return $qry->result();
         } else {
             return false;
         }

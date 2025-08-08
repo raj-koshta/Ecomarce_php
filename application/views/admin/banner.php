@@ -12,11 +12,11 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
     <base href="<?php echo base_url() ?>">
-    <?php $this->load->view('links'); ?>
+    <?php $this->load->view('admin/links'); ?>
 
 </head>
 
-<?php $this->load->view('header'); ?>
+<?php $this->load->view('admin/header'); ?>
 <!-- ============================================================== -->
 <!-- Start right Content here -->
 <!-- ============================================================== -->
@@ -37,7 +37,7 @@
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-header border-0 align-items-center d-flex pb-0">
-                                    <h4 class="card-title mb-0 flex-grow-1">Pincode</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Banner</h4>
                                     <a href="javascript: void(0);"
                                         class="btn btn-primary waves-effect waves-light btn-sm">View More <i
                                             class="mdi mdi-arrow-right ms-1"></i></a>
@@ -47,22 +47,14 @@
                                     <p class="card-title-desc">Create beautifully simple form labels that float over
                                         your input fields.</p>
 
-                                    <?= form_open(); ?>
+                                    <?= form_open_multipart(); ?>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="pincode"
-                                                    name="pincode" placeholder="Enter Your Category Name">
-                                                <label for="pincode">Pincode</label>
-                                                <?= form_error('pincode') ?>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="delivery_charge"
-                                                    name="delivery_charge" placeholder="Enter Your Delivery Charges">
-                                                <label for="delivery_charge">Delivery Charges</label>
-                                                <?= form_error('delivery_charge') ?>
+                                                <input type="file" class="form-control" id="bann_image"
+                                                    name="bann_image" placeholder="Choose file for banner">
+                                                <label for="bann_image">Banner</label>
+                                                <?= form_error('bann_image') ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -108,4 +100,4 @@
     </div>
     <!-- End Page-content -->
 
-    <?php $this->load->view('footer'); ?>
+    <?php $this->load->view('admin/footer'); ?>

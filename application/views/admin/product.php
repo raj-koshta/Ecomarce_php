@@ -1,5 +1,5 @@
-<?php 
-    
+<?php
+
 ?>
 
 <!doctype html>
@@ -16,11 +16,11 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
     <base href="<?php echo base_url() ?>">
-    <?php $this->load->view('links'); ?>
+    <?php $this->load->view('admin/links'); ?>
 
 </head>
 
-<?php $this->load->view('header'); ?>
+<?php $this->load->view('admin/header'); ?>
 <!-- ============================================================== -->
 <!-- Start right Content here -->
 <!-- ============================================================== -->
@@ -33,10 +33,10 @@
                 <div class="alert alert-success">
                     <?= $this->session->flashdata('successMsg'); ?>
                 </div>
-            <?php } else if($this->session->flashdata('errorMsg')) { ?>
-                <div class="alert alert-danger">
+            <?php } else if ($this->session->flashdata('errorMsg')) { ?>
+                    <div class="alert alert-danger">
                     <?= $this->session->flashdata('errorMsg'); ?>
-                </div>
+                    </div>
             <?php } ?>
             <div class="row">
                 <div class="col-xl-12">
@@ -61,19 +61,20 @@
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="product_id"
                                                     name="product_id" placeholder="Enter product name"
-                                                    value="<?= set_value('product_id', $product_id)?>">
+                                                    value="<?= set_value('product_id', $product_id) ?>">
                                                 <label for="product_id">Product ID</label>
                                                 <?= form_error('product_id') ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
-                                                <select class="form-select" onchange="get_subcategories(this.value)"
+                                                <select class="form-select category" onchange="get_subcategories(this.value)"
                                                     id="category" name="category">
                                                     <option value="" selected>Select Category</option>
                                                     <?php foreach ($categories as $category) { ?>
                                                         <option value="<?= $category->category_id ?>">
-                                                            <?= $category->category_name ?></option>
+                                                            <?= $category->category_name ?>
+                                                        </option>
                                                     <?php } ?>
                                                 </select>
                                                 <label for="category">Category</label>
@@ -136,16 +137,16 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="stock"
-                                                    name="stock" placeholder="Enter product Stock">
+                                                <input type="number" class="form-control" id="stock" name="stock"
+                                                    placeholder="Enter product Stock">
                                                 <label for="stock">Product Stock</label>
                                                 <?= form_error('stock') ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="mrp"
-                                                    name="mrp" placeholder="Enter product MRP">
+                                                <input type="number" class="form-control" id="mrp" name="mrp"
+                                                    placeholder="Enter product MRP">
                                                 <label for="mrp">Product MRP</label>
                                                 <?= form_error('mrp') ?>
                                             </div>
@@ -242,4 +243,27 @@
     </div>
     <!-- End Page-content -->
 
-    <?php $this->load->view('footer'); ?>
+    <script>
+        function get_subcategories(category_id) {
+            if (category_id !== "") {
+                $(".sub_category").html('<option>Loading...</option>');
+                $.ajax({
+                    url: "<?php echo base_url('category/get_sub_categories'); ?>", // Make sure this matches your route
+                    method: "POST",
+                    data: { category_id: category_id },
+                    success: function (response) {
+                        $(".sub_category").html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", status, error);
+                        $(".sub_category").html('<option value="">Error loading subcategories</option>');
+                    }
+                });
+            } else {
+                $(".sub_category").html('<option value="">Select Sub Category</option>');
+            }
+        }
+    </script>
+
+
+    <?php $this->load->view('admin/footer'); ?>

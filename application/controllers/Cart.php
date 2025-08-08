@@ -8,13 +8,15 @@ class Cart extends CI_Controller
     {
         parent::__construct();
         $this->load->model('CartModel');
+        $this->load->model('HomeModel');
     }
 
     public function index()
     {
         $data['carts'] = $this->CartModel->get_cart();
         $data['total_price'] = $this->CartModel->total();
-        $this->load->view('frontend/cart',$data);
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $this->load->view('member/cart',$data);
     }
 
     public function update_cart(){
@@ -23,7 +25,7 @@ class Cart extends CI_Controller
         if($check){
             $this->session->set_flashdata('successMsg', 'Cart Updated Successfully');
         } else {
-            $this->session->set_flashdata('errorMsg','Unable to update the Cart. Please try again..');
+            $this->session->set_flashdata('errorMsg','Product already in cart.');
         }
         redirect('cart');
         

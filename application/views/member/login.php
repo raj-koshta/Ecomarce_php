@@ -4,29 +4,29 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Register</title>
+    <title>Login</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <?php $this->load->view('frontend/links'); ?>
+    <?php $this->load->view('member/links'); ?>
 </head>
 
 <body>
 
-    <?php $this->load->view('frontend/header') ?>
+    <?php $this->load->view('member/header') ?>
 
     <main>
 
         <!-- breadcrumb area start -->
-        <section class="breadcrumb__area include-bg text-center pt-95">
+        <section class="breadcrumb__area include-bg text-center pt-70">
             <div class="container">
                 <div class="row">
                     <div class="col-xxl-12">
                         <div class="breadcrumb__content p-relative z-index-1">
-                            <h3 class="breadcrumb__title">Create Account Now</h3>
+                            <!-- <h3 class="breadcrumb__title">Login</h3> -->
                             <!-- <div class="breadcrumb__list">
-                                <span><a href="#">Home</a></span>
-                                <span>Register</span>
+                                <span><a href="">Home</a></span>
+                                <span>My account</span>
                             </div> -->
                         </div>
                     </div>
@@ -43,22 +43,33 @@
                 <img class="tp-login-shape-3" src="assets/frontend/img/login/login-shape-3.png" alt="">
                 <img class="tp-login-shape-4" src="assets/frontend/img/login/login-shape-4.png" alt="">
             </div>
-            <?php echo form_open()?>
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-xl-6 col-lg-8">
                         <div class="tp-login-wrapper" style="padding-top: 20px;">
                             <div class="tp-login-top text-center mb-50">
-                                <!-- <h3 class="tp-login-title">Sign Up Shofy.</h3> -->
-                                <p>Already have an account? <span><a href="login">Log In</a></span></p>
+                                <?php if ($this->session->flashdata('registerSuccessMsg')) { ?>
+                                    <div class="alert alert-success text-center">
+                                        <?= $this->session->flashdata('registerSuccessMsg'); ?>
+                                    </div>
+                                <?php } else if ($this->session->flashdata('loginErrorMsg')) { ?>
+                                        <div class="alert alert-danger text-center">
+                                        <?= $this->session->flashdata('loginErrorMsg'); ?>
+                                        </div>
+                                <?php } else ?>
+                                <h3 class="breadcrumb__title mb-3">Login</h3>
+                                <!-- <h3 class="tp-login-title">Login to Shofy.</h3> -->
+                                <p>Don’t have an account? <span><a href="register">Create a free account</a></span>
+                                </p>
                             </div>
+                            <?php echo form_open() ?>
                             <div class="tp-login-option">
                                 <!-- <div
                                     class="tp-login-social mb-10 d-flex flex-wrap align-items-center justify-content-center">
                                     <div class="tp-login-option-item has-google">
                                         <a href="#">
                                             <img src="assets/frontend/img/icon/login/google.svg" alt="">
-                                            Sign up with google
+                                            Sign in with google
                                         </a>
                                     </div>
                                     <div class="tp-login-option-item">
@@ -73,34 +84,22 @@
                                     </div>
                                 </div>
                                 <div class="tp-login-mail text-center mb-40">
-                                    <p>or Sign up with <a href="#">Email</a></p>
+                                    <p>or Sign in with <a href="#">Email</a></p>
                                 </div> -->
                                 <div class="tp-login-input-wrapper">
                                     <div class="tp-login-input-box">
                                         <div class="tp-login-input">
-                                            <input id="name" type="text" name="name" placeholder="Shahnewaz Sakil"
-                                                value="<?= set_value('name',!empty($data) ? $data['name'] : "")?>">
-                                            <?php echo form_error('name')?>
-                                        </div>
-                                        <div class="tp-login-input-title">
-                                            <label for="name">Your Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="tp-login-input-box">
-                                        <div class="tp-login-input">
-                                            <input id="email" type="email" name="email" placeholder="shofy@mail.com"
-                                                value="<?= set_value('email',!empty($data) ? $data['email'] : "")?>">
-                                            <?php echo form_error('email')?>
+                                            <input id="email" name="email" type="email" placeholder="xyz@mail.com">
                                         </div>
                                         <div class="tp-login-input-title">
                                             <label for="email">Your Email</label>
                                         </div>
+                                        <?php echo form_error('email') ?>
                                     </div>
                                     <div class="tp-login-input-box">
                                         <div class="tp-login-input">
-                                            <input id="tp_password" type="password" name="password" placeholder="Min. 6 character"
-                                                value="<?= set_value('password',!empty($data) ? $data['password'] : "")?>">
-                                            <?php echo form_error('password')?>
+                                            <input id="tp_password" name="password" type="password"
+                                                placeholder="Enter your password">
                                         </div>
                                         <div class="tp-login-input-eye" id="password-show-toggle">
                                             <span id="open-eye" class="open-eye">
@@ -143,31 +142,34 @@
                                         <div class="tp-login-input-title">
                                             <label for="tp_password">Password</label>
                                         </div>
+                                        <?php echo form_error('password') ?>
                                     </div>
                                 </div>
                                 <div
                                     class="tp-login-suggetions d-sm-flex align-items-center justify-content-between mb-20">
-                                    <div class="tp-login-remeber">
-                                        <input id="remeber" type="checkbox" checked disabled>
-                                        <label for="remeber">I accept the terms of the Service & <a href="#">Privacy
-                                                Policy</a>.</label>
+                                    <!-- <div class="tp-login-remeber">
+                                        <input id="remeber" type="checkbox">
+                                        <label for="remeber">Remember me</label>
                                     </div>
+                                    <div class="tp-login-forgot">
+                                        <a href="forgot.html">Forgot Password?</a>
+                                    </div> -->
                                 </div>
                                 <div class="tp-login-bottom">
-                                    <button type="submit" class="tp-login-btn w-100">Create Account</button>
+                                    <button type="submit" class="tp-login-btn w-100">Login</button>
                                 </div>
                             </div>
+                            <?php echo form_close() ?>
                         </div>
                     </div>
                 </div>
             </div>
-            <?php echo form_close()?>
         </section>
         <!-- login area end -->
 
     </main>
 
-    <?php $this->load->view('frontend/footer') ?>
+    <?php $this->load->view('member/footer') ?>
 
 </body>
 

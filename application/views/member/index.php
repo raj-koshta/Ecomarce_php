@@ -8,12 +8,12 @@
    <meta name="description" content="">
    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-   <?php $this->load->view('frontend/links'); ?>
+   <?php $this->load->view('member/links'); ?>
 </head>
 
 <body>
 
-   <?php $this->load->view('frontend/header') ?>
+   <?php $this->load->view('member/header') ?>
 
 
    <main>
@@ -101,14 +101,14 @@
       <section class="tp-product-category pt-60 pb-15">
          <div class="container">
             <div class="row row-cols-xl-5 row-cols-lg-5 row-cols-md-4">
-               <?php if (!empty($categories)) {
-                  foreach ($categories as $category) {
+               <?php if (!empty($parentCategories)) {
+                  foreach ($parentCategories as $category) {
                      ?>
                      <div class="col">
                         <div class="tp-product-category-item text-center mb-40">
                            <div class="tp-product-category-thumb fix">
                               <a href="#">
-                                 <img src="uploads/products/<?= $category->image ?>" alt="product-category">
+                                 <img src="uploads/products/<?= $category->image ?>" alt="product-category" style="max-width: 60%;">
                               </a>
                            </div>
                            <div class="tp-product-category-content">
@@ -645,7 +645,7 @@
 
    </main>
 
-   <?php $this->load->view('frontend/footer') ?>
+   <?php $this->load->view('member/footer') ?>
 
 </body>
 

@@ -18,14 +18,16 @@ class Home extends CI_Controller
     public function index()
     {
         $data['banners'] = $this->HomeModel->get_banners();
-        $data['categories'] = $this->HomeModel->get_categories();
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
         $data['products'] = $this->HomeModel->get_products();
-        $this->load->view('frontend/index',$data);
+        
+        $this->load->view('member/index',$data);
     }
 
     public function product_details($slug = null){
         $data['product'] = $this->HomeModel->get_product_details($slug);
-        $this->load->view('frontend/product_details',$data);
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $this->load->view('member/product_details',$data);
     }
 
 }

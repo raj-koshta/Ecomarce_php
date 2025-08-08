@@ -6168,7 +6168,7 @@ body .ui-tooltip {
   margin-left: 10px;
 }
 .tp-header-search-box {
-  width: 58%;
+  width: 95%;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .tp-header-search-box {

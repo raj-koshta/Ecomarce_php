@@ -7,7 +7,7 @@ class Checkout extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        if(!empty($this->session->userdata('is_logedin'))){
+        if(!empty($this->session->userdata('login_id'))){
 
         } else {
             redirect('login');
@@ -16,6 +16,6 @@ class Checkout extends CI_Controller
 
     public function index()
     {
-        
+       echo "hello welcome";
     }
 }

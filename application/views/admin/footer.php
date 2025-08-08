@@ -50,7 +50,8 @@
             </div>
             <div class="form-check form-switch mb-3">
                 <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch"
-                    data-bsStyle="assets/admin/css/bootstrap-dark.min.css" data-appStyle="assets/admin/css/app-dark.min.html">
+                    data-bsStyle="assets/admin/css/bootstrap-dark.min.css"
+                    data-appStyle="assets/admin/css/app-dark.min.html">
                 <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
             </div>
 
@@ -74,6 +75,7 @@
 <div class="rightbar-overlay"></div>
 
 <!-- JAVASCRIPT -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="assets/admin/libs/jquery/jquery.min.js"></script>
 <script src="assets/admin/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/admin/libs/metismenu/metisMenu.min.js"></script>
@@ -81,7 +83,7 @@
 <script src="assets/admin/libs/node-waves/waves.min.js"></script>
 
 <!-- Icon -->
-<script src="../../../../unicons.iconscout.com/release/v2.0.1/script/monochrome/bundle.js"></script>
+<script src="https://unicons.iconscout.com/release/v2.0.1/script/monochrome/bundle.js"></script>
 
 <!-- apexcharts -->
 <script src="assets/admin/libs/apexcharts/apexcharts.min.js"></script>
@@ -100,21 +102,3 @@
 <!-- Mirrored from themesdesign.in/tocly/layouts/5.3.1/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 24 Nov 2023 08:52:54 GMT -->
 
 </html>
-
-
-<script>
-    function get_subcategories(category_id) {
-        if(category_id != ""){
-            $.ajax({
-                url: '<?php echo base_url('category/get_sub_categories')?>',
-                method: 'post',
-                data: {category_id: category_id},
-                success: function (data){
-                    $('.sub_category').html(data);
-                }
-            });
-        } else {
-            $('.sub_category').html('<option value="" selected>Select Sub Category</option>');
-        }
-    }
-</script>
