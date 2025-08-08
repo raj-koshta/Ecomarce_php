@@ -389,19 +389,19 @@
                         <li class="menu-title">Menu</li>
 
                         <li>
-                            <a href="dashboard" class="waves-effect">
+                            <a href="admin" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="product" class="waves-effect">
+                            <a href="admin/add_product" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Product</span>
                             </a>
                         </li>
                         <li>
-                            <a href="category" class="waves-effect">
+                            <a href="admin/add-category" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Category</span>
                             </a>
@@ -414,8 +414,8 @@
                                 <span>Settings</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="settings/pincode">Pincode</a></li>
-                                <li><a href="settings/banner">Banner</a></li>
+                                <li><a href="admin/add-pincode">Pincode</a></li>
+                                <li><a href="admin/add-banner">Banner</a></li>
                             </ul>
                         </li>
 

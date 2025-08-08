@@ -50,11 +50,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 // $route['default_controller'] = 'homeController/code';
-$route['default_controller'] = 'Home';
+$route['default_controller'] = 'Member';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = true;
 
-$route['product/(:any)'] = 'home/product_details/$1';
-$route['category/get_sub_categories'] = 'category/get_sub_categories';
-$route['category/(:any)'] = 'member/product/product_by_category/$1';
-$route['category/(:any)/(:any)'] = 'member/product/product_by_category/$1/$2';
+$route['admin'] = 'admin/dashboard';
+$route['product/(:any)'] = 'member/product_details/$1';
+$route['category/(:any)'] = 'member/product_by_category/$1';
+$route['category/(:any)/(:any)'] = 'member/product_by_category/$1/$2';

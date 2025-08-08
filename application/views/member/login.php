@@ -59,7 +59,7 @@
                                 <?php } else ?>
                                 <h3 class="breadcrumb__title mb-3">Login</h3>
                                 <!-- <h3 class="tp-login-title">Login to Shofy.</h3> -->
-                                <p>Don’t have an account? <span><a href="register">Create a free account</a></span>
+                                <p>Don’t have an account? <span><a href="member/register">Create a free account</a></span>
                                 </p>
                             </div>
                             <?php echo form_open() ?>

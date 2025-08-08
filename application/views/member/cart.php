@@ -49,7 +49,7 @@
                         <?= $this->session->flashdata('errorMsg'); ?>
                         </div>
                 <?php } ?>
-                <?php echo form_open('cart/update-cart') ?>
+                <?php echo form_open('member/update-cart') ?>
                 <div class="row">
                     <?php if (!empty($carts)): ?>
                         <div class="col-xl-9 col-lg-8">
@@ -105,7 +105,7 @@
                                                 </td>
                                                 <!-- action -->
                                                 <td class="tp-cart-action">
-                                                    <a href="cart/delete-cart/<?= $cart->product_id ?>"
+                                                    <a href="member/delete-cart/<?= $cart->product_id ?>"
                                                         class="tp-cart-action-btn">
                                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
@@ -181,7 +181,7 @@
                                     <span>$<?php echo number_format($total_price['grandtotal'],2);?></span>
                                 </div>
                                 <div class="tp-cart-checkout-proceed">
-                                    <a href="checkout" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
+                                    <a href="member/checkout" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
                                 </div>
                             </div>
                         </div>

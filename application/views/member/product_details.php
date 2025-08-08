@@ -160,7 +160,7 @@
                                 </div>
 
                                 <!-- actions -->
-                                <?= form_open('cart/add-to-cart') ?>
+                                <?= form_open('member/add-to-cart') ?>
                                 <div class="tp-product-details-action-wrapper">
                                     <h3 class="tp-product-details-action-title">Quantity</h3>
                                     <div class="tp-product-details-action-item-wrapper d-flex align-items-center">

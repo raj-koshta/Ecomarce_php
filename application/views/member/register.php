@@ -56,7 +56,7 @@
                         <div class="tp-login-wrapper" style="padding-top: 20px;">
                             <div class="tp-login-top text-center mb-50">
                                 <!-- <h3 class="tp-login-title">Sign Up Shofy.</h3> -->
-                                <p>Already have an account? <span><a href="login">Log In</a></span></p>
+                                <p>Already have an account? <span><a href="member/login">Log In</a></span></p>
                             </div>
                             <div class="tp-login-option">
                                 <!-- <div

@@ -1,7 +1,7 @@
 <base href="<?php echo base_url()?>">
 
 <!-- Place favicon.ico in the root directory -->
-<link rel="shortcut icon" type="image/x-icon" href="assets/img/logo/favicon.png">
+<link rel="shortcut icon" type="image/x-icon" href="assets/frontend/img/logo/favicon.png">
 
 <!-- CSS here -->
 <link rel="stylesheet" href="assets/frontend/css/bootstrap.css">

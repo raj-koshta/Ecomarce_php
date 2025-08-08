@@ -248,7 +248,7 @@
             if (category_id !== "") {
                 $(".sub_category").html('<option>Loading...</option>');
                 $.ajax({
-                    url: "<?php echo base_url('category/get_sub_categories'); ?>", // Make sure this matches your route
+                    url: "<?php echo base_url('admin/get_sub_categories'); ?>", // Make sure this matches your route
                     method: "POST",
                     data: { category_id: category_id },
                     success: function (response) {

@@ -392,7 +392,7 @@
                     <div class="col-xl-4 col-lg-3 col-md-8 col-6">
                         <div class="tp-header-main-right d-flex align-items-center justify-content-end">
                             <div class="tp-header-login d-none d-lg-block">
-                                <a href="login" class="d-flex align-items-center">
+                                <a href="member/login" class="d-flex align-items-center">
                                     <div class="tp-header-login-icon">
                                         <span>
                                             <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
@@ -430,7 +430,7 @@
                                     </a>
                                 </div>
                                 <div class="tp-header-action-item">
-                                    <a href="cart" class="">
+                                    <a href="member/cart" class="">
                                         <svg width="21" height="22" viewBox="0 0 21 22" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
