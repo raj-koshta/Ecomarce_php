@@ -107,13 +107,13 @@
                      <div class="col">
                         <div class="tp-product-category-item text-center mb-40">
                            <div class="tp-product-category-thumb fix">
-                              <a href="#">
+                              <a href="category/<?= $category->slug?>">
                                  <img src="uploads/products/<?= $category->image ?>" alt="product-category" style="max-width: 60%;">
                               </a>
                            </div>
                            <div class="tp-product-category-content">
                               <h3 class="tp-product-category-title">
-                                 <a href="#"><?= $category->category_name ?></a>
+                                 <a href="category/<?= $category->slug?>"><?= $category->category_name ?></a>
                               </h3>
                               <!-- <p>20 Product</p> -->
                            </div>

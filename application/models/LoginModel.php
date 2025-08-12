@@ -19,7 +19,9 @@ class LoginModel extends CI_Model
             $username = $arr->username;
             if(password_verify($password,$db_pass)){
                 $this->session->set_userdata('login_id',$user_id);
+                $this->session->set_userdata('user_id',$user_id);
                 $this->session->set_userdata('username',$username);
+                
                 $this->db->where('user_id',$this->session->userdata('user_id'))->update('tbl_cart',['user_id'=>$user_id]);
                 return true;
             } else {
