@@ -1,4 +1,4 @@
-<base href="<?php echo base_url()?>">
+<base href="<?php echo base_url() ?>">
 
 <!-- Place favicon.ico in the root directory -->
 <link rel="shortcut icon" type="image/x-icon" href="assets/frontend/img/logo/favicon.png">
@@ -13,3 +13,6 @@
 <link rel="stylesheet" href="assets/frontend/css/flaticon_shofy.css">
 <link rel="stylesheet" href="assets/frontend/css/spacing.css">
 <link rel="stylesheet" href="assets/frontend/css/main.css">
+<!-- Cropper.js -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>

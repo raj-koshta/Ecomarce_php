@@ -482,7 +482,7 @@
         <section class="tp-shop-area pb-120">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-3 col-lg-4">
+                    <div class="col-xl-3 col-lg-4 d-none d-lg-block">
                         <div class="tp-shop-sidebar mr-10">
                             <!-- filter -->
                             <div class="tp-shop-widget mb-35">
@@ -924,7 +924,7 @@
 
                             <div class="tp-shop-top mb-45">
                                 <div class="row">
-                                    <div class="col-xl-6">
+                                    <div class="col-lg-9">
                                         <div class="tp-shop-top-left d-flex align-items-center ">
                                             <div class="tp-shop-top-tab tp-tab">
                                                 <ul class="nav nav-tabs" id="productTab" role="tablist">
@@ -978,9 +978,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xl-6">
+                                    <div class="col-lg-3">
                                         <div
-                                            class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end">
+                                            class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end mt-lg-0">
                                             <div class="tp-shop-top-select">
                                                 <select>
                                                     <option>Default Sorting</option>
@@ -990,7 +990,7 @@
                                                     <option>On Sale</option>
                                                 </select>
                                             </div>
-                                            <div class="tp-shop-top-filter">
+                                            <div class="tp-shop-top-filter d-lg-none">
                                                 <button type="button" class="tp-filter-btn filter-open-btn">
                                                     <span>
                                                         <svg width="16" height="15" viewBox="0 0 16 15" fill="none"

@@ -19,6 +19,7 @@ class Member extends CI_Controller
         $this->load->model('ProductModel');
         $this->load->model('RegisterModel');
         $this->load->model('CartModel');
+        $this->load->model('UserModel');
     }
 
     public function index()
@@ -173,6 +174,60 @@ class Member extends CI_Controller
                 'status' => 'error',
                 'message' => 'Product not found'
             ]);
+        }
+    }
+
+    public function profile()
+    {
+        if (!empty($this->session->userdata('login_id'))) {
+            $this->load->view('member/profile');
+        } else {
+            redirect('member/login');
+        }
+    }
+
+    public function upload_profile_image()
+    {
+        if (!empty($_FILES['image']['name'])) {
+            $uploadPath = './uploads/profile/';
+
+            // Create the folder if it does not exist
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true); // true allows recursive creation
+            }
+            $config['upload_path']   = $uploadPath;
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['file_name'] = time() . '_' . $_FILES['image']['name'];
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('image')) {
+                $uploadData = $this->upload->data();
+                $fileName = $uploadData['file_name'];
+
+                // Save in DB
+                $userId = $this->input->post('user_id');
+                
+                $check = $this->UserModel->update_profile_picture($userId,$fileName);
+                if($check){
+                    
+                    echo json_encode([
+                        'status' => 'success',
+                        'image_url' => base_url('uploads/profile/' . $fileName)
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Profile Upload Failed..'
+                    ]);
+                }
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $this->upload->display_errors()
+                ]);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No image uploaded']);
         }
     }
 

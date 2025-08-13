@@ -1,8 +1,33 @@
 <style>
     @media (min-width: 768px) and (max-width: 992px) {
-        .main-header-search{
+        .main-header-search {
             display: block !important;
         }
+    }
+
+    /* Offset from header */
+    .custom-profile-dropdown {
+        margin-top: 24px !important;
+    }
+
+    /* Smooth fade + slide */
+    .smooth-dropdown {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        pointer-events: none;
+        /* prevent clicks while hidden */
+    }
+
+    .smooth-dropdown.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* Remove Bootstrap default dropdown caret/arrow */
+    .tp-header-action-item .dropdown-toggle::after {
+        display: none !important;
     }
 </style>
 
@@ -157,7 +182,7 @@
             </div>
             <div class="col">
                 <div class="tp-mobile-item text-center">
-                    <a href="profile.html" class="tp-mobile-item-btn">
+                    <a href="" class="tp-mobile-item-btn">
                         <i class="flaticon-user"></i>
                         <span>Account</span>
                     </a>
@@ -333,7 +358,7 @@
                                     <span class="tp-header-setting-toggle" id="tp-header-setting-toggle">Setting</span>
                                     <ul>
                                         <li>
-                                            <a href="">My Profile</a>
+                                            <a href="member/profile">My Profile</a>
                                         </li>
                                         <li>
                                             <a href="">Wishlist</a>
@@ -341,9 +366,15 @@
                                         <li>
                                             <a href="member/cart">Cart</a>
                                         </li>
-                                        <li>
-                                            <a href="member/logout">Logout</a>
-                                        </li>
+                                        <?php if (empty($this->session->userdata('login_id'))): ?>
+                                            <li>
+                                                <a href="member/login">Login</a>
+                                            </li>
+                                        <?php else: ?>
+                                            <li>
+                                                <a href="member/logout">Logout</a>
+                                            </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </div>
@@ -416,8 +447,8 @@
                                 </form>
                             </div>
                             <div class="tp-header-login d-none d-lg-block">
-                                <a href="member/login" class="d-flex align-items-center">
-                                    <div class="tp-header-login-icon">
+                                <a href="javascript:void(0)" class="d-flex align-items-center">
+                                    <!-- <div class="tp-header-login-icon">
                                         <span>
                                             <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -429,17 +460,17 @@
                                                     stroke-linejoin="round" />
                                             </svg>
                                         </span>
-                                    </div>
+                                    </div> -->
                                     <div class="tp-header-login-content d-none d-xl-block">
                                         <span>Hello, <?= $this->session->userdata('username') ?? 'User'; ?></span>
-                                        <h5 class="tp-header-login-title">Your Account</h5>
+                                        <!-- <h5 class="tp-header-login-title">Your Account</h5> -->
                                     </div>
                                 </a>
                             </div>
                             <div class="tp-header-action d-flex align-items-center ml-50">
 
                                 <div class="tp-header-action-item d-lg-block">
-                                    <a href="wishlist.html" class="tp-header-action-btn">
+                                    <a href="javascript:void(0)" class="tp-header-action-btn">
                                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -496,6 +527,54 @@
                                         <span class="tp-header-action-badge">13</span>
                                     </button> -->
                                 </div>
+                                <?php if (empty($this->session->userdata('login_id'))): ?>
+                                    <div class="tp-header-action-item d-lg-block">
+                                        <a href="member/login" class="tp-header-action-btn">
+                                            <svg width="25" height="25" viewBox="0 0 21 22" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Circle outline -->
+                                                <circle cx="10.5" cy="11" r="9.5" stroke="currentColor"
+                                                    stroke-width="1.7" />
+
+                                                <!-- Head -->
+                                                <circle cx="10.5" cy="8" r="3" stroke="currentColor" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+
+                                                <!-- Shoulders -->
+                                                <path d="M4.5 17C4.5 14.5 7 13 10.5 13C14 13 16.5 14.5 16.5 17"
+                                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="tp-header-action-item dropdown">
+                                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg width="25" height="25" viewBox="0 0 21 22" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Circle outline -->
+                                                <circle cx="10.5" cy="11" r="9.5" stroke="currentColor"
+                                                    stroke-width="1.7" />
+
+                                                <!-- Head -->
+                                                <circle cx="10.5" cy="8" r="3" stroke="currentColor" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+
+                                                <!-- Shoulders -->
+                                                <path d="M4.5 17C4.5 14.5 7 13 10.5 13C14 13 16.5 14.5 16.5 17"
+                                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
+                                            <li><a class="dropdown-item" href="member/profile">My Profile</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="member/logout">Logout</a></li>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="tp-header-action-item d-lg-none">
                                     <button type="button" class="tp-header-action-btn tp-offcanvas-open-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="16"
@@ -641,7 +720,7 @@
                                 <nav class="tp-main-menu-content">
                                     <ul>
                                         <li><a href="">Home</a></li>
-                                        <li><a href="javascript:void(0)">Shop</a></li>
+                                        <li><a href="member/category">Shop</a></li>
                                         <li><a href="javascript:void(0)">About</a></li>
                                         <li><a href="javascript:void(0)">Contact</a></li>
                                     </ul>
@@ -705,7 +784,7 @@
                                                 <?php foreach ($parentCategories as $pCategory): ?>
                                                     <div class="col">
                                                         <div class="home-menu-item ">
-                                                            <a href="category/<?= $pCategory->slug?>">
+                                                            <a href="category/<?= $pCategory->slug ?>">
                                                                 <div class="home-menu-thumb p-relative fix">
                                                                     <img height="200"
                                                                         src="uploads/products/<?= $pCategory->image ?>" alt="">
@@ -726,7 +805,7 @@
                                     <li><a href="">Home</a></li>
                                 <?php endif; ?>
 
-                                <li><a href="">Shop</a></li>
+                                <li><a href="member/category">Shop</a></li>
                                 <li><a href="">About</a></li>
                                 <li><a href="">Contact</a></li>
                             </ul>
@@ -792,6 +871,54 @@
                                     </span>
                                 </a>
                             </div>
+                            <?php if (empty($this->session->userdata('login_id'))): ?>
+                                <div class="tp-header-action-item d-lg-block">
+                                    <a href="member/login" class="tp-header-action-btn">
+                                        <svg width="25" height="25" viewBox="0 0 21 22" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Circle outline -->
+                                            <circle cx="10.5" cy="11" r="9.5" stroke="currentColor" stroke-width="1.7" />
+
+                                            <!-- Head -->
+                                            <circle cx="10.5" cy="8" r="3" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+
+                                            <!-- Shoulders -->
+                                            <path d="M4.5 17C4.5 14.5 7 13 10.5 13C14 13 16.5 14.5 16.5 17"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            <?php else: ?>
+                                <div class="tp-header-action-item dropdown">
+                                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg width="25" height="25" viewBox="0 0 21 22" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Circle outline -->
+                                            <circle cx="10.5" cy="11" r="9.5" stroke="currentColor" stroke-width="1.7" />
+
+                                            <!-- Head -->
+                                            <circle cx="10.5" cy="8" r="3" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+
+                                            <!-- Shoulders -->
+                                            <path d="M4.5 17C4.5 14.5 7 13 10.5 13C14 13 16.5 14.5 16.5 17"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
+                                        <li><a class="dropdown-item" href="member/profile">My Profile</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="member/logout">Logout</a></li>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+
+
                             <div class="tp-header-action-item d-lg-none">
                                 <button type="button" class="tp-header-action-btn tp-offcanvas-open-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="16" viewBox="0 0 30 16">
