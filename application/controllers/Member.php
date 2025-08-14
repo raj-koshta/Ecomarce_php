@@ -180,7 +180,9 @@ class Member extends CI_Controller
     public function profile()
     {
         if (!empty($this->session->userdata('login_id'))) {
-            $this->load->view('member/profile');
+            $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+            $data['addresses'] = $this->db->where('user_id', $this->session->userdata('user_id'))->get('tbl_address')->result();
+            $this->load->view('member/profile', $data);
         } else {
             redirect('member/login');
         }
@@ -195,7 +197,7 @@ class Member extends CI_Controller
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true); // true allows recursive creation
             }
-            $config['upload_path']   = $uploadPath;
+            $config['upload_path'] = $uploadPath;
             $config['allowed_types'] = 'jpg|jpeg|png';
             $config['file_name'] = time() . '_' . $_FILES['image']['name'];
             $this->load->library('upload', $config);
@@ -206,10 +208,10 @@ class Member extends CI_Controller
 
                 // Save in DB
                 $userId = $this->input->post('user_id');
-                
-                $check = $this->UserModel->update_profile_picture($userId,$fileName);
-                if($check){
-                    
+
+                $check = $this->UserModel->update_profile_picture($userId, $fileName);
+                if ($check) {
+
                     echo json_encode([
                         'status' => 'success',
                         'image_url' => base_url('uploads/profile/' . $fileName)
@@ -230,6 +232,117 @@ class Member extends CI_Controller
             echo json_encode(['status' => 'error', 'message' => 'No image uploaded']);
         }
     }
+
+    public function update_profile_info()
+    {
+        $user_id = $this->session->userdata('user_obj')->user_id;
+        $post = $this->input->post();
+
+        $check = $this->UserModel->update_info($user_id, $post);
+
+        if ($check) {
+            $this->session->set_flashdata('successMsg', 'Information updated successfully.');
+
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to update Information.');
+
+        }
+
+        redirect('member/profile');
+
+    }
+
+    public function add_address()
+    {
+        $post = $this->input->post();
+        $post['user_id'] = $this->session->userdata('user_id');
+        $post['added_on'] = date('Y-m-d');
+        $qry = $this->db->insert('tbl_address', $post);
+
+        if ($qry) {
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('successMsg', 'Address Added successfully.');
+            }
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to add Address.');
+        }
+        redirect('member/profile');
+    }
+
+    public function update_address($id)
+    {
+        $post = $this->input->post([
+            'street',
+            'city',
+            'state',
+            'phone',
+            'zip_code',
+            'country'
+        ], TRUE);
+
+        $post['updated_on'] = date('Y-m-d');
+        $qry = $this->db->where('id', $id)->update('tbl_address', $post);
+
+        if ($qry) {
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('successMsg', 'Address Updated successfully.');
+            }
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to update Address.');
+        }
+        redirect('member/profile');
+    }
+
+    public function check_old_password()
+    {
+        // Always set JSON header
+        $this->output->set_content_type('application/json');
+
+        $old_pass = $this->input->post('old_pass', TRUE);
+        $user_id = $this->session->userdata('user_id');
+
+        if (!$user_id) {
+            echo json_encode(['valid' => false, 'error' => 'Not logged in']);
+            return;
+        }
+
+        $stored_hash = $this->db->select('password')
+            ->where('user_id', $user_id)
+            ->get('tbl_users')
+            ->row()
+            ->password ?? '';
+
+
+        $is_valid = password_verify($old_pass, $stored_hash);
+
+        echo json_encode(['valid' => $is_valid]);
+    }
+
+    public function update_password()
+    {
+        $user_id = $this->session->userdata('user_id');
+        $post = $this->input->post();
+        $post['updated_on'] = date('Y-m-d');
+        $qry = $this->db
+            ->where([
+                'user_id' => $user_id,
+                'email' => $this->session->userdata('user_obj')->email
+            ])
+            ->update('tbl_users', [
+                'password' => password_hash( $post['new_pass'],PASSWORD_BCRYPT),
+                'updated_on' => $post['updated_on']
+            ]);
+
+        if ($qry) {
+            $this->session->set_flashdata('successMsg', 'Password updated successfully.');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to update password.');
+        }
+
+        redirect('member/profile');
+    }
+
+
 
 
 }
