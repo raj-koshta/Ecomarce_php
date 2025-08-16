@@ -139,7 +139,8 @@ class Member extends CI_Controller
     public function checkout()
     {
         if (!empty($this->session->userdata('login_id'))) {
-            echo "hello";
+            $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+            $this->load->view('member/checkout', $data);
         } else {
             redirect('member/login');
         }
@@ -252,7 +253,7 @@ class Member extends CI_Controller
 
     }
 
-    public function add_address()
+    public function add_billing_address()
     {
         $post = $this->input->post();
         $post['user_id'] = $this->session->userdata('user_id');
@@ -272,6 +273,9 @@ class Member extends CI_Controller
     public function update_address($id)
     {
         $post = $this->input->post([
+            'first_name',
+            'last_name',
+            'email',
             'street',
             'city',
             'state',

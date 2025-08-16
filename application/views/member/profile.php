@@ -61,7 +61,8 @@
                                         <button class="nav-link" id="nav-address-tab" data-bs-toggle="tab"
                                             data-bs-target="#nav-address" type="button" role="tab"
                                             aria-controls="nav-address" aria-selected="false"><span><i
-                                                    class="fa-light fa-location-dot"></i></span> Address </button>
+                                                    class="fa-light fa-location-dot"></i></span> Billing Address
+                                        </button>
                                         <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab"
                                             data-bs-target="#nav-order" type="button" role="tab"
                                             aria-controls="nav-order" aria-selected="false"><span><i
@@ -370,7 +371,7 @@
                                     <div class="tab-pane fade" id="nav-password" role="tabpanel"
                                         aria-labelledby="nav-password-tab">
                                         <div class="profile__password">
-                                            <form action="member/update-password" method="post">
+                                            <form action="member/update-password" class="password-form" method="post">
                                                 <div class="row">
                                                     <!-- Old Password -->
                                                     <div class="col-xxl-12">
@@ -437,7 +438,7 @@
                                                 <div class="col-12 d-flex justify-content-end mb-20">
                                                     <button type="button" class="tp-btn" data-bs-toggle="modal"
                                                         data-bs-target="#addAddressModal">
-                                                        Add Address
+                                                        Add Billing Address
                                                     </button>
                                                 </div>
                                                 <?php if (!empty($addresses)): ?>
@@ -450,6 +451,9 @@
                                                                         <a href="javascript:void(0)" class="edit-address-btn"
                                                                             style="color: skyblue;"
                                                                             data-id="<?= $address->id ?>"
+                                                                            data-firstname="<?= htmlspecialchars($address->first_name) ?>"
+                                                                            data-lastname="<?= htmlspecialchars($address->last_name) ?>"
+                                                                            data-email="<?= htmlspecialchars($address->email) ?>"
                                                                             data-street="<?= htmlspecialchars($address->street) ?>"
                                                                             data-city="<?= htmlspecialchars($address->city) ?>"
                                                                             data-state="<?= htmlspecialchars($address->state) ?>"
@@ -461,6 +465,8 @@
                                                                         <a href="javascript:void(0)" style="color: red;"><i
                                                                                 class="bi bi-trash"></i></a>
                                                                     </h3>
+                                                                    <p><span>Name:</span><?= $address->first_name.' '.$address->last_name ?></p>
+                                                                    <p><span>Email:</span><?= $address->email ?></p>
                                                                     <p><span>Street:</span><?= $address->street ?></p>
                                                                     <p><span>City:</span><?= $address->city ?></p>
                                                                     <p><span>State/province/area:</span><?= $address->state ?>
@@ -574,9 +580,38 @@
 
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <form id="addressForm" action="member/add-address" method="post" novalidate>
+                    <form id="addressForm" action="member/add-billing-address" method="post" novalidate>
                         <div class="row g-3">
+
                             <div class="col-md-6">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name"
+                                    required>
+                                <div class="invalid-feedback">Please enter Biller first name</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name"
+                                    required>
+                                <div class="invalid-feedback">Please enter Biller last name</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    required>
+                                <div class="invalid-feedback">Please enter Biller email</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="number" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
+                                    required>
+                                <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label for="street" class="form-label">Street</label>
                                 <input type="text" class="form-control" id="street" name="street" required>
                                 <div class="invalid-feedback">Please enter your street.</div>
@@ -592,13 +627,6 @@
                                 <label for="state" class="form-label">State / Province / Area</label>
                                 <input type="text" class="form-control" id="state" name="state" required>
                                 <div class="invalid-feedback">Please enter your state or province.</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input type="number" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
-                                    required>
-                                <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
                             </div>
 
                             <div class="col-md-6">
@@ -769,6 +797,9 @@
             editButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
                     // Fill form fields
+                    document.getElementById("first_name").value = this.dataset.firstname;
+                    document.getElementById("last_name").value = this.dataset.lastname;
+                    document.getElementById("email").value = this.dataset.email;
                     document.getElementById("street").value = this.dataset.street;
                     document.getElementById("city").value = this.dataset.city;
                     document.getElementById("state").value = this.dataset.state;
@@ -867,7 +898,7 @@
 
 
             // Form submit check
-            $("form").on("submit", function (e) {
+            $(".password-form").on("submit", function (e) {
                 let newPass = $("#new_pass").val().trim();
                 let conPass = $("#con_new_pass").val().trim();
                 console.log(newPass);
