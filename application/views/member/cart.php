@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Template</title>
+    <title>Cart</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -156,7 +156,7 @@
                                     <h4 class="tp-cart-checkout-shipping-title">Shipping</h4>
 
                                     <div class="tp-cart-checkout-shipping-option-wrapper">
-                                        <?php if($total_price['subtotal'] > 499): ?>
+                                        <?php if($total_price['subtotal'] > 999): ?>
                                             <div class="tp-cart-checkout-shipping-option d-flex align-items-center justify-content-between">
                                                 <p>
                                                     <input id="free_shipping" type="radio" name="freeshipping" checked readonly>

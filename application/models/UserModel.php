@@ -40,4 +40,23 @@ class UserModel extends CI_Model
             return false;
         }
     }
+
+    public function get_billing_addresses(){
+        $qry = $this->db->where(['user_id'=>$this->session->userdata['user_id']])->get('tbl_address');
+
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_orders(){
+        $qry = $this->db->where('user_id',$this->session->userdata('user_id'))->get('tbl_orders');
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
 }

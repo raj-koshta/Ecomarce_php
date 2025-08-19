@@ -444,7 +444,7 @@
                                                 <?php if (!empty($addresses)): ?>
                                                     <?php $sn = 1;
                                                     foreach ($addresses as $address): ?>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 mb-20">
                                                             <div class="profile__address-item d-sm-flex align-items-start">
                                                                 <div class="profile__address-content">
                                                                     <h3 class="profile__address-title">Address <?= $sn++; ?>
@@ -462,7 +462,7 @@
                                                                             data-country="<?= htmlspecialchars($address->country) ?>">
                                                                             <i class="bi bi-pencil-square"></i>
                                                                         </a>
-                                                                        <a href="javascript:void(0)" style="color: red;"><i
+                                                                        <a href="member/delete-address/<?= $address->id?>" style="color: red;"><i
                                                                                 class="bi bi-trash"></i></a>
                                                                     </h3>
                                                                     <p><span>Name:</span><?= $address->first_name.' '.$address->last_name ?></p>
@@ -491,46 +491,45 @@
                                     <div class="tab-pane fade" id="nav-order" role="tabpanel"
                                         aria-labelledby="nav-order-tab">
                                         <div class="profile__ticket table-responsive">
-                                            <table class="table">
+                                            <table class="table" style="min-width: 1100px;">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Order Id</th>
-                                                        <th scope="col">Product Title</th>
+                                                        <th scope="col">Product Title and Quentity</th>
+                                                        <th scope="col">Total Price</th>
+                                                        <th scope="col">Payment Mode</th>
+                                                        <th scope="col">Delivery Date</th>
                                                         <th scope="col">Status</th>
                                                         <th scope="col">View</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <th scope="row"> #2245</th>
-                                                        <td data-info="title">How can i share ?</td>
-                                                        <td data-info="status pending">Pending </td>
-                                                        <td><a href="#" class="tp-logout-btn">Invoice</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row"> #2220</th>
-                                                        <td data-info="title">Send money, but not working</td>
-                                                        <td data-info="status reply">Need your replay</td>
-                                                        <td><a href="#" class="tp-logout-btn">Reply</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row"> #2125</th>
-                                                        <td data-info="title">Balance error</td>
-                                                        <td data-info="status done">Resolved</td>
-                                                        <td><a href="#" class="tp-logout-btn">Invoice</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row"> #2124</th>
-                                                        <td data-info="title">How to decline bid</td>
-                                                        <td data-info="status hold">On Hold</td>
-                                                        <td><a href="#" class="tp-logout-btn">Status</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row"> #2121</th>
-                                                        <td data-info="title">How to contact</td>
-                                                        <td data-info="status done">Resolved</td>
-                                                        <td><a href="#" class="tp-logout-btn">Invoice</a></td>
-                                                    </tr>
+                                                    <?php if(!empty($orders)):?>
+                                                        <?php foreach($orders as $order):?>
+                                                            <tr>
+                                                                <th scope="row"> #<?= $order->id?></th>
+                                                                <td data-info="title">
+                                                                    <ul>
+                                                                        <?php
+                                                                            $products = $this->db->select('product_name,product_qty')->where('order_id',$order->id)->get('tbl_order_products')->result();
+                                                                            foreach($products as $product):
+                                                                        ?>
+                                                                        <li><?= substr($product->product_name, 0, 20) ?><?= (strlen($product->product_name) > 20 ? '...' : '') ?>x<?= $product->product_qty?></li>
+                                                                        <?php endforeach;?>
+                                                                    </ul>
+                                                                </td>
+                                                                <td>$<?= number_format($order->total,2) ?></td>
+                                                                <td><?= $order->payment_mode?></td>
+                                                                <td><?= $order->delivery_date?></td>
+                                                                <td data-info="status pending"><?= $order->order_status?> </td>
+                                                                <td><a href="#" class="tp-logout-btn">Invoice</a></td>
+                                                            </tr>
+                                                        <?php endforeach;?>
+                                                    <?php else:?>
+                                                        <tr>
+                                                            <td colspan="4">No Order Data found.</td>
+                                                        </tr>
+                                                    <?php endif;?>
                                                 </tbody>
                                             </table>
                                         </div>

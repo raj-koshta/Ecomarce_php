@@ -14,7 +14,7 @@
                                 </div>
                                 <p class="tp-footer-desc">We are a team of designers and developers that create high
                                     quality
-                                    WordPress</p>
+                                    Website</p>
                                 <div class="tp-footer-social">
                                     <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
                                     <a href="#"><i class="fa-brands fa-twitter"></i></a>

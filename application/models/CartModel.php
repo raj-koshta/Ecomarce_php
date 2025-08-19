@@ -77,11 +77,21 @@ class CartModel extends CI_Model
         $qry = $this->db->select('sum(selling_price * product_qty) as total_price')->where('user_id',$this->get_userid())->get('tbl_cart');
         if($qry->num_rows()){
             $total = $qry->row()->total_price;
-            if($total > 499){
+            if($total > 999){
                 return array('subtotal'=>$total,'grandtotal'=>$total,'delivery'=>0);
             } else {
                 return array('subtotal'=>$total,'grandtotal'=>$total+40,'delivery'=> 40);
             }
+        } else {
+            return false;
+        }
+    }
+
+    public function delete_all(){
+        $qry = $this->db->where(['user_id'=>$this->get_userid()])->delete('tbl_cart');
+
+        if($qry){
+            return true;
         } else {
             return false;
         }

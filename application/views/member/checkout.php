@@ -1,3 +1,10 @@
+<?php
+if (empty($this->CartModel->get_cart())) {
+    redirect('member/index'); // or show a message
+}
+?>
+
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -74,46 +81,39 @@
                     <div class="col-12 mb-30">
                         <div id="tpReturnCustomerLoginForm" class="tp-return-customer">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label class="card border p-3 address-card" for="selectAddress1">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h4 class="mb-0">Address 1</h4>
-                                            <input type="checkbox" name="selectAddress" value="1" id="selectAddress1"
-                                                class="address-checkbox">
+                                <?php if(!empty($billingAddresses)):?>
+                                    <?php $sn = 1;?>
+                                    <?php foreach($billingAddresses as $billingAddress):?>
+                                        <div class="col-md-6 col-lg-4">
+                                            <label class="card border p-3 address-card" for="selectAddress<?= $billingAddress->id?>"
+                                            data-billing_address_id="<?= $billingAddress->id?>"
+                                            data-first_name="<?= $billingAddress->first_name?>"
+                                            data-last_name="<?= $billingAddress->last_name?>"
+                                            data-country="<?= $billingAddress->country?>"
+                                            data-street="<?= $billingAddress->street?>"
+                                            data-city="<?= $billingAddress->city?>"
+                                            data-state="<?= $billingAddress->state?>"
+                                            data-zip="<?= $billingAddress->zip_code?>"
+                                            data-phone="<?= $billingAddress->phone?>"
+                                            data-email="<?= $billingAddress->email?>">
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <h4 class="mb-0">Address <?= $sn++;?></h4>
+                                                    <input type="checkbox" name="selectAddress" value="1" id="selectAddress<?= $billingAddress->id?>"
+                                                    class="address-checkbox">
+                                                </div>
+                                                <p><strong>Name:</strong> <?= $billingAddress->first_name.' '.$billingAddress->last_name?></p>
+                                                <p><strong>Country:</strong> <?= $billingAddress->country?></p>
+                                                <p><strong>Address:</strong> <?= $billingAddress->street.' '.$billingAddress->city.' '.$billingAddress->state.' '.$billingAddress->country.', '.$billingAddress->zip_code?></p>
+                                                <p><strong>Phone:</strong> <?= $billingAddress->phone?></p>
+                                                <p><strong>Email:</strong> <?= $billingAddress->email?></p>
+                                            </label>
                                         </div>
-                                        <p><strong>Name:</strong> ${formData.get("firstName")}
-                                            ${formData.get("lastName")}</p>
-                                        <p><strong>Country:</strong> ${formData.get("country")}</p>
-                                        <p><strong>Address:</strong> ${formData.get("address1")}
-                                            ${formData.get("address2")}</p>
-                                        <p><strong>City:</strong> ${formData.get("city")}</p>
-                                        <p><strong>State:</strong> ${formData.get("state")}</p>
-                                        <p><strong>Postcode:</strong> ${formData.get("postcode")}</p>
-                                        <p><strong>Phone:</strong> ${formData.get("phone")}</p>
-                                        <p><strong>Email:</strong> ${formData.get("email")}</p>
-                                        <p><strong>Order Notes:</strong> ${formData.get("notes") || "None"}</p>
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="card border p-3 address-card" for="selectAddress2">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h4 class="mb-0">Address 2</h4>
-                                            <input type="checkbox" name="selectAddress" value="1" id="selectAddress2"
-                                                class="address-checkbox">
-                                        </div>
-                                        <p><strong>Name:</strong> ${formData.get("firstName")}
-                                            ${formData.get("lastName")}</p>
-                                        <p><strong>Country:</strong> ${formData.get("country")}</p>
-                                        <p><strong>Address:</strong> ${formData.get("address1")}
-                                            ${formData.get("address2")}</p>
-                                        <p><strong>City:</strong> ${formData.get("city")}</p>
-                                        <p><strong>State:</strong> ${formData.get("state")}</p>
-                                        <p><strong>Postcode:</strong> ${formData.get("postcode")}</p>
-                                        <p><strong>Phone:</strong> ${formData.get("phone")}</p>
-                                        <p><strong>Email:</strong> ${formData.get("email")}</p>
-                                        <p><strong>Order Notes:</strong> ${formData.get("notes") || "None"}</p>
-                                    </label>
-                                </div>
+                                    <?php endforeach;?>
+                                <?php else:?>
+                                    <div class="col-12 d-flex text-center">
+                                        No Billing records found.
+                                    </div>
+                                <?php endif;?>
                             </div>
                         </div>
                     </div>
@@ -122,19 +122,24 @@
                             <h3 class="tp-checkout-bill-title">Billing Details</h3>
 
                             <div class="tp-checkout-bill-form">
-                                <form action="#">
+                                <form action="member/place_order" method="post" id="billing_address">
                                     <div class="tp-checkout-bill-inner">
                                         <div class="row">
+                                            <input type="hidden" name="billing_address_id">
+                                            <input type="hidden" name="delivery" value="<?= $total_price['delivery'] ?>">
+                                            <input type="hidden" name="grandtotal" value="<?= $total_price['grandtotal'] ?>">
+                                            <input type="hidden" name="payment" id="payment_method" value="cod">
+                                            <input type="hidden" name="checkout_token" value="<?= $checkout_token ?>">
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>First Name <span>*</span></label>
-                                                    <input type="text" placeholder="First Name">
+                                                    <input type="text" placeholder="First Name" name="first_name" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>Last Name <span>*</span></label>
-                                                    <input type="text" placeholder="Last Name">
+                                                    <input type="text" placeholder="Last Name" name="last_name" required>
                                                 </div>
                                             </div>
                                             <!-- <div class="col-md-12">
@@ -145,14 +150,8 @@
                                             </div> -->
                                             <div class="col-md-12">
                                                 <div class="tp-checkout-input">
-                                                    <label>Country / Region </label>
-                                                    <input type="text" placeholder="United States (US)">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="tp-checkout-input">
                                                     <label>Street address</label>
-                                                    <input type="text" placeholder="House number, street name, Apartment, suite, unit, etc. (optional)">
+                                                    <input required type="text" placeholder="House number, street name, Apartment, suite, unit, etc. (optional)" name="street">
                                                 </div>
 
                                                 <!-- <div class="tp-checkout-input">
@@ -160,39 +159,40 @@
                                                         placeholder="Apartment, suite, unit, etc. (optional)">
                                                 </div> -->
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
+                                                <div class="tp-checkout-input">
+                                                    <label>Country / Region </label>
+                                                    <input type="text" placeholder="United States" name="country" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>Town / City</label>
-                                                    <input type="text" placeholder="">
+                                                    <input type="text" placeholder="Texas" name="city" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>State / County</label>
-                                                    <select>
-                                                        <option>New York US</option>
-                                                        <option>Berlin Germany</option>
-                                                        <option>Paris France</option>
-                                                        <option>Tokiyo Japan</option>
-                                                    </select>
+                                                    <input type="text" placeholder="Austin" name="state" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>Postcode ZIP</label>
-                                                    <input type="text" placeholder="">
+                                                    <input type="number" placeholder="45236" name="zip_code" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>Phone <span>*</span></label>
-                                                    <input type="text" placeholder="">
+                                                    <input type="number" placeholder="8562351574" name="phone" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="tp-checkout-input">
                                                     <label>Email address <span>*</span></label>
-                                                    <input type="email" placeholder="">
+                                                    <input type="email" placeholder="xyz@gmail.com" name="email" required>
                                                 </div>
                                             </div>
                                             <!-- <div class="col-md-12">
@@ -211,7 +211,7 @@
                                             <div class="col-md-12">
                                                 <div class="tp-checkout-input">
                                                     <label>Order notes (optional)</label>
-                                                    <textarea
+                                                    <textarea name="order_note"
                                                         placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
                                                 </div>
                                             </div>
@@ -226,129 +226,122 @@
                         <div class="tp-checkout-place white-bg">
                             <h3 class="tp-checkout-place-title">Your Order</h3>
 
-                            <div class="tp-order-info-list">
-                                <ul>
+                            <?php if(!empty($carts)):?>
+                                <div class="tp-order-info-list">
+                                    <ul>
 
-                                    <!-- header -->
-                                    <li class="tp-order-info-list-header">
-                                        <h4>Product</h4>
-                                        <h4>Total</h4>
-                                    </li>
+                                        <!-- header -->
+                                        <li class="tp-order-info-list-header">
+                                            <h4>Product</h4>
+                                            <h4>Total</h4>
+                                        </li>
 
-                                    <!-- item list -->
-                                    <li class="tp-order-info-list-desc">
-                                        <p>Xiaomi Redmi Note 9 Global V. <span> x 2</span></p>
-                                        <span>$274:00</span>
-                                    </li>
-                                    <li class="tp-order-info-list-desc">
-                                        <p>Office Chair Multifun <span> x 1</span></p>
-                                        <span>$74:00</span>
-                                    </li>
-                                    <li class="tp-order-info-list-desc">
-                                        <p>Apple Watch Series 6 Stainless <span> x 3</span></p>
-                                        <span>$362:00</span>
-                                    </li>
-                                    <li class="tp-order-info-list-desc">
-                                        <p>Body Works Mens Collection <span> x 1</span></p>
-                                        <span>$145:00</span>
-                                    </li>
+                                        <!-- item list -->
+                                        <?php foreach($carts as $cart):?>
+                                            <li class="tp-order-info-list-desc">
+                                                <!-- <p><?= $cart->product_name?><span> x <?= $cart->product_qty?></span></p> -->
+                                                <p><?= substr($cart->product_name, 0, 30) ?><?= (strlen($cart->product_name) > 30 ? '...' : '') ?><span> x <?= $cart->product_qty ?></span></p>
+                                                <span>
+                                                    <?php $totalPrice = $cart->selling_price * $cart->product_qty;
+                                                    echo '$'.number_format($totalPrice,2);?>
+                                                </span>
+                                            </li>
+                                        <?php endforeach;?>
+                                        
 
-                                    <!-- subtotal -->
-                                    <li class="tp-order-info-list-subtotal">
-                                        <span>Subtotal</span>
-                                        <span>$507.00</span>
-                                    </li>
+                                        <!-- subtotal -->
+                                        <li class="tp-order-info-list-subtotal">
+                                            <span>Subtotal</span>
+                                            <span>$<?= number_format($total_price['subtotal'],2)?></span>
+                                        </li>
 
-                                    <li>
-                                        <span>Have a coupon?</span>
-                                        <span>
-                                            <button type="button" class="tp-checkout-coupon-form-reveal-btn">
-                                                Click here to enter your code
-                                            </button>
-                                        </span>
-                                    </li>
-                                    <div id="tpCheckoutCouponForm" class="tp-return-customer" style="margin-top: 0px;">
-                                        <form action="#">
-                                            <div class="tp-return-customer-input">
-                                                <label>Coupon Code :</label>
-                                                <input type="text" placeholder="Coupon">
-                                            </div>
-                                            <button type="submit"
-                                                class="tp-return-customer-btn tp-checkout-btn">Apply</button>
-                                        </form>
-                                    </div>
+                                        <li class="tp-order-info-list-subtotal">
+                                            <span>Shipping Charges</span>
+                                            <?php if($total_price['subtotal'] > 999): ?>
+                                                <span>$<?php echo number_format($total_price['delivery'],2)?></span>
+                                            <?php else:?>
+                                                    <span>$<?php echo number_format($total_price['delivery'],2)?></span>
+                                            <?php endif;?>
+                                        </li>
 
-                                    <!-- shipping -->
-                                    <li class="tp-order-info-list-shipping">
-                                        <span>Shipping</span>
-                                        <div
-                                            class="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
+                                        <li>
+                                            <span>Have a coupon?</span>
                                             <span>
-                                                <input id="flat_rate" type="radio" name="shipping">
-                                                <label for="flat_rate">Flat rate: <span>$20.00</span></label>
+                                                <button type="button" class="tp-checkout-coupon-form-reveal-btn">
+                                                    Click here to enter your code
+                                                </button>
                                             </span>
-                                            <span>
-                                                <input id="local_pickup" type="radio" name="shipping">
-                                                <label for="local_pickup">Local pickup: <span>$25.00</span></label>
-                                            </span>
-                                            <span>
-                                                <input id="free_shipping" type="radio" name="shipping">
-                                                <label for="free_shipping">Free shipping</label>
-                                            </span>
+                                        </li>
+                                        <div id="tpCheckoutCouponForm" class="tp-return-customer" style="margin-top: 0px;">
+                                            <form action="#">
+                                                <div class="tp-return-customer-input">
+                                                    <label>Coupon Code :</label>
+                                                    <input type="text" placeholder="Coupon">
+                                                </div>
+                                                <button type="submit"
+                                                    class="tp-return-customer-btn tp-checkout-btn">Apply</button>
+                                            </form>
                                         </div>
-                                    </li>
 
-                                    <!-- total -->
-                                    <li class="tp-order-info-list-total">
-                                        <span>Total</span>
-                                        <span>$1,476.00</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="tp-checkout-payment">
-                                <div class="tp-checkout-payment-item">
-                                    <input type="radio" id="back_transfer" name="payment">
-                                    <label for="back_transfer" data-bs-toggle="direct-bank-transfer">Direct Bank
-                                        Transfer</label>
-                                    <div class="tp-checkout-payment-desc direct-bank-transfer">
-                                        <p>Make your payment directly into our bank account. Please use your Order ID as
-                                            the payment reference. Your order will not be shipped until the funds have
-                                            cleared in our account.</p>
+                                        <!-- total -->
+                                        <li class="tp-order-info-list-total">
+                                            <span>Total</span>
+                                            <span>$<?= number_format($total_price['grandtotal'],2)?></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tp-checkout-payment">
+                                    <div class="tp-checkout-payment-item">
+                                        <input type="radio" id="back_transfer" name="payment">
+                                        <label for="back_transfer" data-bs-toggle="direct-bank-transfer">Direct Bank
+                                            Transfer</label>
+                                        <div class="tp-checkout-payment-desc direct-bank-transfer">
+                                            <p>Make your payment directly into our bank account. Please use your Order ID as
+                                                the payment reference. Your order will not be shipped until the funds have
+                                                cleared in our account.</p>
+                                        </div>
+                                    </div>
+                                    <div class="tp-checkout-payment-item">
+                                        <input type="radio" id="cheque_payment" name="payment">
+                                        <label for="cheque_payment">Cheque Payment</label>
+                                        <div class="tp-checkout-payment-desc cheque-payment">
+                                            <p>Make your payment directly into our bank account. Please use your Order ID as
+                                                the payment reference. Your order will not be shipped until the funds have
+                                                cleared in our account.</p>
+                                        </div>
+                                    </div>
+                                    <div class="tp-checkout-payment-item">
+                                        <input type="radio" id="cod" name="payment" checked>
+                                        <label for="cod">Cash on Delivery</label>
+                                        <!-- <div class="tp-checkout-payment-desc cash-on-delivery" style="display: block;">
+                                            <p>Make your payment directly into our bank account. Please use your Order ID as
+                                                the payment reference. Your order will not be shipped until the funds have
+                                                cleared in our account.</p>
+                                        </div> -->
+                                    </div>
+                                    <div class="tp-checkout-payment-item paypal-payment">
+                                        <input type="radio" id="paypal" name="payment">
+                                        <label for="paypal">PayPal <img src="assets/frontend/img/icon/payment-option.png" alt=""> <a
+                                                href="https://www.paypal.com/in/home">What is PayPal?</a></label>
                                     </div>
                                 </div>
-                                <div class="tp-checkout-payment-item">
-                                    <input type="radio" id="cheque_payment" name="payment">
-                                    <label for="cheque_payment">Cheque Payment</label>
-                                    <div class="tp-checkout-payment-desc cheque-payment">
-                                        <p>Make your payment directly into our bank account. Please use your Order ID as
-                                            the payment reference. Your order will not be shipped until the funds have
-                                            cleared in our account.</p>
+                                <div class="tp-checkout-agree">
+                                    <div class="tp-checkout-option">
+                                        <input id="read_all" type="checkbox">
+                                        <label for="read_all">I have read and agree to the website.</label>
                                     </div>
                                 </div>
-                                <div class="tp-checkout-payment-item">
-                                    <input type="radio" id="cod" name="payment">
-                                    <label for="cod">Cash on Delivery</label>
-                                    <div class="tp-checkout-payment-desc cash-on-delivery">
-                                        <p>Make your payment directly into our bank account. Please use your Order ID as
-                                            the payment reference. Your order will not be shipped until the funds have
-                                            cleared in our account.</p>
-                                    </div>
+                                <div class="tp-checkout-btn-wrapper">
+                                    <button type="submit" form="billing_address" class="tp-checkout-btn w-100">Place Order</button>
                                 </div>
-                                <div class="tp-checkout-payment-item paypal-payment">
-                                    <input type="radio" id="paypal" name="payment">
-                                    <label for="paypal">PayPal <img src="assets/img/icon/payment-option.png" alt=""> <a
-                                            href="#">What is PayPal?</a></label>
+                            <?php else:?>
+                                <p>Your Cart is empty.</p>
+                                <div class="tp-checkout-btn-wrapper">
+                                    <a href="<?= base_url('')?>" class="tp-checkout-btn w-100">Continue Shopping</a>
                                 </div>
-                            </div>
-                            <div class="tp-checkout-agree">
-                                <div class="tp-checkout-option">
-                                    <input id="read_all" type="checkbox">
-                                    <label for="read_all">I have read and agree to the website.</label>
-                                </div>
-                            </div>
-                            <div class="tp-checkout-btn-wrapper">
-                                <a href="#" class="tp-checkout-btn w-100">Place Order</a>
-                            </div>
+                            <?php endif;?>
+
+                            
                         </div>
                     </div>
                 </div>
@@ -361,6 +354,40 @@
 
     <?php $this->load->view('member/footer') ?>
 
+    <!-- Auto Address Filling -->
+    <script>
+        $(document).on("change", ".address-checkbox", function () {
+            // Uncheck all other checkboxes
+            $(".address-checkbox").not(this).prop("checked", false);
+
+            // If current checkbox is checked, autofill form
+            if ($(this).is(":checked")) {
+                let card = $(this).closest(".address-card");
+
+                $("input[name='first_name']").val(card.data("first_name"));
+                $("input[name='last_name']").val(card.data("last_name"));
+                $("input[name='country']").val(card.data("country"));
+                $("input[name='street']").val(card.data("street"));
+                $("input[name='city']").val(card.data("city"));
+                $("input[name='state']").val(card.data("state"));
+                $("input[name='zip_code']").val(card.data("zip"));
+                $("input[name='phone']").val(card.data("phone"));
+                $("input[name='email']").val(card.data("email"));
+                $("input[name='billing_address_id']").val(card.data("billing_address_id"));
+            } else {
+                // Optional: clear form if user unchecks the selected address
+                $("input[name='first_name'], input[name='last_name'], input[name='country'], input[name='street'], input[name='city'], input[name='state'], input[name='zip_code'], input[name='phone'], input[name='email']").val('');
+            }
+        });
+
+    </script>
+
+    <script>
+        $(document).on("change", "input[name=payment]", function(){
+            $("#payment_method").val($(this).attr("id"));
+        });
+
+    </script>
 </body>
 
 </html>

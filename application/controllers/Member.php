@@ -20,6 +20,7 @@ class Member extends CI_Controller
         $this->load->model('RegisterModel');
         $this->load->model('CartModel');
         $this->load->model('UserModel');
+        $this->load->model('CheckoutModel');
     }
 
     public function index()
@@ -136,16 +137,6 @@ class Member extends CI_Controller
         redirect('member/cart');
     }
 
-    public function checkout()
-    {
-        if (!empty($this->session->userdata('login_id'))) {
-            $data['parentCategories'] = $this->HomeModel->get_parent_categories();
-            $this->load->view('member/checkout', $data);
-        } else {
-            redirect('member/login');
-        }
-    }
-
     public function product_by_category($slug1, $slug2 = null)
     {
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
@@ -183,6 +174,7 @@ class Member extends CI_Controller
         if (!empty($this->session->userdata('login_id'))) {
             $data['parentCategories'] = $this->HomeModel->get_parent_categories();
             $data['addresses'] = $this->db->where('user_id', $this->session->userdata('user_id'))->get('tbl_address')->result();
+            $data['orders'] = $this->UserModel->get_orders();
             $this->load->view('member/profile', $data);
         } else {
             redirect('member/login');
@@ -297,6 +289,20 @@ class Member extends CI_Controller
         redirect('member/profile');
     }
 
+    public function delete_address($address_id)
+    {
+        $qry = $this->db->where('id', $address_id)->delete('tbl_address');
+
+        if ($qry) {
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('successMsg', 'Address Deleted successfully.');
+            }
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to delete Address.');
+        }
+        redirect('member/profile');
+    }
+
     public function check_old_password()
     {
         // Always set JSON header
@@ -333,7 +339,7 @@ class Member extends CI_Controller
                 'email' => $this->session->userdata('user_obj')->email
             ])
             ->update('tbl_users', [
-                'password' => password_hash( $post['new_pass'],PASSWORD_BCRYPT),
+                'password' => password_hash($post['new_pass'], PASSWORD_BCRYPT),
                 'updated_on' => $post['updated_on']
             ]);
 
@@ -345,6 +351,131 @@ class Member extends CI_Controller
 
         redirect('member/profile');
     }
+
+    public function checkout()
+    {
+        if (!empty($this->session->userdata('login_id'))) {
+            $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+            $this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
+            $this->output->set_header("Pragma: no-cache");
+
+            // generate unique token for this checkout session
+            $token = bin2hex(random_bytes(16));
+            $this->session->set_userdata('checkout_token', $token);
+
+            $data['checkout_token'] = $token;
+
+            $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+            $data['billingAddresses'] = $this->UserModel->get_billing_addresses();
+            $data['carts'] = $this->CartModel->get_cart();
+            $data['total_price'] = $this->CartModel->total();
+            $this->load->view('member/checkout', $data);
+        } else {
+            redirect('member/login');
+        }
+    }
+
+    public function place_order()
+    {
+
+
+        $post = $this->input->post();
+        $session_token = $this->session->userdata('checkout_token');
+
+        // Check if valid token
+        if (empty($post['checkout_token']) || $post['checkout_token'] !== $session_token) {
+            redirect('member/cart'); // invalid/duplicate submission
+            return;
+        }
+
+        // Invalidate token immediately (so it can’t be reused)
+        $this->session->unset_userdata('checkout_token');
+
+        $user_id = $this->session->userdata('user_id'); // assuming login required
+
+        // If cart is already empty, don’t create a new order
+        $carts = $this->CartModel->get_cart();
+        if (empty($carts)) {
+            redirect('member/cart');
+            return;
+        }
+
+        // Step 1: Handle Billing Address
+        if (empty($post['billing_address_id'])) {
+            $addressData = [
+                'user_id' => $user_id,
+                'first_name' => $post['first_name'],
+                'last_name' => $post['last_name'],
+                'email' => $post['email'],
+                'street' => $post['street'],
+                'city' => $post['city'],
+                'state' => $post['state'],
+                'phone' => $post['phone'],
+                'zip_code' => $post['zip_code'],
+                'country' => $post['country'],
+                'added_on' => date('Y-m-d')
+            ];
+
+            $billing_address_id = $this->CheckoutModel->insert_address($addressData);
+        } else {
+            $billing_address_id = $post['billing_address_id'];
+        }
+        // Step 2: Insert Order
+        $orderData = [
+            'user_id' => $user_id,
+            'address_id' => $billing_address_id,
+            'delivery_charges' => $post['delivery'],
+            'total' => $post['grandtotal'],
+            'payment_mode' => $post['payment'],
+            'added_on' => date('Y-m-d'),
+            'delivery_date' => date('Y-m-d', strtotime(date('Y-m-d') . ' +10 days')),
+            'order_date' => date('Y-m-d'),
+            'note' => $post['order_note'],
+            'order_status' => 'Order Confirmed',
+            'ip' => $_SERVER["REMOTE_ADDR"]
+        ];
+
+        $order_id = $this->CheckoutModel->insert_order($orderData);
+
+        // Step 3: Insert Order Products
+        $carts = $this->CartModel->get_cart(); // or however you load $carts
+
+        foreach ($carts as $cart) {
+            $productData = [
+                'order_id' => $order_id,
+                'product_id' => $cart->product_id,
+                'product_name' => $cart->product_name,
+                'product_main_image' => $cart->product_image,
+                'product_qty' => $cart->product_qty,
+                'product_selling_price' => $cart->selling_price,
+                'product_mrp' => $cart->mrp,
+                'slug' => $cart->slug,
+                'added_on' => date('Y-m-d')
+            ];
+
+            $this->CheckoutModel->insert_order_product($productData);
+        }
+
+        // Step 4: Clear cart
+        $this->CartModel->delete_all();
+
+        // Redirect to thank you page
+        $this->session->set_userdata('order_id', $order_id);
+        redirect('member/thank_you');
+    }
+
+    public function thank_you()
+    {
+        $order_id = $this->session->userdata('order_id');
+        if (!$order_id) {
+            redirect('member/index');
+        }
+
+        $data['order_id'] = $order_id;
+        $this->session->unset_userdata('order_id'); // clear so refresh doesn’t repeat
+        $this->load->view('member/thank_you', $data);
+    }
+
 
 
 
