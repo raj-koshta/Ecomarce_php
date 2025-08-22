@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>My Profile</title>
+    <title>My Account</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -33,8 +33,26 @@
     <main>
         <?php $user_obj = $this->session->userdata('user_obj'); ?>
 
+        <!-- breadcrumb area start -->
+        <!-- <section class="breadcrumb__area include-bg pt-100 pb-50">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xxl-12">
+                        <div class="breadcrumb__content p-relative z-index-1">
+                            <h3 class="breadcrumb__title">My Account</h3>
+                            <div class="breadcrumb__list">
+                                <span><a href="#">Home</a></span>
+                                <span>My Account</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- breadcrumb area end -->
+
         <!-- profile area start -->
-        <section class="profile__area pt-120 pb-120">
+        <section class="profile__area pt-100 pb-120">
             <div class="container">
                 <div class="profile__inner p-relative">
                     <div class="profile__shape">
@@ -462,10 +480,11 @@
                                                                             data-country="<?= htmlspecialchars($address->country) ?>">
                                                                             <i class="bi bi-pencil-square"></i>
                                                                         </a>
-                                                                        <a href="member/delete-address/<?= $address->id?>" style="color: red;"><i
-                                                                                class="bi bi-trash"></i></a>
+                                                                        <a href="member/delete-address/<?= $address->id ?>"
+                                                                            style="color: red;"><i class="bi bi-trash"></i></a>
                                                                     </h3>
-                                                                    <p><span>Name:</span><?= $address->first_name.' '.$address->last_name ?></p>
+                                                                    <p><span>Name:</span><?= $address->first_name . ' ' . $address->last_name ?>
+                                                                    </p>
                                                                     <p><span>Email:</span><?= $address->email ?></p>
                                                                     <p><span>Street:</span><?= $address->street ?></p>
                                                                     <p><span>City:</span><?= $address->city ?></p>
@@ -504,32 +523,37 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php if(!empty($orders)):?>
-                                                        <?php foreach($orders as $order):?>
+                                                    <?php if (!empty($orders)): ?>
+                                                        <?php foreach ($orders as $order): ?>
                                                             <tr>
-                                                                <th scope="row"> #<?= $order->id?></th>
+                                                                <th scope="row">
+                                                                    <a href="member/order-details/<?= $order->id ?>"
+                                                                        target="_blank">#<?= $order->id ?></a>
+                                                                </th>
                                                                 <td data-info="title">
                                                                     <ul>
                                                                         <?php
-                                                                            $products = $this->db->select('product_name,product_qty')->where('order_id',$order->id)->get('tbl_order_products')->result();
-                                                                            foreach($products as $product):
-                                                                        ?>
-                                                                        <li><?= substr($product->product_name, 0, 20) ?><?= (strlen($product->product_name) > 20 ? '...' : '') ?>x<?= $product->product_qty?></li>
-                                                                        <?php endforeach;?>
+                                                                        $products = $this->db->select('product_name,product_qty')->where('order_id', $order->id)->get('tbl_order_products')->result();
+                                                                        foreach ($products as $product):
+                                                                            ?>
+                                                                            <li><?= substr($product->product_name, 0, 20) ?><?= (strlen($product->product_name) > 20 ? '...' : '') ?>x<?= $product->product_qty ?>
+                                                                            </li>
+                                                                        <?php endforeach; ?>
                                                                     </ul>
                                                                 </td>
-                                                                <td>$<?= number_format($order->total,2) ?></td>
-                                                                <td><?= $order->payment_mode?></td>
-                                                                <td><?= $order->delivery_date?></td>
-                                                                <td data-info="status pending"><?= $order->order_status?> </td>
-                                                                <td><a href="#" class="tp-logout-btn">Invoice</a></td>
+                                                                <td>$<?= number_format($order->total, 2) ?></td>
+                                                                <td><?= $order->payment_mode ?></td>
+                                                                <td><?= $order->delivery_date ?></td>
+                                                                <td data-info="status pending"><?= $order->order_status ?> </td>
+                                                                <td><a href="member/order-details/<?= $order->id ?>"
+                                                                        target="_blank" class="tp-logout-btn">Invoice</a></td>
                                                             </tr>
-                                                        <?php endforeach;?>
-                                                    <?php else:?>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
                                                         <tr>
                                                             <td colspan="4">No Order Data found.</td>
                                                         </tr>
-                                                    <?php endif;?>
+                                                    <?php endif; ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -584,22 +608,19 @@
 
                             <div class="col-md-6">
                                 <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name"
-                                    required>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
                                 <div class="invalid-feedback">Please enter Biller first name</div>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name"
-                                    required>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
                                 <div class="invalid-feedback">Please enter Biller last name</div>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    required>
+                                <input type="email" class="form-control" id="email" name="email" required>
                                 <div class="invalid-feedback">Please enter Biller email</div>
                             </div>
 

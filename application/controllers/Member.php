@@ -399,7 +399,7 @@ class Member extends CI_Controller
             redirect('member/cart');
             return;
         }
-
+        $address = null;
         // Step 1: Handle Billing Address
         if (empty($post['billing_address_id'])) {
             $addressData = [
@@ -415,15 +415,18 @@ class Member extends CI_Controller
                 'country' => $post['country'],
                 'added_on' => date('Y-m-d')
             ];
+            $address = $addressData['street'] . ' ' . $addressData['city'] . ' ' . $addressData['state'] . ' ' . $addressData['country'] . ' ' . $addressData['zip_code'];
 
             $billing_address_id = $this->CheckoutModel->insert_address($addressData);
         } else {
             $billing_address_id = $post['billing_address_id'];
+            $address = $post['street'] . ' ' . $post['city'] . ' ' . $post['state'] . ' ' . $post['country'] . ' ' . $post['zip_code'];
         }
+
         // Step 2: Insert Order
         $orderData = [
             'user_id' => $user_id,
-            'address_id' => $billing_address_id,
+            'address' => $address,
             'delivery_charges' => $post['delivery'],
             'total' => $post['grandtotal'],
             'payment_mode' => $post['payment'],
@@ -473,10 +476,17 @@ class Member extends CI_Controller
 
         $data['order_id'] = $order_id;
         $this->session->unset_userdata('order_id'); // clear so refresh doesn’t repeat
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
         $this->load->view('member/thank_you', $data);
     }
 
-
+    public function order_details($order_id)
+    {
+        $data['order'] = $this->UserModel->get_order_details($order_id);
+        $data['orderProducts'] = $this->UserModel->get_order_products($order_id);
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $this->load->view('member/invoice',$data);
+    }
 
 
 

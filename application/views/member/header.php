@@ -358,7 +358,7 @@
                                     <span class="tp-header-setting-toggle" id="tp-header-setting-toggle">Setting</span>
                                     <ul>
                                         <li>
-                                            <a href="member/profile">My Profile</a>
+                                            <a href="member/profile">My Account</a>
                                         </li>
                                         <li>
                                             <a href="">Wishlist</a>
@@ -567,7 +567,7 @@
                                             </svg>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
-                                            <li><a class="dropdown-item" href="member/profile">My Profile</a></li>
+                                            <li><a class="dropdown-item" href="member/profile">My Account</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
@@ -909,7 +909,7 @@
                                         </svg>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
-                                        <li><a class="dropdown-item" href="member/profile">My Profile</a></li>
+                                        <li><a class="dropdown-item" href="member/profile">My Account</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>

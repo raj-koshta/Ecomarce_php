@@ -59,4 +59,22 @@ class UserModel extends CI_Model
             return false;
         }
     }
+
+    public function get_order_details($order_id){
+        $qry = $this->db->where('id',$order_id)->get('tbl_orders');
+        if($qry->num_rows()){
+            return $qry->row();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_order_products($order_id){
+        $qry = $this->db->where('order_id',$order_id)->get('tbl_order_products');
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
 }
