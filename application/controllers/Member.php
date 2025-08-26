@@ -21,6 +21,7 @@ class Member extends CI_Controller
         $this->load->model('CartModel');
         $this->load->model('UserModel');
         $this->load->model('CheckoutModel');
+        $this->load->model('WishlistModel');
     }
 
     public function index()
@@ -426,6 +427,9 @@ class Member extends CI_Controller
         // Step 2: Insert Order
         $orderData = [
             'user_id' => $user_id,
+            'recipient_name' => $post['first_name'] . ' ' . $post['last_name'],
+            'recipient_email' => $post['email'],
+            'recipient_phone' => $post['phone'],
             'address' => $address,
             'delivery_charges' => $post['delivery'],
             'total' => $post['grandtotal'],
@@ -485,9 +489,39 @@ class Member extends CI_Controller
         $data['order'] = $this->UserModel->get_order_details($order_id);
         $data['orderProducts'] = $this->UserModel->get_order_products($order_id);
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
-        $this->load->view('member/invoice',$data);
+        if (empty($data['order'])) {
+            redirect('member/profile');
+        } else {
+            $this->load->view('member/invoice', $data);
+        }
     }
 
+    public function wishlist(){
+        $data['wishlists'] = $this->WishlistModel->get_wishlists();
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $this->load->view('member/wishlist',$data);
+    }
+
+    public function add_to_wishlist(){
+        $post = $this->input->post();
+        $check = $this->WishlistModel->add($post['product_id']);
+        if ($check) {
+            $this->session->set_flashdata('successMsg', 'Product Added to wishlist Successfully');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Unable to add the product into wishlist. Please try again..');
+        }
+        redirect('member/wishlist');
+    }
+
+    public function delete_wishlist($wishlist_id){
+        $check = $this->WishlistModel->delete($wishlist_id);
+        if ($check) {
+            $this->session->set_flashdata('successMsg', 'Wishlist deleted Successfully');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Unable to remove the Wishlist. Please try again..');
+        }
+        redirect('member/wishlist');
+    }
 
 
 }

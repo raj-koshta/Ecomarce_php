@@ -133,6 +133,38 @@
                 margin: 0.25rem 0;
             }
         }
+
+        @media print {
+
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            #invoice {
+                width: 210mm !important;
+                /* A4 width */
+                min-height: 297mm;
+                /* A4 height */
+                margin: 0 auto !important;
+                background: #fff;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            /* Ensure tables/cards don’t get cut awkwardly */
+            .info-box,
+            .order-summary,
+            table,
+            tr,
+            td {
+                page-break-inside: avoid !important;
+            }
+
+            .page-break {
+                page-break-before: always !important;
+            }
+        }
     </style>
 </head>
 
@@ -140,7 +172,7 @@
 
     <?php $this->load->view('member/header') ?>
 
-    <main>
+    <main id="invoice">
         <div class="container my-4">
             <div class="card shadow-lg">
                 <div class="card-header">
@@ -156,37 +188,47 @@
                                 <div class="section-title">Order Information</div>
                                 <p class="mb-2 icon-text"><i class="bi bi-hash text-primary"></i> <strong>Order
                                         ID:</strong>
-                                    <?= $order->id?></p>
+                                    <?= $order->id ?></p>
                                 <p class="mb-2 icon-text"><i class="bi bi-calendar-check text-success"></i>
-                                    <strong>Date:</strong> 21 Aug
-                                    2025
+                                    <strong>Date:</strong> <?= date('d-m-Y', strtotime($order->order_date)) ?>
                                 </p>
                                 <p class="mb-2 icon-text"><i class="bi bi-check-circle text-success"></i>
                                     <strong>Status:</strong>
-                                    <span class="badge-status">Completed</span>
+                                    <span class="badge-status"><?= $order->order_status ?></span>
                                 </p>
-                                <p class="mb-0 icon-text"><i class="bi bi-credit-card text-warning"></i> <strong>Payment
-                                        Method:</strong>
-                                    Credit Card</p>
+                                <p class="mb-0 icon-text">
+                                    <i class="bi bi-credit-card text-warning"></i>
+                                    <strong>Payment Method:</strong>
+                                    <?php if ($order->payment_mode == 'cod'):
+                                        echo "Cash On Delivery";
+                                    elseif ($order->payment_mode == 'back_transfer'):
+                                        echo "Direct Bank Transfer";
+                                    elseif ($order->payment_mode == 'cheque_payment'):
+                                        echo "Cheque Payment";
+                                    elseif ($order->payment_mode == 'paypal'):
+                                        echo "PayPal";
+                                    endif;
+                                    ?>
+
+                                </p>
                             </div>
 
                             <!-- Customer Info -->
                             <div class="info-box">
                                 <div class="section-title">Customer Information</div>
                                 <p class="mb-2 icon-text"><i class="bi bi-person-circle text-primary"></i>
-                                    <strong>Name:</strong> John Doe
+                                    <strong>Name:</strong> <?= $order->recipient_name ?>
                                 </p>
                                 <p class="mb-2 icon-text"><i class="bi bi-envelope text-danger"></i>
-                                    <strong>Email:</strong>
-                                    john@example.com</p>
+                                    <strong>Email:</strong> <?= $order->recipient_email ?>
+                                </p>
                                 <p class="mb-2 icon-text"><i class="bi bi-telephone text-success"></i>
-                                    <strong>Phone:</strong> +91
-                                    9876543210
+                                    <strong>Phone:</strong> <?= $order->recipient_phone ?>
                                 </p>
                                 <p class="mb-0 icon-text"><i class="bi bi-geo-alt text-info"></i>
                                     <strong>Address:</strong>
-                                    123 Main
-                                    Street, City, Country</p>
+                                    <?= $order->address ?>
+                                </p>
                             </div>
 
                             <!-- Product Table (Desktop/Tablet) -->
@@ -204,49 +246,45 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Flat Stomach Tea (500g)</td>
-                                                <td>2</td>
-                                                <td>₹500</td>
-                                                <td>₹1000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Detox Tea (250g)</td>
-                                                <td>1</td>
-                                                <td>₹300</td>
-                                                <td>₹300</td>
-                                            </tr>
+                                            <?php $sn = 1;
+                                            $subTotal = 0;
+                                            foreach ($orderProducts as $product): ?>
+                                                <tr>
+                                                    <td><?= $sn++ ?></td>
+                                                    <td><?= $product->product_name ?></td>
+                                                    <td><?= $product->product_qty ?></td>
+                                                    <td>$<?= number_format($product->product_selling_price, 2) ?></td>
+                                                    <td>$<?= number_format($product->product_selling_price * $product->product_qty, 2) ?>
+                                                    </td>
+                                                </tr>
+                                                <?php $subTotal += ($product->product_selling_price * $product->product_qty) ?>
+                                            <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                 </div>
 
                                 <!-- Product Cards (Mobile) -->
                                 <div class="d-md-none">
-                                    <div
-                                        class="product-card d-flex align-items-center mb-3 p-2 border rounded bg-light">
-                                        <img src="https://via.placeholder.com/70" alt="Flat Stomach Tea"
-                                            class="rounded me-3" style="width:70px; height:70px; object-fit:cover;">
-                                        <div>
-                                            <h6 class="mb-1">Flat Stomach Tea (500g)</h6>
-                                            <p class="mb-0"><strong>Qty:</strong> 2</p>
-                                            <p class="mb-0"><strong>Price:</strong> ₹500</p>
-                                            <p class="mb-0"><strong>Subtotal:</strong> ₹1000</p>
+                                    <?php $subTotal = 0;
+                                    foreach ($orderProducts as $product): ?>
+                                        <div
+                                            class="product-card d-flex align-items-center mb-3 p-2 border rounded bg-light">
+                                            <img src="uploads/products/<?= $product->product_main_image ?>"
+                                                alt="Product Image" class="rounded me-3"
+                                                style="width:70px; height:70px; object-fit:cover;">
+                                            <div>
+                                                <h6 class="mb-1"><?= $product->product_name ?></h6>
+                                                <p class="mb-0"><strong>Qty:</strong> <?= $product->product_qty ?></p>
+                                                <p class="mb-0"><strong>Price:</strong>
+                                                    ₹<?= number_format($product->product_selling_price, 2) ?></p>
+                                                <p class="mb-0"><strong>Subtotal:</strong>
+                                                    $<?= number_format($product->product_selling_price * $product->product_qty, 2) ?>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <?php $subTotal += ($product->product_selling_price * $product->product_qty) ?>
+                                    <?php endforeach; ?>
 
-                                    <div
-                                        class="product-card d-flex align-items-center mb-3 p-2 border rounded bg-light">
-                                        <img src="https://via.placeholder.com/70" alt="Detox Tea" class="rounded me-3"
-                                            style="width:70px; height:70px; object-fit:cover;">
-                                        <div>
-                                            <h6 class="mb-1">Detox Tea (250g)</h6>
-                                            <p class="mb-0"><strong>Qty:</strong> 1</p>
-                                            <p class="mb-0"><strong>Price:</strong> ₹300</p>
-                                            <p class="mb-0"><strong>Subtotal:</strong> ₹300</p>
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>
@@ -257,20 +295,22 @@
                             <div class="order-summary">
                                 <h6 class="mb-3"><i class="bi bi-basket2 me-2 text-primary"></i> Order Summary</h6>
                                 <p class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal</span> <strong>₹1300</strong>
+                                    <span>Subtotal</span> <strong>$<?= $subTotal ?></strong>
                                 </p>
                                 <p class="d-flex justify-content-between mb-2">
-                                    <span>Shipping</span> <strong>₹50</strong>
+                                    <span>Shipping</span> <strong>$<?= $order->delivery_charges ?></strong>
                                 </p>
-                                <p class="d-flex justify-content-between mb-2">
+                                <!-- <p class="d-flex justify-content-between mb-2">
                                     <span>Tax</span> <strong>₹100</strong>
-                                </p>
+                                </p> -->
                                 <hr>
                                 <p class="d-flex justify-content-between fs-5 fw-bold">
-                                    <span>Total</span> <span class="text-success">₹1450</span>
+                                    <span>Total</span> <span
+                                        class="text-success">$<?= $subTotal + $order->delivery_charges ?></span>
                                 </p>
                                 <div class="mt-3">
-                                    <button class="btn btn-modern w-100"><i class="bi bi-download me-2"></i> Download
+                                    <button id="download_invoice" class="btn btn-modern w-100"><i
+                                            class="bi bi-download me-2"></i> Download
                                         Invoice</button>
                                 </div>
                             </div>
@@ -284,6 +324,67 @@
     </main>
 
     <?php $this->load->view('member/footer') ?>
+
+    <!-- Toast Container -->
+    <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
+        <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Image uploaded successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- For  information update toster show -->
+    <?php if (!empty($this->session->flashdata('successMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
+            $('#toastMessage').text('<?= $this->session->flashdata('successMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+            $('#toastMessage').text('<?= $this->session->flashdata('errorMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php endif; ?>
+
+    <script>
+        document.getElementById("download_invoice").addEventListener("click", function () {
+            const element = document.getElementById("invoice");
+
+            // Temporarily force A4 width
+            element.style.width = "210mm";
+            element.style.minHeight = "297mm";
+            element.style.margin = "0 auto";
+
+            const options = {
+                margin: 0,
+                filename: 'invoice.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(options).from(element).save().then(() => {
+                // Reset back to normal responsive width
+                element.style.width = "";
+                element.style.minHeight = "";
+                element.style.margin = "";
+            });
+        });
+    </script>
+
+
 
 </body>
 

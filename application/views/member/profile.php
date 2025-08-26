@@ -543,7 +543,7 @@
                                                                 </td>
                                                                 <td>$<?= number_format($order->total, 2) ?></td>
                                                                 <td><?= $order->payment_mode ?></td>
-                                                                <td><?= $order->delivery_date ?></td>
+                                                                <td><?= date('d/m/Y', strtotime($order->delivery_date)) ?></td>
                                                                 <td data-info="status pending"><?= $order->order_status ?> </td>
                                                                 <td><a href="member/order-details/<?= $order->id ?>"
                                                                         target="_blank" class="tp-logout-btn">Invoice</a></td>
@@ -673,6 +673,11 @@
         </div>
     </div>
 
+
+
+
+    <?php $this->load->view('member/footer') ?>
+
     <!-- Toast Container -->
     <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
         <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert"
@@ -687,9 +692,7 @@
     </div>
 
 
-    <?php $this->load->view('member/footer') ?>
-
-    <!-- For profile information update toster show -->
+    <!-- For  information update toster show -->
     <?php if (!empty($this->session->flashdata('successMsg'))): ?>
         <script>
             $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
@@ -701,12 +704,14 @@
     <?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
         <script>
             $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-            $('#toastMessage').text(<?= $this->session->flashdata('errorMsg') ?>);
+            $('#toastMessage').text('<?= $this->session->flashdata('errorMsg') ?>');
             // Show toast
             let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
             toast.show();
         </script>
     <?php endif; ?>
+
+
 
     <!-- Profile pic upload script -->
     <script>

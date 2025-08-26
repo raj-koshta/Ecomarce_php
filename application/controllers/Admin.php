@@ -12,8 +12,15 @@ class Admin extends CI_Controller
         $this->load->model('ProductModel');
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $this->load->view('admin/index');
+    }
+
+    public function pincode()
+    {
+        $data['pincodes'] = $this->SettingsModel->get_all_pincode();
+        $this->load->view('admin/pincode', $data);
     }
 
     public function add_pincode()
@@ -26,14 +33,58 @@ class Admin extends CI_Controller
             $check = $this->SettingsModel->add_pincode($post);
 
             if ($check) {
-                $this->session->set_flashdata('successMsg', "Data Inserted successfully");
+                $this->session->set_flashdata('successMsg', "Pincode Inserted successfully");
                 redirect('admin/pincode');
             } else {
-
+                $this->session->set_flashdata('errorMsg', "unable to add pincode");
+                redirect('admin/pincode');
             }
         } else {
-            $this->load->view('admin/pincode');
+            $this->load->view('admin/add_pincode');
         }
+    }
+
+    public function update_pincode($id)
+    {
+
+        $this->form_validation->set_rules('pincode', 'Pincode', 'required|trim');
+        $this->form_validation->set_rules('delivery_charge', 'Delivery charge', 'required|trim');
+        $this->form_validation->set_rules('status', 'status', 'required|trim');
+        if ($this->form_validation->run()) {
+            $post = $this->input->post();
+            $post['id'] = $id;
+            $check = $this->SettingsModel->update_pincode($post);
+            // print_r($check); die;
+
+            if ($check) {
+                $this->session->set_flashdata('successMsg', "Pincode Updated successfully");
+                redirect('admin/pincode');
+            } else {
+                $this->session->set_flashdata('errorMsg', "unable to update pincode");
+                redirect('admin/update_pincode/' . $id);
+            }
+        } else {
+            $data['pincode'] = $this->SettingsModel->get_pincode_by_id($id);
+            $this->load->view('admin/add_pincode', $data);
+        }
+    }
+
+    public function delete_pincode($id)
+    {
+        $qry = $this->db->where('id', $id)->delete('tbl_pincode');
+        if ($qry && $this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('successMsg', "Pincode Deleted successfully");
+            redirect('admin/pincode');
+        } else {
+            $this->session->set_flashdata('errorMsg', "Unable to delete Pincode!!");
+            redirect('admin/pincode');
+        }
+    }
+
+    public function banner()
+    {
+        $data['banners'] = $this->SettingsModel->get_all_banners();
+        $this->load->view('admin/banner', $data);
     }
 
     public function add_banner()
@@ -41,9 +92,10 @@ class Admin extends CI_Controller
         if (empty($_FILES['bann_image']['name'])) {
             $this->form_validation->set_rules('bann_image', 'Banner Image', 'required|trim');
         }
+        $this->form_validation->set_rules('title', 'title', 'required|trim');
+        $this->form_validation->set_rules('description', 'description', 'required|trim');
         $this->form_validation->set_rules('status', 'status', 'required|trim');
         if ($this->form_validation->run()) {
-
             $post = $this->input->post();
             $config = array(
                 'upload_path' => './uploads/banner',
@@ -60,12 +112,74 @@ class Admin extends CI_Controller
 
             if ($check) {
                 $this->session->set_flashdata('successMsg', "Data Inserted successfully");
-                redirect('admin/banner');
+                redirect('admin/add_banner');
             } else {
-
+                $this->session->set_flashdata('errorMsg', "Unable to add banner.");
+                redirect('admin/add_banner');
             }
         } else {
-            $this->load->view('admin/banner');
+            $this->load->view('admin/add_banner');
+        }
+    }
+
+    public function update_banner($bann_id)
+    {
+        if ($this->input->method() === 'post') {
+
+            $this->form_validation->set_rules('title', 'title', 'required|trim');
+            $this->form_validation->set_rules('description', 'description', 'required|trim');
+            $this->form_validation->set_rules('status', 'status', 'required|trim');
+            if ($this->form_validation->run()) {
+                $post = $this->input->post();
+                if (!empty($_FILES['bann_image']['name'])) {
+                    $config = array(
+                        'upload_path' => './uploads/banner',
+                        'allowed_types' => 'gif|jpg|png|jpeg',
+                    );
+                    $this->load->library('upload', $config);
+                    $this->upload->do_upload('bann_image');
+
+                    $image = $this->upload->data();
+                    $post['bann_image'] = $image['file_name'];
+                }
+                $post['bann_id'] = $bann_id;
+                $post['updated_on'] = date('d M, Y');
+
+                $check = $this->SettingsModel->update_banner($post);
+
+                if ($check) {
+                    $this->session->set_flashdata('successMsg', "Data Inserted successfully");
+                    redirect('admin/banner');
+                } else {
+                    $this->session->set_flashdata('errorMsg', "Unable to add banner.");
+                    redirect('admin/update_banner');
+                }
+            } else {
+                $data['banner'] = $this->SettingsModel->get_Banner_by_id($bann_id);
+                $this->load->view('admin/add_banner', $data);
+            }
+        } else {
+            $data['banner'] = $this->SettingsModel->get_Banner_by_id($bann_id);
+            $this->load->view('admin/add_banner', $data);
+        }
+    }
+
+    public function update_banner_status()
+    {
+        $bann_id = $this->input->post('bann_id');
+        $status = $this->input->post('status');
+
+        if ($bann_id !== null) {
+            $update = $this->db->where('bann_id', $bann_id)
+                ->update('tbl_banner', ['status' => $status]);
+
+            if ($update) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false]);
+            }
+        } else {
+            echo json_encode(['success' => false]);
         }
     }
 
@@ -118,8 +232,8 @@ class Admin extends CI_Controller
         $this->form_validation->set_rules('mrp', 'mrp', 'required|trim');
         $this->form_validation->set_rules('selling_price', 'Selling Price', 'required|trim');
         $this->form_validation->set_rules('status', 'status', 'required|trim');
-        
-        if(empty($_FILES['product_main_image']['name'])){
+
+        if (empty($_FILES['product_main_image']['name'])) {
             $this->form_validation->set_rules('product_main_image', 'Product Image', 'required|trim');
         }
 
@@ -134,10 +248,10 @@ class Admin extends CI_Controller
             $this->load->library('upload', $config);
             $this->upload->do_upload('product_main_image');
             $data = $this->upload->data();
-            $post['product_main_image'] = $data['raw_name'].$data['file_ext'];
+            $post['product_main_image'] = $data['raw_name'] . $data['file_ext'];
             $check = $this->ProductModel->add_Product($post);
 
-            if($check){
+            if ($check) {
                 $this->session->set_flashdata('successMsg', "Product added successfully");
                 redirect('admin/add_product');
             } else {
@@ -145,10 +259,10 @@ class Admin extends CI_Controller
                 redirect('admin/add_product');
             }
         } else {
-            if($this->session->userdata('product_id') != ""){
+            if ($this->session->userdata('product_id') != "") {
                 $product_id = $this->session->userdata('product_id');
             } else {
-                $this->session->set_userdata('product_id', mt_rand(11111,99999));
+                $this->session->set_userdata('product_id', mt_rand(11111, 99999));
                 $product_id = $this->session->userdata('product_id');
             }
             $data['categories'] = $this->CategoryModel->get_all_categories();

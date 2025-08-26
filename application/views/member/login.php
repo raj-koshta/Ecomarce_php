@@ -48,18 +48,11 @@
                     <div class="col-xl-6 col-lg-8">
                         <div class="tp-login-wrapper" style="padding-top: 20px;">
                             <div class="tp-login-top text-center mb-50">
-                                <?php if ($this->session->flashdata('registerSuccessMsg')) { ?>
-                                    <div class="alert alert-success text-center">
-                                        <?= $this->session->flashdata('registerSuccessMsg'); ?>
-                                    </div>
-                                <?php } else if ($this->session->flashdata('loginErrorMsg')) { ?>
-                                        <div class="alert alert-danger text-center">
-                                        <?= $this->session->flashdata('loginErrorMsg'); ?>
-                                        </div>
-                                <?php } else ?>
+                                
                                 <h3 class="breadcrumb__title mb-3">Login</h3>
                                 <!-- <h3 class="tp-login-title">Login to Shofy.</h3> -->
-                                <p>Don’t have an account? <span><a href="member/register">Create a free account</a></span>
+                                <p>Don’t have an account? <span><a href="member/register">Create a free
+                                            account</a></span>
                                 </p>
                             </div>
                             <?php echo form_open() ?>
@@ -170,6 +163,39 @@
     </main>
 
     <?php $this->load->view('member/footer') ?>
+
+    <!-- Toast Container -->
+    <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
+        <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Image uploaded successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- For  information update toster show -->
+    <?php if (!empty($this->session->flashdata('registerSuccessMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
+            $('#toastMessage').text('<?= $this->session->flashdata('registerSuccessMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php elseif (!empty($this->session->flashdata('loginErrorMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+            $('#toastMessage').text('<?= $this->session->flashdata('loginErrorMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php endif; ?>
 
 </body>
 

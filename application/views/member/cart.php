@@ -40,15 +40,6 @@
         <section class="tp-cart-area pb-120">
             <div class="container">
 
-                <?php if ($this->session->flashdata('successMsg')) { ?>
-                    <div class="alert alert-success">
-                        <?= $this->session->flashdata('successMsg'); ?>
-                    </div>
-                <?php } else if ($this->session->flashdata('errorMsg')) { ?>
-                        <div class="alert alert-danger">
-                        <?= $this->session->flashdata('errorMsg'); ?>
-                        </div>
-                <?php } ?>
                 <?php echo form_open('member/update-cart') ?>
                 <div class="row">
                     <?php if (!empty($carts)): ?>
@@ -69,11 +60,12 @@
                                         <?php foreach ($carts as $cart): ?>
                                             <tr>
                                                 <!-- img -->
-                                                <td class="tp-cart-img"><a href="#">
+                                                <td class="tp-cart-img"><a href="product/<?= $cart->slug ?>">
                                                         <img src="uploads/products/<?= $cart->product_image ?>" alt="">
                                                     </a></td>
                                                 <!-- title -->
-                                                <td class="tp-cart-title"><a href="#"><?= $cart->product_name ?></a></td>
+                                                <td class="tp-cart-title"><a
+                                                        href="product/<?= $cart->slug ?>"><?= $cart->product_name ?></a></td>
                                                 <!-- price -->
                                                 <td class="tp-cart-price">
                                                     <span>$<?= number_format($cart->selling_price, 2) ?></span>
@@ -124,7 +116,7 @@
                             </div>
                             <div class="tp-cart-bottom">
                                 <div class="row align-items-end">
-                                <!-- <div class="col-xl-6 col-md-8">
+                                    <!-- <div class="col-xl-6 col-md-8">
                                     <div class="tp-cart-coupon">
                                         <form action="#">
                                             <div class="tp-cart-coupon-input-box">
@@ -150,35 +142,40 @@
                             <div class="tp-cart-checkout-wrapper">
                                 <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
                                     <span class="tp-cart-checkout-top-title">Subtotal</span>
-                                    <span class="tp-cart-checkout-top-price">$<?php echo number_format($total_price['subtotal'],2) ?></span>
+                                    <span
+                                        class="tp-cart-checkout-top-price">$<?php echo number_format($total_price['subtotal'], 2) ?></span>
                                 </div>
                                 <div class="tp-cart-checkout-shipping">
                                     <h4 class="tp-cart-checkout-shipping-title">Shipping</h4>
 
                                     <div class="tp-cart-checkout-shipping-option-wrapper">
-                                        <?php if($total_price['subtotal'] > 999): ?>
-                                            <div class="tp-cart-checkout-shipping-option d-flex align-items-center justify-content-between">
+                                        <?php if ($total_price['subtotal'] > 999): ?>
+                                            <div
+                                                class="tp-cart-checkout-shipping-option d-flex align-items-center justify-content-between">
                                                 <p>
                                                     <input id="free_shipping" type="radio" name="freeshipping" checked readonly>
                                                     <label for="free_shipping">Free shipping</label>
                                                 </p>
-                                                <p style="text-decoration: line-through;">$<?php echo number_format($total_price['delivery'],2)?></p>
+                                                <p style="text-decoration: line-through;">
+                                                    $<?php echo number_format($total_price['delivery'], 2) ?></p>
                                             </div>
-                                        <?php else :?>
-                                            <div class="tp-cart-checkout-shipping-option d-flex align-items-center justify-content-between">
+                                        <?php else: ?>
+                                            <div
+                                                class="tp-cart-checkout-shipping-option d-flex align-items-center justify-content-between">
                                                 <p>
-                                                    <input id="shipping_charges" type="radio" name="shippingcharges" checked readonly>
+                                                    <input id="shipping_charges" type="radio" name="shippingcharges" checked
+                                                        readonly>
                                                     <label for="shipping_charges">shipping Charges</label>
                                                 </p>
-                                                <p>$<?php echo number_format($total_price['delivery'],2)?></p>
-                                                
+                                                <p>$<?php echo number_format($total_price['delivery'], 2) ?></p>
+
                                             </div>
-                                        <?php endif;?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
                                     <span>Total</span>
-                                    <span>$<?php echo number_format($total_price['grandtotal'],2);?></span>
+                                    <span>$<?php echo number_format($total_price['grandtotal'], 2); ?></span>
                                 </div>
                                 <div class="tp-cart-checkout-proceed">
                                     <a href="member/checkout" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
@@ -202,6 +199,39 @@
     </main>
 
     <?php $this->load->view('member/footer') ?>
+
+    <!-- Toast Container -->
+    <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
+        <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Image uploaded successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- For  information update toster show -->
+    <?php if (!empty($this->session->flashdata('successMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
+            $('#toastMessage').text('<?= $this->session->flashdata('successMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
+        <script>
+            $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+            $('#toastMessage').text('<?= $this->session->flashdata('errorMsg') ?>');
+            // Show toast
+            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+            toast.show();
+        </script>
+    <?php endif; ?>
 
 </body>
 

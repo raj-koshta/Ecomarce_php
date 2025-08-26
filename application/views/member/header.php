@@ -174,7 +174,7 @@
             </div>
             <div class="col">
                 <div class="tp-mobile-item text-center">
-                    <a href="wishlist.html" class="tp-mobile-item-btn">
+                    <a href="member/wishlist" class="tp-mobile-item-btn">
                         <i class="flaticon-love"></i>
                         <span>Wishlist</span>
                     </a>
@@ -361,7 +361,7 @@
                                             <a href="member/profile">My Account</a>
                                         </li>
                                         <li>
-                                            <a href="">Wishlist</a>
+                                            <a href="member/wishlist">Wishlist</a>
                                         </li>
                                         <li>
                                             <a href="member/cart">Cart</a>
@@ -447,7 +447,7 @@
                                 </form>
                             </div>
                             <div class="tp-header-login d-none d-lg-block">
-                                <a href="javascript:void(0)" class="d-flex align-items-center">
+                                <a href="member/profile" class="d-flex align-items-center">
                                     <!-- <div class="tp-header-login-icon">
                                         <span>
                                             <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
@@ -470,7 +470,7 @@
                             <div class="tp-header-action d-flex align-items-center ml-50">
 
                                 <div class="tp-header-action-item d-lg-block">
-                                    <a href="javascript:void(0)" class="tp-header-action-btn">
+                                    <a href="member/wishlist" class="tp-header-action-btn">
                                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -481,7 +481,12 @@
                                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                                                 stroke-linejoin="round" />
                                         </svg>
-                                        <span class="tp-header-action-badge">4</span>
+                                        <span class="tp-header-action-badge">
+                                            <?php
+                                            $wishlist_count = $this->db->where('user_id', $this->session->userdata('user_id'))->count_all_results('tbl_wishlist');
+                                            echo $wishlist_count;
+                                            ?>
+                                        </span>
                                     </a>
                                 </div>
                                 <div class="tp-header-action-item">
@@ -832,7 +837,7 @@
                         </div>
                         <div class="tp-header-action d-flex align-items-center ml-50">
                             <div class="tp-header-action-item d-lg-block">
-                                <a href="wishlist.html" class="tp-header-action-btn">
+                                <a href="member/wishlist" class="tp-header-action-btn">
                                     <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -843,7 +848,12 @@
                                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                                             stroke-linejoin="round" />
                                     </svg>
-                                    <span class="tp-header-action-badge">4</span>
+                                    <span class="tp-header-action-badge">
+                                        <?php
+                                        $wishlist_count = $this->db->where('user_id', $this->session->userdata('user_id'))->count_all_results('tbl_wishlist');
+                                        echo $wishlist_count;
+                                        ?>
+                                    </span>
                                 </a>
                             </div>
                             <div class="tp-header-action-item">

@@ -414,8 +414,8 @@
                                 <span>Settings</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/add-pincode">Pincode</a></li>
-                                <li><a href="admin/add-banner">Banner</a></li>
+                                <li><a href="admin/pincode">Pincode</a></li>
+                                <li><a href="admin/banner">Banner</a></li>
                             </ul>
                         </li>
 

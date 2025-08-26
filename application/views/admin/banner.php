@@ -7,13 +7,21 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Category</title>
+    <title>Banner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
     <base href="<?php echo base_url() ?>">
     <?php $this->load->view('admin/links'); ?>
 
+    <style>
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            /* Fill area, crop if needed */
+            object-position: center;
+        }
+    </style>
 </head>
 
 <?php $this->load->view('admin/header'); ?>
@@ -25,64 +33,64 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <?php if ($this->session->flashdata('successMsg')) { ?>
-                <div class="alert alert-success">
-                    <?= $this->session->flashdata('successMsg'); ?>
-                </div>
-            <?php } ?>
+
             <div class="row">
                 <div class="col-xl-12">
                     <div class="row">
 
                         <div class="col-xl-12">
                             <div class="card">
-                                <div class="card-header border-0 align-items-center d-flex pb-0">
-                                    <h4 class="card-title mb-0 flex-grow-1">Banner</h4>
-                                    <a href="javascript: void(0);"
-                                        class="btn btn-primary waves-effect waves-light btn-sm">View More <i
+                                <div class="card-header border-0 align-items-center d-flex">
+                                    <h4 class="card-title mb-0 flex-grow-1">Add Banner</h4>
+                                    <a href="admin/add_banner"
+                                        class="btn btn-primary waves-effect waves-light btn-sm">Add Banner <i
                                             class="mdi mdi-arrow-right ms-1"></i></a>
                                 </div>
                                 <div class="card-body">
-                                    <h5 class="card-title">Floating labels</h5>
-                                    <p class="card-title-desc">Create beautifully simple form labels that float over
-                                        your input fields.</p>
 
-                                    <?= form_open_multipart(); ?>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-floating mb-3">
-                                                <input type="file" class="form-control" id="bann_image"
-                                                    name="bann_image" placeholder="Choose file for banner">
-                                                <label for="bann_image">Banner</label>
-                                                <?= form_error('bann_image') ?>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-floating mb-3">
-                                                <select class="form-select" id="statusSelect" name="status">
-                                                    <option value="" selected>select Status</option>
-                                                    <option value="1">Active</option>
-                                                    <option value="0">Deactive</option>
-                                                </select>
-                                                <label for="statusSelect">Status</label>
-                                                <?= form_error('status') ?>
-                                            </div>
-                                        </div>
+                                    <div class="row g-4">
+
+                                        <?php if (!empty($banners)): ?>
+                                            <?php foreach ($banners as $banner): ?>
+                                                <!-- Banner Card -->
+                                                <div class="col-md-4 col-sm-6 col-12">
+                                                    <div class="card shadow-lg border-0 h-100">
+                                                        <!-- Banner Image -->
+                                                        <img src="uploads/banner/<?= $banner->bann_image ?>"
+                                                            class="card-img-top" alt="Banner">
+
+                                                        <!-- Card Body -->
+                                                        <div class="card-body pb-0">
+                                                            <h5 class="card-title mb-2"><?= $banner->title ?></h5>
+                                                            <p class="card-text text-muted"><?= $banner->description ?></p>
+                                                        </div>
+
+                                                        <!-- Card Footer Actions -->
+                                                        <div
+                                                            class="card-footer bg-white d-flex justify-content-between align-items-center pt-0">
+                                                            <!-- Edit Button -->
+                                                            <a href="admin/update-banner/<?= $banner->bann_id ?>"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="bi bi-pencil"></i> Edit
+                                                            </a>
+
+                                                            <!-- Switch Slider -->
+                                                            <div class="form-check form-switch m-0">
+                                                                <input class="form-check-input banner-status-toggle"
+                                                                    type="checkbox" data-id="<?= $banner->bann_id ?>"
+                                                                    <?= $banner->status == '1' ? 'checked' : '' ?>>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <h5 class="text-center">No Banner found. Please add banner</h5>
+                                        <?php endif; ?>
+
                                     </div>
 
-                                    <div class="mb-3">
 
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="floatingCheck">
-                                            <label class="form-check-label" for="floatingCheck">
-                                                Check me out
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button type="submit" class="btn btn-primary w-md">Submit</button>
-                                    </div>
-                                    <?= form_close() ?>
                                 </div>
                             </div>
                         </div>
@@ -101,3 +109,40 @@
     <!-- End Page-content -->
 
     <?php $this->load->view('admin/footer'); ?>
+
+    <script>
+        $(document).on("change", ".banner-status-toggle", function () {
+            let bann_id = $(this).data("id");
+            let status = $(this).is(":checked") ? 1 : 0;
+
+            $.ajax({
+                url: "<?= base_url('admin/update-banner-status') ?>",
+                type: "POST",
+                data: { bann_id: bann_id, status: status },
+                dataType: "json",
+                success: function (res) {
+                    if (res.success) {
+                        $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
+                        $('#toastMessage').text('Status updated successfully');
+                        // Show toast
+                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                        toast.show();
+                    } else {
+                        $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+                        $('#toastMessage').text("Failed to update status");
+                        // Show toast
+                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                        toast.show();
+                    }
+                },
+                error: function () {
+                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+                    $('#toastMessage').text("Something went wrong!");
+                    // Show toast
+                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                    toast.show();
+                }
+            });
+        });
+
+    </script>

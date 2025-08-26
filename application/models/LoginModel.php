@@ -18,13 +18,15 @@ class LoginModel extends CI_Model
             $user_id = $arr->user_id;
             $username = $arr->username;
             if (password_verify($password, $db_pass)) {
+                
+                $this->db->where('user_id', $this->session->userdata('user_id'))->update('tbl_cart', ['user_id' => $user_id]);
+                $this->db->where('user_id', $this->session->userdata('user_id'))->update('tbl_wishlist',['user_id'=> $user_id]);
+                // setting user object
+
                 $this->session->set_userdata('login_id', $user_id);
                 $this->session->set_userdata('user_id', $user_id);
                 $this->session->set_userdata('username', $username);
 
-                $this->db->where('user_id', $this->session->userdata('user_id'))->update('tbl_cart', ['user_id' => $user_id]);
-
-                // setting user object
                 $this->db->select('user_id, email, username, image, status');
                 $this->db->from('tbl_users');
                 $this->db->where('email', $email);
