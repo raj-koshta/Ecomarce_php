@@ -16,11 +16,39 @@ class CategoryModel extends CI_Model
         return false;
     }
 
+
+    public function update_category($post){
+        $qry = $this->db->where('category_id', $post['category_id'])->update('tbl_category', $post);
+
+        if ($qry) {
+            return true; // update successful
+        } else {
+            return false; // update failed
+        }
+    }
+
+    public function delete_category($category_id)
+    {
+        return $this->db->where('category_id', $category_id)->delete('tbl_category');
+    }
+
     public function get_all_categories()
     {
         $qry = $this->db->where(['status' => 1, 'parent_id' => ''])->get('tbl_category');
         if ($qry->num_rows()) {
             return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_all_category()
+    {
+        $qry = $this->db->order_by('parent_id', 'desc')->get('tbl_category');
+        if ($qry->num_rows()) {
+            return $qry->result();
+        } else {
+            return false;
         }
     }
 
@@ -39,6 +67,16 @@ class CategoryModel extends CI_Model
         }
 
         return $output; // RETURN instead of echo
+    }
+
+    public function get_category_by_id($category_id){
+        $qry = $this->db->where('category_id', $category_id)->get('tbl_category');
+
+        if($qry->num_rows()){
+            return $qry->row();
+        } else {
+            return false;
+        }
     }
 
 

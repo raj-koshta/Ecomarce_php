@@ -25,91 +25,97 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <?php if($this->session->flashdata('successMsg')) {?>
-                <div class="alert alert-success">
-                    <?= $this->session->flashdata('successMsg');?>
-                </div>
-            <?php } ?>
+
             <div class="row">
-                <div class="col-xl-12">
-                    <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
 
-                        <div class="col-xl-12">
-                            <div class="card">
-                                <div class="card-header border-0 align-items-center d-flex pb-0">
-                                    <h4 class="card-title mb-0 flex-grow-1">Category</h4>
-                                    <a href="javascript: void(0);"
-                                        class="btn btn-primary waves-effect waves-light btn-sm">View More <i
-                                            class="mdi mdi-arrow-right ms-1"></i></a>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Floating labels</h5>
-                                    <p class="card-title-desc">Create beautifully simple form labels that float over
-                                        your input fields.</p>
-
-                                    <?= form_open_multipart(); ?>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <select class="form-select" id="parent_id" name="parent_id">
-                                                        <option value="" selected>Select Parent Category</option>
-                                                        <?php foreach($categories as $category) {?>
-                                                            <option value="<?= $category->category_id ?>"><?= $category->category_name?></option>
-                                                        <?php } ?>
-                                                    </select>
-                                                    <label for="parent_id">Parent Category</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="category_name" name="category_name"
-                                                        placeholder="Enter Your Category Name">
-                                                    <label for="category_name">Category Name</label>
-                                                    <?= form_error('category_name')?>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                    <select class="form-select" id="statusSelect" name="status">
-                                                        <option value="" selected>select Status</option>
-                                                        <option value="1">Active</option>
-                                                        <option value="0">Deactive</option>
-                                                    </select>
-                                                    <label for="statusSelect">Status</label>
-                                                    <?= form_error('status')?>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating mb-3">
-                                                   <input type="file" class="form-control" id="image" name="image">
-                                                    <label for="image">Image</label>
-                                                    <?= form_error('image')?>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="floatingCheck">
-                                                <label class="form-check-label" for="floatingCheck">
-                                                    Check me out
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button type="submit" class="btn btn-primary w-md">Submit</button>
-                                        </div>
-                                    <?= form_close() ?>
-                                </div>
+                            <div class="card-header border-0 align-items-center d-flex mb-2 p-0 pt-2">
+                                <h4 class="card-title mb-0 flex-grow-1">Category</h4>
+                                <a href="admin/add-category" class="btn btn-primary waves-effect waves-light btn-sm">Add
+                                    Category <i class="mdi mdi-arrow-right ms-1"></i></a>
                             </div>
+                            <div class="mb-4 text-danger">
+                                Note: Categories that do not have a parent category name are considered parent categories.
+                            </div>
+
+                            <table id="datatable-buttons"
+                                class="table table-striped table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>Category Name</th>
+                                        <th>Parent Category Name</th>
+                                        <th>Image</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <?php if (!empty($categories)): ?>
+                                        <?php $i = 1;
+                                        foreach ($categories as $category): ?>
+                                            <tr>
+                                                <td><?= $i++; ?></td>
+                                                <td><?= $category->category_name; ?></td>
+
+                                                <td>
+                                                    <?php $parent_id = $category->parent_id;
+                                                        $parent_cat_name = "";
+                                                        if(!empty($parent_id)) {
+                                                            $parent_cat_name = $this->db->where('category_id', $parent_id)->get('tbl_category')->row()->category_name;
+                                                        }
+                                                    ?>
+                                                    <?= $parent_cat_name;?>
+                                                </td>
+
+                                                <!-- Small image -->
+                                                <td>
+                                                    <?php if (!empty($category->image)): ?>
+                                                        <img src="<?= base_url('uploads/products/' . $category->image) ?>"
+                                                            alt="Category Image"
+                                                            style="width: 50px; height: 50px; object-fit: fit; border-radius: 6px;">
+                                                    <?php else: ?>
+                                                        <span class="text-muted">No Image</span>
+                                                    <?php endif; ?>
+                                                </td>
+
+                                                <!-- Switch toggle -->
+                                                <td>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input category-status-toggle"
+                                                            type="checkbox"
+                                                            data-id="<?= $category->category_id ?>"
+                                                            <?= $category->status == '1' ? 'checked' : '' ?> 
+                                                        >
+                                                    </div>
+                                                </td>
+
+                                                <td style="width: 10%;">
+                                                    <a href="admin/update-category/<?= $category->category_id ?>"
+                                                        class="btn btn-outline-primary btn-sm edit me-2">
+                                                        <i class="fas fa-pencil-alt"></i> Edit
+                                                    </a>
+                                                    <a href="admin/delete-category/<?= $category->category_id ?>"
+                                                        class="btn btn-outline-danger btn-sm delete">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+
+                                    <?php endif; ?>
+                                </tbody>
+
+                            </table>
                         </div>
-
                     </div>
-                </div>
-
-            </div>
-            <!-- END ROW -->
+                </div> <!-- end col -->
+            </div> <!-- end row -->
 
 
 
@@ -119,3 +125,39 @@
     <!-- End Page-content -->
 
     <?php $this->load->view('admin/footer'); ?>
+
+    <script>
+        $(document).on("change", ".category-status-toggle", function () {
+            let category_id = $(this).data("id");
+            let status = $(this).is(":checked") ? 1 : 0;
+
+            $.ajax({
+                url: "<?= base_url('admin/update-category-status') ?>",
+                type: "POST",
+                data: { category_id: category_id, status: status },
+                dataType: "json",
+                success: function (res) {
+                    if (res.success) {
+                        $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
+                        $('#toastMessage').text(res.msg);
+                        // Show toast
+                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                        toast.show();
+                    } else {
+                        $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+                        $('#toastMessage').text(res.msg);
+                        // Show toast
+                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                        toast.show();
+                    }
+                },
+                error: function () {
+                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
+                    $('#toastMessage').text("Something went wrong!");
+                    // Show toast
+                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
+                    toast.show();
+                }
+            });
+        });
+    </script>

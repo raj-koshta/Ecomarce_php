@@ -66,6 +66,12 @@ class SettingsModel extends CI_Model
         return false;
     }
 
+    public function delete_banner($bann_id)
+    {
+        return $this->db->where('bann_id', $bann_id)->delete('tbl_banner');
+    }
+
+
     public function update_pincode($post)
     {
         $id = $post['id'];

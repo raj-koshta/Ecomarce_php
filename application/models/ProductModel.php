@@ -3,6 +3,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class ProductModel extends CI_Model
 {
+
+    public function get_all_products(){
+        $qry = $this->db->get('tbl_product');
+
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
     public function add_Product($post)
     {
         $post['added_on'] = date('d M, Y');
@@ -35,6 +46,16 @@ class ProductModel extends CI_Model
         $qry = $this->db->get('tbl_product');
         if ($qry->num_rows()) {
             return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_product_by_id($product_id){
+        $qry = $this->db->where('product_id', $product_id)->get('tbl_product');
+
+        if($qry->num_rows()){
+            return $qry->row();
         } else {
             return false;
         }

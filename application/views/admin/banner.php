@@ -69,10 +69,17 @@
                                                         <div
                                                             class="card-footer bg-white d-flex justify-content-between align-items-center pt-0">
                                                             <!-- Edit Button -->
-                                                            <a href="admin/update-banner/<?= $banner->bann_id ?>"
-                                                                class="btn btn-outline-primary btn-sm">
-                                                                <i class="bi bi-pencil"></i> Edit
-                                                            </a>
+                                                             <div>
+                                                                 <a href="admin/update-banner/<?= $banner->bann_id ?>"
+                                                                     class="btn btn-outline-primary btn-sm">
+                                                                     <i class="bi bi-pencil"></i> Edit
+                                                                 </a>
+                                                                 <a href="admin/delete-banner/<?= $banner->bann_id.'/'.$banner->bann_image ?>"
+                                                                     class="btn btn-outline-danger btn-sm">
+                                                                     <i class="bi bi-trash3-fill"></i> Delete
+                                                                 </a>
+
+                                                             </div>
 
                                                             <!-- Switch Slider -->
                                                             <div class="form-check form-switch m-0">
@@ -123,13 +130,13 @@
                 success: function (res) {
                     if (res.success) {
                         $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-                        $('#toastMessage').text('Status updated successfully');
+                        $('#toastMessage').text(res.msg);
                         // Show toast
                         let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
                         toast.show();
                     } else {
                         $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                        $('#toastMessage').text("Failed to update status");
+                        $('#toastMessage').text(res.msg);
                         // Show toast
                         let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
                         toast.show();

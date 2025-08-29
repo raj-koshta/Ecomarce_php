@@ -92,7 +92,9 @@
                                         </div>
                                     </div>
 
-                                    <input type="hidden" name="bann_image" value="<?= $banner->bann_image?>">
+                                    <?php if (!empty($banner) && !empty($banner->bann_image)): ?>
+                                        <input type="hidden" name="bann_image" value="<?= $banner->bann_image ?>">
+                                    <?php endif; ?>
                                     <div>
                                         <button type="submit" class="btn btn-primary w-md">
                                             <?= !empty($banner) ? 'Update' : 'Submit' ?>

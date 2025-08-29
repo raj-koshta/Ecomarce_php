@@ -395,13 +395,13 @@
                             </a>
                         </li>
                         <li>
-                            <a href="admin/add_product" class="waves-effect">
+                            <a href="admin/product" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Product</span>
                             </a>
                         </li>
                         <li>
-                            <a href="admin/add-category" class="waves-effect">
+                            <a href="admin/category" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Category</span>
                             </a>
