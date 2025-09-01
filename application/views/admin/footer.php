@@ -120,9 +120,12 @@
 <!-- Datatable init js -->
 <script src="assets/admin/js/pages/datatables.init.js"></script>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <!-- Toast Container -->
-<div class="position-fixed end-0 p-3" style="z-index: 11;top: 60px !important;">
+<!-- <div class="position-fixed end-0 p-3" style="z-index: 11;top: 60px !important;">
     <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
         aria-atomic="true">
         <div class="d-flex">
@@ -132,11 +135,11 @@
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
-</div>
+</div> -->
 
 
 <!-- For  information update toster show -->
-<?php if (!empty($this->session->flashdata('successMsg'))): ?>
+<!-- <?php if (!empty($this->session->flashdata('successMsg'))): ?>
     <script>
         $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
         $('#toastMessage').text('<?= $this->session->flashdata('successMsg') ?>');
@@ -151,6 +154,25 @@
         // Show toast
         let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
         toast.show();
+    </script>
+<?php endif; ?> -->
+
+<?php if (!empty($this->session->flashdata('successMsg'))): ?>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '<?= $this->session->flashdata('successMsg') ?>',
+            showConfirmButton: false,
+            timer: 2500
+        });
+    </script>
+<?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '<?= $this->session->flashdata('errorMsg') ?>',
+            showConfirmButton: true
+        });
     </script>
 <?php endif; ?>
 

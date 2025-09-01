@@ -166,3 +166,25 @@
 <!-- -- Include html2pdf.js library--  -->
 <!-- html2pdf library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if (!empty($this->session->flashdata('successMsg'))): ?>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '<?= $this->session->flashdata('successMsg') ?>',
+            showConfirmButton: false,
+            timer: 2500
+        });
+    </script>
+<?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '<?= $this->session->flashdata('errorMsg') ?>',
+            showConfirmButton: true
+        });
+    </script>
+<?php endif; ?>

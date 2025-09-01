@@ -38,9 +38,6 @@
                                             class="mdi mdi-arrow-right ms-1"></i></a>
                                 </div>
                                 <div class="card-body">
-                                    <h5 class="card-title">Floating labels</h5>
-                                    <p class="card-title-desc">Create beautifully simple form labels that float over
-                                        your input fields.</p>
                                     <?php if (!empty($product)): ?>
                                         <?= form_open_multipart('admin/update_product/'.$product->product_id); ?>
                                     <?php else: ?>
@@ -61,9 +58,9 @@
                                                 <select class="form-select category"
                                                     onchange="get_subcategories(this.value)" id="category"
                                                     name="category">
-                                                    <option value="" selected>Select Category</option>
+                                                    <option value="">Select Category</option>
                                                     <?php foreach ($categories as $category) { ?>
-                                                        <option value="<?= $category->category_id ?>">
+                                                        <option value="<?= $category->category_id ?>" <?= !empty($product) && $product->category == $category->category_id ? 'selected' : ''?>>
                                                             <?= $category->category_name ?>
                                                         </option>
                                                     <?php } ?>
@@ -85,7 +82,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="product_name"
-                                                    name="product_name" placeholder="Enter product name">
+                                                    name="product_name" placeholder="Enter product name" 
+                                                    value="<?= set_value('product_name', !empty($product) ? $product->product_name : '')?>">
                                                 <label for="product_name">Product Name</label>
                                                 <?= form_error('product_name') ?>
                                             </div>
@@ -93,7 +91,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="brand" name="brand"
-                                                    placeholder="Enter product brand">
+                                                    placeholder="Enter product brand"
+                                                    value="<?= set_value('brand', !empty($product) ? $product->brand : '')?>">
                                                 <label for="brand">Product Brand</label>
                                                 <?= form_error('brand') ?>
                                             </div>
@@ -103,8 +102,8 @@
                                             <div class="form-floating mb-3">
                                                 <select class="form-select" id="features" name="features">
                                                     <option value="" selected>Select Features</option>
-                                                    <option value="1">Deal of the month</option>
-                                                    <option value="2">New arrivals</option>
+                                                    <option value="1" <?= !empty($product) && $product->features == '1' ? 'selected' : ''?>>Deal of the month</option>
+                                                    <option value="2" <?= !empty($product) && $product->features == '2' ? 'selected' : ''?>>New arrivals</option>
                                                 </select>
                                                 <label for="features">Features</label>
                                                 <?= form_error('features') ?>
@@ -113,7 +112,7 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <textarea class="form-control" name="highlights"
-                                                    id="highlights"></textarea>
+                                                    id="highlights"><?= !empty($product) ? $product->highlights : ''?></textarea>
                                                 <label for="highlights">Highlights</label>
                                                 <?= form_error('highlights') ?>
                                             </div>
@@ -121,7 +120,7 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <textarea class="form-control" name="description"
-                                                    id="description"></textarea>
+                                                    id="description"><?= !empty($product) ? $product->description : ''?></textarea>
                                                 <label for="description">Description</label>
                                                 <?= form_error('description') ?>
                                             </div>
@@ -129,7 +128,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="stock" name="stock"
-                                                    placeholder="Enter product Stock">
+                                                    placeholder="Enter product Stock"
+                                                    value="<?= set_value('stock', !empty($product) ? $product->stock : '')?>">
                                                 <label for="stock">Product Stock</label>
                                                 <?= form_error('stock') ?>
                                             </div>
@@ -137,7 +137,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="mrp" name="mrp"
-                                                    placeholder="Enter product MRP">
+                                                    placeholder="Enter product MRP"
+                                                    value="<?= set_value('mrp', !empty($product) ? $product->mrp : '')?>">
                                                 <label for="mrp">Product MRP</label>
                                                 <?= form_error('mrp') ?>
                                             </div>
@@ -145,7 +146,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="selling_price"
-                                                    name="selling_price" placeholder="Enter product Selling Price">
+                                                    name="selling_price" placeholder="Enter product Selling Price"
+                                                    value="<?= set_value('selling_price', !empty($product) ? $product->selling_price : '')?>">
                                                 <label for="selling_price">Product Selling Price</label>
                                                 <?= form_error('selling_price') ?>
                                             </div>
@@ -153,7 +155,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="meta_title"
-                                                    name="meta_title" placeholder="Enter Meta Title">
+                                                    name="meta_title" placeholder="Enter Meta Title"
+                                                    value="<?= set_value('meta_title', !empty($product) ? $product->meta_title : '')?>">
                                                 <label for="meta_title">Meta Title</label>
                                                 <?= form_error('meta_title') ?>
                                             </div>
@@ -161,7 +164,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="meta_keywords"
-                                                    name="meta_keywords" placeholder="Enter Meta Keywords">
+                                                    name="meta_keywords" placeholder="Enter Meta Keywords"
+                                                    value="<?= set_value('meta_keywords', !empty($product) ? $product->meta_keywords : '')?>">
                                                 <label for="meta_keywords">Meta Keywords</label>
                                                 <?= form_error('meta_keywords') ?>
                                             </div>
@@ -169,7 +173,8 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="meta_description"
-                                                    name="meta_description" placeholder="Enter Meta Description">
+                                                    name="meta_description" placeholder="Enter Meta Description"
+                                                    value="<?= set_value('meta_description', !empty($product) ? $product->meta_description : '')?>">
                                                 <label for="meta_description">Meta Description</label>
                                                 <?= form_error('meta_description') ?>
                                             </div>
@@ -181,6 +186,13 @@
                                                     name="product_main_image" placeholder="Choose file for banner">
                                                 <label for="product_main_image">Product Image</label>
                                                 <?= form_error('product_main_image') ?>
+                                                <?php if (!empty($product) && !empty($product->product_main_image)): ?>
+                                                    <div class="mt-2 d-inline">
+                                                        <img src="<?= base_url('uploads/products/' . $product->product_main_image) ?>"
+                                                            alt="Current Banner" class="img-thumbnail"
+                                                            style="max-height: 100px;">
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -195,8 +207,8 @@
                                             <div class="form-floating mb-3">
                                                 <select class="form-select" id="statusSelect" name="status">
                                                     <option value="" selected>select Status</option>
-                                                    <option value="1">Active</option>
-                                                    <option value="0">Deactive</option>
+                                                    <option value="1" <?= !empty($product) && $product->status == '1' ? 'selected' : ''?>>Active</option>
+                                                    <option value="0" <?= !empty($product) && $product->status == '0' ? 'selected' : ''?>>Deactive</option>
                                                 </select>
                                                 <label for="statusSelect">Status</label>
                                                 <?= form_error('status') ?>
@@ -204,17 +216,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <?php if (!empty($product) && !empty($product->product_main_image)): ?>
+                                        <input type="hidden" name="product_main_image" value="<?= $product->product_main_image ?>">
+                                    <?php endif; ?>
 
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="floatingCheck">
-                                            <label class="form-check-label" for="floatingCheck">
-                                                Check me out
-                                            </label>
-                                        </div>
-                                    </div>
                                     <div>
-                                        <button type="submit" class="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" class="btn btn-primary w-md"><?= !empty($product) ? "Update" : "Submit"?></button>
                                     </div>
                                     <?= form_close() ?>
                                 </div>

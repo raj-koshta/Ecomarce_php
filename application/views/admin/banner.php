@@ -129,25 +129,26 @@
                 dataType: "json",
                 success: function (res) {
                     if (res.success) {
-                        $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-                        $('#toastMessage').text(res.msg);
-                        // Show toast
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.msg,
+                            showConfirmButton: false,
+                            timer: 2500
+                        });
                     } else {
-                        $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                        $('#toastMessage').text(res.msg);
-                        // Show toast
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
+                        Swal.fire({
+                            icon: 'error',
+                            title: res.msg,
+                            showConfirmButton: true
+                        });
                     }
                 },
                 error: function () {
-                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                    $('#toastMessage').text("Something went wrong!");
-                    // Show toast
-                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                    toast.show();
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Something went wrong!",
+                        showConfirmButton: true
+                    });
                 }
             });
         });

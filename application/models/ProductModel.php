@@ -4,10 +4,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class ProductModel extends CI_Model
 {
 
-    public function get_all_products(){
+    public function get_all_products()
+    {
         $qry = $this->db->get('tbl_product');
 
-        if($qry->num_rows()){
+        if ($qry->num_rows()) {
             return $qry->result();
         } else {
             return false;
@@ -27,6 +28,16 @@ class ProductModel extends CI_Model
         return false;
     }
 
+    public function update_product($post)
+    {
+        $qry = $this->db->where('product_id', $post['product_id'])->update('tbl_product', $post);
+        if ($qry) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public function fetch_category_id($slug)
     {
@@ -40,9 +51,9 @@ class ProductModel extends CI_Model
 
     public function fetch_product($category_id)
     {
-        $this->db->where(['status'=>1]);
-        $this->db->like(['category'=>$category_id]);
-        $this->db->or_like(['sub_category'=>$category_id]);
+        $this->db->where(['status' => 1]);
+        $this->db->like(['category' => $category_id]);
+        $this->db->or_like(['sub_category' => $category_id]);
         $qry = $this->db->get('tbl_product');
         if ($qry->num_rows()) {
             return $qry->result();
@@ -51,14 +62,31 @@ class ProductModel extends CI_Model
         }
     }
 
-    public function get_product_by_id($product_id){
+    public function get_product_by_id($product_id)
+    {
         $qry = $this->db->where('product_id', $product_id)->get('tbl_product');
 
-        if($qry->num_rows()){
+        if ($qry->num_rows()) {
             return $qry->row();
         } else {
             return false;
         }
+    }
+
+    public function get_product_main_image($product_id)
+    {
+        $qry = $this->db->where('product_id', $product_id)->get('tbl_product');
+
+        if ($qry->num_rows()) {
+            return $qry->row()->product_main_image;
+        } else {
+            return false;
+        }
+    }
+
+    public function delete_product($product_id)
+    {
+        return $this->db->where('product_id', $product_id)->delete('tbl_product');
     }
 
     public function slug($string)

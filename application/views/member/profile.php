@@ -678,41 +678,6 @@
 
     <?php $this->load->view('member/footer') ?>
 
-    <!-- Toast Container -->
-    <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
-        <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert"
-            aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body" id="toastMessage">
-                    Image uploaded successfully!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- For  information update toster show -->
-    <?php if (!empty($this->session->flashdata('successMsg'))): ?>
-        <script>
-            $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-            $('#toastMessage').text('<?= $this->session->flashdata('successMsg') ?>');
-            // Show toast
-            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-            toast.show();
-        </script>
-    <?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
-        <script>
-            $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-            $('#toastMessage').text('<?= $this->session->flashdata('errorMsg') ?>');
-            // Show toast
-            let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-            toast.show();
-        </script>
-    <?php endif; ?>
-
-
-
     <!-- Profile pic upload script -->
     <script>
         let cropper;
@@ -764,16 +729,19 @@
 
                         // Set toast message & style
                         if (res.status === 'success') {
-                            $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-                            $('#toastMessage').text('Image uploaded successfully!');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Image uploaded successfully!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
                         } else {
-                            $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                            $('#toastMessage').text(res.message || 'Something went wrong!');
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message || 'Something went wrong!',
+                                showConfirmButton: true
+                            });
                         }
-
-                        // Show toast
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
 
                         // Close modal
                         $('#cropImageModal').modal('hide');
@@ -784,10 +752,11 @@
                         }, 2000);
                     },
                     error: function () {
-                        $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                        $('#toastMessage').text('Server error! Please try again.');
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server error! Please try again.',
+                            showConfirmButton: true
+                        });
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);
@@ -864,7 +833,7 @@
     </script>
 
     <!-- Script for old password check -->
-    <script>
+    <!-- <script>
         $(document).ready(function () {
             var oldPassValid = false;
 
@@ -929,28 +898,132 @@
                 console.log(newPass);
 
                 if (newPass != conPass) {
-                    e.preventDefault();
-                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                    $('#toastMessage').text("New password and confirm password do not match.");
-                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                    toast.show();
+                    Swal.fire({
+                        icon: 'error',
+                        title: "New password and confirm password do not match.",
+                        showConfirmButton: true
+                    });
                     return; // stop here
                 }
 
                 if (!oldPassValid) {
-                    e.preventDefault();
-                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                    $('#toastMessage').text('Please Enter Old Password');
-                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                    toast.show();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Please Enter Old Password',
+                        showConfirmButton: true
+                    });
                     return; // stop here
                 }
             });
 
         });
 
-    </script>
+    </script> -->
 
+    <script>
+        $(document).ready(function () {
+            var oldPassValid = false;
+
+            // 🔹 Validate Old Password on blur
+            $("#old_pass").on("blur", function () {
+                var oldPass = $(this).val().trim();
+                var errorBoxId = "old-pass-error";
+                $("#" + errorBoxId).remove();
+
+                if (oldPass !== "") {
+                    $.ajax({
+                        url: "<?= base_url('member/check_old_password') ?>",
+                        type: "POST",
+                        data: { old_pass: oldPass },
+                        dataType: "json",
+                        success: function (data) {
+                            oldPassValid = data.valid;
+
+                            if (!data.valid) {
+                                // Inline error
+                                var error = $("<div>")
+                                    .attr("id", errorBoxId)
+                                    .addClass("text-danger mt-1")
+                                    .text("Old password is incorrect.");
+                                $("#old_pass").closest('.tp-profile-input-box.old_pass').append(error);
+
+                                // Swal error
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: "Old password is incorrect.",
+                                    showConfirmButton: true
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // 🔹 Form submit check
+            $(".password-form").on("submit", function (e) {
+                e.preventDefault(); // Stop default submit first
+
+                var oldPass = $("#old_pass").val().trim();
+                var newPass = $("#new_pass").val().trim();
+                var conPass = $("#con_new_pass").val().trim();
+
+                // Collect missing fields
+                var missingFields = [];
+                if (oldPass === "") missingFields.push("Old Password");
+                if (newPass === "") missingFields.push("New Password");
+                if (conPass === "") missingFields.push("Confirm Password");
+
+                // Case 4: Show missing fields in Swal
+                if (missingFields.length > 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Please fill the following field(s):",
+                        html: "<b>" + missingFields.join(", ") + "</b>",
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+                // Case 1 & 5: Wrong old password
+                if (!oldPassValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Old password is incorrect.",
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+                // Case 3: Confirm password missing (already covered by missingFields)
+
+                // Case 2: New and confirm password mismatch
+                if (newPass !== conPass) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "New password and confirm password do not match.",
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+                // Extra check: Minimum 6 characters
+                if (newPass.length < 6 || conPass.length < 6) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Password must be at least 6 characters long.",
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+                // ✅ All validations passed → submit form
+                this.submit();
+            });
+        });
+    </script>
 
 
 

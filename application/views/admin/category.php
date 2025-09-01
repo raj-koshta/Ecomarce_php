@@ -49,6 +49,7 @@
                                         <th>Category Name</th>
                                         <th>Parent Category Name</th>
                                         <th>Image</th>
+                                        <th>Products Count</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -82,6 +83,26 @@
                                                     <?php else: ?>
                                                         <span class="text-muted">No Image</span>
                                                     <?php endif; ?>
+                                                </td>
+
+                                                <td>
+                                                    <?php 
+                                                        if (!empty($category->parent_id)) {
+                                                            // Child category → count only by sub_category
+                                                            $products_count = $this->db->where('sub_category', $category->category_id)
+                                                                                    ->count_all_results('tbl_product');
+                                                        } else {
+                                                            // Parent category → count only by category
+                                                            $products_count = $this->db->where('category', $category->category_id)
+                                                                                    ->group_start()
+                                                                                        ->where('sub_category', 0)
+                                                                                        ->or_where('sub_category IS NULL', null, false)
+                                                                                    ->group_end()
+                                                                                    ->count_all_results('tbl_product');
+                                                        }
+
+                                                        echo $products_count;
+                                                    ?>
                                                 </td>
 
                                                 <!-- Switch toggle -->
@@ -126,6 +147,7 @@
 
     <?php $this->load->view('admin/footer'); ?>
 
+    <!-- Updating category station dynamically -->
     <script>
         $(document).on("change", ".category-status-toggle", function () {
             let category_id = $(this).data("id");
@@ -138,26 +160,52 @@
                 dataType: "json",
                 success: function (res) {
                     if (res.success) {
-                        $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-                        $('#toastMessage').text(res.msg);
-                        // Show toast
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.msg,
+                            showConfirmButton: false,
+                            timer: 2500
+                        });
                     } else {
-                        $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                        $('#toastMessage').text(res.msg);
-                        // Show toast
-                        let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                        toast.show();
+                        Swal.fire({
+                            icon: 'error',
+                            title: res.msg,
+                            showConfirmButton: true
+                        });
                     }
                 },
                 error: function () {
-                    $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-                    $('#toastMessage').text("Something went wrong!");
-                    // Show toast
-                    let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-                    toast.show();
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Something went wrong!",
+                        showConfirmButton: true
+                    });
                 }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $(".delete").on("click", function (e) {
+                e.preventDefault(); // stop default link behavior
+
+                var link = $(this).attr("href"); // get href value
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to undo this action! We recommend deactivating the category instead of deleting it, so customers will no longer see the products under this category.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect only if confirmed
+                        window.location.href = link;
+                    }
+                });
             });
         });
     </script>

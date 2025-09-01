@@ -586,39 +586,6 @@
 
    <?php $this->load->view('member/footer') ?>
 
-   <!-- Toast Container -->
-   <div class="position-fixed end-0 p-3" style="z-index: 11;top: 20px !important;">
-      <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
-         aria-atomic="true">
-         <div class="d-flex">
-            <div class="toast-body" id="toastMessage">
-               Image uploaded successfully!
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-         </div>
-      </div>
-   </div>
-
-
-   <!-- For  information update toster show -->
-   <?php if (!empty($this->session->flashdata('successMsg'))): ?>
-      <script>
-         $('#uploadToast').removeClass('text-bg-danger').addClass('text-bg-success');
-         $('#toastMessage').text('<?= $this->session->flashdata('successMsg') ?>');
-         // Show toast
-         let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-         toast.show();
-      </script>
-   <?php elseif (!empty($this->session->flashdata('errorMsg'))): ?>
-      <script>
-         $('#uploadToast').removeClass('text-bg-success').addClass('text-bg-danger');
-         $('#toastMessage').text('<?= $this->session->flashdata('errorMsg') ?>');
-         // Show toast
-         let toast = new bootstrap.Toast(document.getElementById('uploadToast'));
-         toast.show();
-      </script>
-   <?php endif; ?>
-
    <script>
       $(document).on('click', '.tp-product-quick-view-btn', function () {
          var productId = $(this).data('product-id');

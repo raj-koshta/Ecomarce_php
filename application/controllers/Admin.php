@@ -69,10 +69,29 @@ class Admin extends CI_Controller
         }
     }
 
+    public function update_pincode_status()
+    {
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+
+        if ($id !== null) {
+            $update = $this->db->where('id', $id)
+                ->update('tbl_pincode', ['status' => $status]);
+
+            if ($update) {
+                echo json_encode(['success' => true, 'msg' => $status == 1 ? 'Actived Pincode' : 'Deactivated Pincode']);
+            } else {
+                echo json_encode(['success' => false, 'msg' => 'Faild to change status']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'msg' => 'Unable to find Pincode in records']);
+        }
+    }
+
     public function delete_pincode($id)
     {
         $qry = $this->db->where('id', $id)->delete('tbl_pincode');
-        if ($qry && $this->db->affected_rows() > 0) {
+        if ($qry) {
             $this->session->set_flashdata('successMsg', "Pincode Deleted successfully");
             redirect('admin/pincode');
         } else {
@@ -148,11 +167,11 @@ class Admin extends CI_Controller
                 $check = $this->SettingsModel->update_banner($post);
 
                 if ($check) {
-                    $this->session->set_flashdata('successMsg', "Data Inserted successfully");
+                    $this->session->set_flashdata('successMsg', "Banner updated successfully");
                     redirect('admin/banner');
                 } else {
-                    $this->session->set_flashdata('errorMsg', "Unable to add banner.");
-                    redirect('admin/update_banner');
+                    $this->session->set_flashdata('errorMsg', "Unable to update banner.");
+                    redirect('admin/update_banner/' . $bann_id);
                 }
             } else {
                 $data['banner'] = $this->SettingsModel->get_Banner_by_id($bann_id);
@@ -257,18 +276,67 @@ class Admin extends CI_Controller
         $status = $this->input->post('status');
 
         if ($category_id !== null) {
+            // 🔹 First get category details
+            $category = $this->db->where('category_id', $category_id)
+                ->get('tbl_category')
+                ->row();
+
+            if (!$category) {
+                echo json_encode(['success' => false, 'msg' => 'Category not found']);
+                return;
+            }
+
+            // 🔹 Update category status
             $update = $this->db->where('category_id', $category_id)
                 ->update('tbl_category', ['status' => $status]);
 
             if ($update) {
-                echo json_encode(['success' => true, 'msg' => $status == 1 ? 'Active Category' : 'Deactivate Category']);
+                if (!empty($category->parent_id) && $category->parent_id != 0) {
+                    // ===========================
+                    // Case 1: It's a Subcategory
+                    // ===========================
+                    $this->db->where('sub_category', $category_id)
+                        ->update('tbl_product', ['status' => $status]);
+                } else {
+                    // ===========================
+                    // Case 2: It's a Parent Category
+                    // ===========================
+                    // Update products under parent
+                    $this->db->where('category', $category_id)
+                        ->update('tbl_product', ['status' => $status]);
+
+                    // Find all subcategories of this parent
+                    $subcategories = $this->db->where('parent_id', $category_id)
+                        ->get('tbl_category')
+                        ->result();
+
+                    if (!empty($subcategories)) {
+                        foreach ($subcategories as $subcat) {
+                            // Update subcategory status
+                            $this->db->where('category_id', $subcat->category_id)
+                                ->update('tbl_category', ['status' => $status]);
+
+                            // Update products under subcategory
+                            $this->db->where('sub_category', $subcat->category_id)
+                                ->update('tbl_product', ['status' => $status]);
+                        }
+                    }
+                }
+
+                echo json_encode([
+                    'success' => true,
+                    'msg' => $status == 1
+                        ? 'Category and Products Activated Successfully'
+                        : 'Category and Products Deactivated Successfully'
+                ]);
             } else {
-                echo json_encode(['success' => false, 'msg' => 'Faild to change status']);
+                echo json_encode(['success' => false, 'msg' => 'Failed to change category status']);
             }
         } else {
             echo json_encode(['success' => false, 'msg' => 'Unable to find Category records']);
         }
     }
+
 
     public function update_category($category_id)
     {
@@ -279,16 +347,29 @@ class Admin extends CI_Controller
             if ($this->form_validation->run()) {
                 $post = $this->input->post();
 
+                // 🔹 Image upload
                 if (!empty($_FILES['image']['name'])) {
                     $config = array(
                         'upload_path' => './uploads/products/',
                         'allowed_types' => 'gif|jpg|png|jpeg',
                     );
                     $this->load->library('upload', $config);
-                    $this->upload->do_upload('image');
+
+                    $is_upload = $this->upload->do_upload('image');
+
+                    if ($is_upload) {
+                        $db_image = $this->CategoryModel->get_category_image($category_id);
+                        if (!empty($db_image)) {
+                            $old_file_path = './uploads/products/' . $db_image;
+
+                            // Check if file exists before deleting
+                            if (file_exists($old_file_path)) {
+                                unlink($old_file_path); // delete old file
+                            }
+                        }
+                    }
                     $data = $this->upload->data();
                     $post['image'] = $data['raw_name'] . $data['file_ext'];
-
                 }
 
                 $post['updated_on'] = date('d M, Y');
@@ -298,7 +379,8 @@ class Admin extends CI_Controller
                 $check = $this->CategoryModel->update_category($post);
 
                 if ($check) {
-                    $this->session->set_flashdata('successMsg', "Category updated successfully");
+                    
+                    $this->session->set_flashdata('successMsg', "Category and Products updated Successfully");
                     redirect('admin/category');
                 } else {
                     $this->session->set_flashdata('errorMsg', "Unable to update category. Please try again..");
@@ -322,6 +404,19 @@ class Admin extends CI_Controller
         $category = $this->CategoryModel->get_category_by_id($category_id);
 
         if ($category) {
+
+            // 🔹 Step 1: Check if any products exist in this category
+            $this->db->where('category', $category_id);
+            $this->db->or_where('sub_category', $category_id); // if you also want to check subcategories
+            $product_count = $this->db->count_all_results('tbl_product');
+
+            if ($product_count > 0) {
+                // Products found → don’t delete
+                $this->session->set_flashdata('errorMsg', "Cannot delete category. Products already exist in this category.");
+                redirect('admin/category');
+                return;
+            }
+
             // If category has an image, try deleting it from local folder
             if (!empty($category->image)) {
                 $image_path = FCPATH . 'uploads/products/' . $category->image; // Adjust path if different
@@ -386,7 +481,7 @@ class Admin extends CI_Controller
 
             if ($check) {
                 $this->session->set_flashdata('successMsg', "Product added successfully");
-                redirect('admin/add_product');
+                redirect('admin/product');
             } else {
                 $this->session->set_flashdata('errorMsg', "Product Faild to add");
                 redirect('admin/add_product');
@@ -447,7 +542,20 @@ class Admin extends CI_Controller
                         'allowed_types' => 'gif|jpg|png|jpeg',
                     );
                     $this->load->library('upload', $config);
-                    $this->upload->do_upload('image');
+                    $is_upload = $this->upload->do_upload('product_main_image');
+
+                    if ($is_upload) {
+                        $db_main_image = $this->ProductModel->get_product_main_image($product_id);
+                        if (!empty($db_main_image)) {
+                            $old_file_path = './uploads/products/' . $db_main_image;
+
+                            // Check if file exists before deleting
+                            if (file_exists($old_file_path)) {
+                                unlink($old_file_path); // delete old file
+                            }
+                        }
+                    }
+
                     $data = $this->upload->data();
                     $post['product_main_image'] = $data['raw_name'] . $data['file_ext'];
 
@@ -455,42 +563,60 @@ class Admin extends CI_Controller
 
                 $post['updated_on'] = date('d M, Y');
                 $post['product_id'] = $product_id;
-                $post['slug'] = $this->CategoryModel->slug($post['category_name']);
-                echo "<pre>"; print_r($post);
-                die;
-                // $check = $this->CategoryModel->update_category($post);
-                $check = false;
+                $post['slug'] = $this->ProductModel->slug($post['product_name']);
+
+                $check = $this->ProductModel->update_product($post);
+                // $check = false;
                 if ($check) {
-                    $this->session->set_flashdata('successMsg', "Category updated successfully");
+                    $this->session->set_flashdata('successMsg', "Product updated successfully");
                     redirect('admin/product');
                 } else {
-                    $this->session->set_flashdata('errorMsg', "Unable to update category. Please try again..");
+                    $this->session->set_flashdata('errorMsg', "Unable to update product. Please try again..");
                     redirect('admin/update_product/' . $product_id);
                 }
             } else {
-                if ($this->session->userdata('product_id') != "") {
-                    $product_id = $this->session->userdata('product_id');
-                } else {
-                    $this->session->set_userdata('product_id', mt_rand(11111, 99999));
-                    $product_id = $this->session->userdata('product_id');
-                }
                 $data['categories'] = $this->CategoryModel->get_all_categories();
                 $data['product_id'] = $product_id;
                 $data['product'] = $this->ProductModel->get_product_by_id($product_id);
                 $this->load->view('admin/add_product', $data);
             }
         } else {
-            if ($this->session->userdata('product_id') != "") {
-                $product_id = $this->session->userdata('product_id');
-            } else {
-                $this->session->set_userdata('product_id', mt_rand(11111, 99999));
-                $product_id = $this->session->userdata('product_id');
-            }
+
             $data['categories'] = $this->CategoryModel->get_all_categories();
             $data['product_id'] = $product_id;
             $data['product'] = $this->ProductModel->get_product_by_id($product_id);
             $this->load->view('admin/add_product', $data);
         }
+    }
+
+    public function delete_product($product_id)
+    {
+        // Get category details first (to fetch image path)
+        $product = $this->ProductModel->get_product_by_id($product_id);
+
+        if ($product) {
+            // If category has an image, try deleting it from local folder
+            if (!empty($product->product_main_image)) {
+                $image_path = FCPATH . 'uploads/products/' . $product->product_main_image; // Adjust path if different
+
+                if (file_exists($image_path)) {
+                    unlink($image_path); // Delete the image
+                }
+            }
+
+            // Now delete the category from DB
+            $check = $this->ProductModel->delete_product($product_id);
+
+            if ($check) {
+                $this->session->set_flashdata('successMsg', "Product deleted successfully.");
+            } else {
+                $this->session->set_flashdata('errorMsg', "Unable to delete product. Please try again.");
+            }
+        } else {
+            $this->session->set_flashdata('errorMsg', "Category not found.");
+        }
+
+        redirect('admin/product');
     }
 
     public function get_sub_categories()

@@ -78,7 +78,8 @@ class SettingsModel extends CI_Model
         unset($post['id']); // remove id from update fields
 
         $qry = $this->db->where('id', $id)->update('tbl_pincode', $post);
-        if ($qry && $this->db->affected_rows() > 0) {
+        return $qry;
+        if ($qry ) {
             return true;   // update success
         } else {
             return false;  // no rows updated or failed
@@ -88,7 +89,7 @@ class SettingsModel extends CI_Model
     public function update_banner($post)
     {
         $qry = $this->db->where('bann_id', $post['bann_id'])->update('tbl_banner', $post);
-        if ($qry && $this->db->affected_rows() > 0) {
+        if ($qry) {
             return true;   // update success
         } else {
             return false;  // no rows updated or failed

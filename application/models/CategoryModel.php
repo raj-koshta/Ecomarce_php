@@ -17,10 +17,52 @@ class CategoryModel extends CI_Model
     }
 
 
-    public function update_category($post){
+    public function update_category($post)
+    {
+
+
+
         $qry = $this->db->where('category_id', $post['category_id'])->update('tbl_category', $post);
 
         if ($qry) {
+            // ==================================
+            // 🔹 Cascade Product Status Update
+            // ==================================
+            $status = $post['status'];
+
+            // Get current category details
+            $category = $this->CategoryModel->get_category_by_id($post['category_id']);
+
+            if ($category) {
+                if (!empty($category->parent_id) && $category->parent_id != 0) {
+                    // Case 1: Subcategory → update products under this subcategory only
+                    $this->db->where('sub_category', $post['category_id'])
+                        ->update('tbl_product', ['status' => $status]);
+                } else {
+                    // Case 2: Parent category
+                    // Update products under parent
+                    $this->db->where('category', $post['category_id'])
+                        ->update('tbl_product', ['status' => $status]);
+
+                    // Update subcategories + their products
+                    $subcategories = $this->db->where('parent_id', $post['category_id'])
+                        ->get('tbl_category')
+                        ->result();
+
+                    if (!empty($subcategories)) {
+                        foreach ($subcategories as $subcat) {
+                            // Update subcategory status
+                            $this->db->where('category_id', $subcat->category_id)
+                                ->update('tbl_category', ['status' => $status]);
+
+                            // Update products under this subcategory
+                            $this->db->where('sub_category', $subcat->category_id)
+                                ->update('tbl_product', ['status' => $status]);
+                        }
+                    }
+                }
+            }
+            // ==================================
             return true; // update successful
         } else {
             return false; // update failed
@@ -69,11 +111,23 @@ class CategoryModel extends CI_Model
         return $output; // RETURN instead of echo
     }
 
-    public function get_category_by_id($category_id){
+    public function get_category_by_id($category_id)
+    {
         $qry = $this->db->where('category_id', $category_id)->get('tbl_category');
 
-        if($qry->num_rows()){
+        if ($qry->num_rows()) {
             return $qry->row();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_category_image($category_id)
+    {
+        $qry = $this->db->where('category_id', $category_id)->get('tbl_category');
+
+        if ($qry->num_rows()) {
+            return $qry->row()->image;
         } else {
             return false;
         }
