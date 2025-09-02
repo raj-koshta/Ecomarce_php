@@ -378,13 +378,12 @@ class Member extends CI_Controller
 
     public function place_order()
     {
-
-
         $post = $this->input->post();
         $session_token = $this->session->userdata('checkout_token');
 
         // Check if valid token
         if (empty($post['checkout_token']) || $post['checkout_token'] !== $session_token) {
+            $this->session->set_flashdata('errorMsg', 'Invalid or duplicate submission');
             redirect('member/cart'); // invalid/duplicate submission
             return;
         }
@@ -397,10 +396,12 @@ class Member extends CI_Controller
         // If cart is already empty, don’t create a new order
         $carts = $this->CartModel->get_cart();
         if (empty($carts)) {
+            $this->session->set_flashdata('errorMsg', 'Cart is Empty.');
             redirect('member/cart');
             return;
         }
         $address = null;
+
         // Step 1: Handle Billing Address
         if (empty($post['billing_address_id'])) {
             $addressData = [
@@ -424,6 +425,20 @@ class Member extends CI_Controller
             $address = $post['street'] . ' ' . $post['city'] . ' ' . $post['state'] . ' ' . $post['country'] . ' ' . $post['zip_code'];
         }
 
+        // checking cart products are in stock or not
+        $carts = $this->CartModel->get_cart(); // or however you load $carts
+
+        foreach ($carts as $cart) {
+
+            $product_stock = $this->db->where('product_id', $cart->product_id)->get('tbl_product')->row()->stock;
+
+            if (!($product_stock >= $cart->product_qty)) {
+                $this->session->set_flashdata('errorMsg', $cart->product_name . ' are out of stock.');
+                redirect('member/cart');
+                return;
+            }
+        }
+
         // Step 2: Insert Order
         $orderData = [
             'user_id' => $user_id,
@@ -445,9 +460,14 @@ class Member extends CI_Controller
         $order_id = $this->CheckoutModel->insert_order($orderData);
 
         // Step 3: Insert Order Products
-        $carts = $this->CartModel->get_cart(); // or however you load $carts
+        
 
         foreach ($carts as $cart) {
+
+            $product_stock = $this->db->where('product_id', $cart->product_id)->get('tbl_product')->row()->stock;
+
+            $this->db->where('product_id', $cart->product_id)->update('tbl_product', ['stock'=> $product_stock - $cart->product_qty]);
+
             $productData = [
                 'order_id' => $order_id,
                 'product_id' => $cart->product_id,

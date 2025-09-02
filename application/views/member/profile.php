@@ -23,6 +23,16 @@
             border-color: var(--tp-theme-primary);
             box-shadow: none;
         }
+
+        .btn-default{
+            background: #ddd;
+        }
+
+        .btn-default:hover{
+            color: #fff;
+            background: black;
+            border: 1px solid black;
+        }
     </style>
 </head>
 
@@ -519,7 +529,7 @@
                                                         <th scope="col">Payment Mode</th>
                                                         <th scope="col">Delivery Date</th>
                                                         <th scope="col">Status</th>
-                                                        <th scope="col">View</th>
+                                                        <th scope="col">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -545,8 +555,12 @@
                                                                 <td><?= $order->payment_mode ?></td>
                                                                 <td><?= date('d/m/Y', strtotime($order->delivery_date)) ?></td>
                                                                 <td data-info="status pending"><?= $order->order_status ?> </td>
-                                                                <td><a href="member/order-details/<?= $order->id ?>"
-                                                                        target="_blank" class="tp-logout-btn">Invoice</a></td>
+                                                                <td>
+                                                                    <a href="member/order-details/<?= $order->id ?>"
+                                                                        target="_blank" class="tp-logout-btn">Invoice</a>
+                                                                    <a href="member/cancel-order/<?= $order->id ?>"
+                                                                        target="_blank" class="tp-logout-btn btn-default">Cancel</a>
+                                                                </td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
@@ -672,9 +686,6 @@
             </div>
         </div>
     </div>
-
-
-
 
     <?php $this->load->view('member/footer') ?>
 
@@ -833,93 +844,6 @@
     </script>
 
     <!-- Script for old password check -->
-    <!-- <script>
-        $(document).ready(function () {
-            var oldPassValid = false;
-
-            // Check old password on blur
-            $("#old_pass").on("blur", function () {
-                var oldPass = $(this).val().trim();
-                var errorBoxId = "old-pass-error";
-                $("#" + errorBoxId).remove();
-
-                if (oldPass !== "") {
-                    $.ajax({
-                        url: "<?= base_url('member/check_old_password') ?>",
-                        type: "POST",
-                        data: { old_pass: oldPass },
-                        dataType: "json",
-                        success: function (data) {
-                            oldPassValid = data.valid;
-
-                            if (!data.valid) {
-                                var error = $("<div>")
-                                    .attr("id", errorBoxId)
-                                    .addClass("text-danger mt-1")
-                                    .text("Old password is incorrect.");
-                                $("#old_pass").closest('.tp-profile-input-box.old_pass').append(error);
-                            }
-
-                            validateForm();
-                        },
-                        error: function (xhr, status, error) {
-                            console.log(xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            // Check match of new password & confirm password
-            $("#new_pass, #con_new_pass").on("input", function () {
-                validateForm();
-            });
-
-            // Validate form
-            function validateForm() {
-                var newPass = $("#new_pass").val().trim();
-                var conPass = $("#con_new_pass").val().trim();
-                var oldPass = $("#old_pass").val().trim();
-
-                var allFilled = oldPass !== "" && newPass !== "" && conPass !== "";
-
-                // only disable if old password is wrong or fields empty
-                if (allFilled && oldPassValid) {
-                    $("#passwordUpdateBtn").prop("disabled", false);
-                } else {
-                    $("#passwordUpdateBtn").prop("disabled", true);
-                }
-            }
-
-
-            // Form submit check
-            $(".password-form").on("submit", function (e) {
-                let newPass = $("#new_pass").val().trim();
-                let conPass = $("#con_new_pass").val().trim();
-                console.log(newPass);
-
-                if (newPass != conPass) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: "New password and confirm password do not match.",
-                        showConfirmButton: true
-                    });
-                    return; // stop here
-                }
-
-                if (!oldPassValid) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Please Enter Old Password',
-                        showConfirmButton: true
-                    });
-                    return; // stop here
-                }
-            });
-
-        });
-
-    </script> -->
-
     <script>
         $(document).ready(function () {
             var oldPassValid = false;

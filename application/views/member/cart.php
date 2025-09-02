@@ -49,6 +49,7 @@
                                     <thead>
                                         <tr>
                                             <th colspan="2" class="tp-cart-header-product">Product</th>
+                                            <th class="tp-cart-header-price">Stock</th>
                                             <th class="tp-cart-header-price">Price</th>
                                             <th class="tp-cart-header-quantity">Quantity</th>
                                             <th></th>
@@ -64,9 +65,36 @@
                                                         <img src="uploads/products/<?= $cart->product_image ?>" alt="">
                                                     </a></td>
                                                 <!-- title -->
-                                                <td class="tp-cart-title"><a
-                                                        href="product/<?= $cart->slug ?>"><?= $cart->product_name ?></a></td>
+                                                <td class="tp-cart-title">
+                                                    <a href="product/<?= $cart->slug ?>">
+                                                        <?php
+                                                        $name = $cart->product_name;
+                                                        $trimmed_name = (strlen($name) > 30) ? substr($name, 0, 30) . "..." : $name;
+                                                        ?>
+                                                        <?= $trimmed_name ?>
+                                                    </a>
+                                                </td>
                                                 <!-- price -->
+                                                <td class="tp-cart-price">
+
+                                                    <?php
+                                                    $product_stock = $this->db->where('product_id', $cart->product_id)->get('tbl_product')->row()->stock;
+
+                                                    ?>
+                                                    <div class="tp-product-details-stock mb-10">
+                                                        <?php if ($product_stock > 0 && $product_stock >=$cart->product_qty) { ?>
+                                                            <span style="font-size: 15px;">In Stock</span>
+                                                            <?php if ($product_stock < 6) { ?>
+                                                                <p><?= $product_stock . ' are remaining' ?></p>
+                                                            <?php } ?>
+                                                        <?php } else { ?>
+                                                            <span style="color: red; background-color: rgb(255 9 9 / 6%); font-size: 15px;">
+                                                                Out Of Stock
+                                                            </span>
+                                                        <?php } ?>
+                                                    </div>
+
+                                                </td>
                                                 <td class="tp-cart-price">
                                                     <span>$<?= number_format($cart->selling_price, 2) ?></span>
                                                 </td>
