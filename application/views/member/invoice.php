@@ -80,8 +80,17 @@
             transition: background 0.3s ease;
         }
 
-        .badge-status {
+        .badge-status-success {
             background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.8rem;
+            padding: .5em .9em;
+            border-radius: .65rem;
+        }
+
+        .badge-status-danger {
+            background: linear-gradient(135deg, #ff4f4fc9, #c92020);
             color: #fff;
             font-weight: 500;
             font-size: 0.8rem;
@@ -192,10 +201,17 @@
                                 <p class="mb-2 icon-text"><i class="bi bi-calendar-check text-success"></i>
                                     <strong>Date:</strong> <?= date('d-m-Y', strtotime($order->order_date)) ?>
                                 </p>
-                                <p class="mb-2 icon-text"><i class="bi bi-check-circle text-success"></i>
-                                    <strong>Status:</strong>
-                                    <span class="badge-status"><?= $order->order_status ?></span>
-                                </p>
+                                <?php if ($order->order_status_id == 5): ?>
+                                    <p class="mb-2 icon-text"><i class="bi bi-check-circle text-danger"></i>
+                                        <strong>Status:</strong>
+                                        <span class="badge-status-danger"><?= $order->status ?></span>
+                                    </p>
+                                <?php else: ?>
+                                    <p class="mb-2 icon-text"><i class="bi bi-check-circle text-success"></i>
+                                        <strong>Status:</strong>
+                                        <span class="badge-status-success"><?= $order->status ?></span>
+                                    </p>
+                                <?php endif; ?>
                                 <p class="mb-0 icon-text">
                                     <i class="bi bi-credit-card text-warning"></i>
                                     <strong>Payment Method:</strong>

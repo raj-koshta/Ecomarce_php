@@ -26,23 +26,27 @@
             </div>
             <div class="tp-shop-sidebar">
                 <!-- filter -->
-                <div class="tp-shop-widget mb-35">
-                    <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
+                <form action="category/<?= $this->uri->segment(2); ?>/filter-by-price" method="post">
+                    <div class="tp-shop-widget mb-35">
+                        <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
 
-                    <div class="tp-shop-widget-content">
-                        <div class="tp-shop-widget-filter">
-                            <div id="slider-range-offcanvas" class="mb-10"></div>
-                            <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                                <span class="input-range">
-                                    <input type="text" id="amount-offcanvas" readonly>
-                                </span>
-                                <button class="tp-shop-widget-filter-btn" type="button">Filter</button>
+                        <div class="tp-shop-widget-content">
+                            <div class="tp-shop-widget-filter">
+                                <div id="slider-range-offcanvas" class="mb-10"></div>
+                                <div
+                                    class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
+                                    <span class="input-range">
+                                        <input type="text" id="amount-offcanvas" name="price_ranger" readonly>
+                                    </span>
+                                    <input type="hidden" name="category" value="<?= $this->uri->segment(2); ?>">
+                                    <button class="tp-shop-widget-filter-btn" type="submit">Filter</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
                 <!-- status -->
-                <div class="tp-shop-widget mb-50">
+                <!-- <div class="tp-shop-widget mb-50">
                     <h3 class="tp-shop-widget-title">Product Status</h3>
 
                     <div class="tp-shop-widget-content">
@@ -56,31 +60,40 @@
                                     <input id="in_stock2" type="checkbox">
                                     <label for="in_stock2">In Stock</label>
                                 </li>
-                            </ul><!-- .filter-items -->
-                        </div>
-                    </div>
-                </div>
-                <!-- categories -->
-                <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Categories</h3>
-
-                    <div class="tp-shop-widget-content">
-                        <div class="tp-shop-widget-categories">
-                            <ul>
-                                <li><a href="#">Leather <span>10</span></a></li>
-                                <li><a href="#">Classic Watch <span>18</span></a></li>
-                                <li><a href="#">Leather Man Wacth <span>22</span></a></li>
-                                <li><a href="#">Trending Watch <span>17</span></a></li>
-                                <li><a href="#">Google <span>22</span></a></li>
-                                <li><a href="#">Woman Wacth <span>14</span></a></li>
-                                <li><a href="#">Tables <span>19</span></a></li>
-                                <li><a href="#">Electronics <span>29</span></a></li>
-                                <li><a href="#">Phones <span>05</span></a></li>
-                                <li><a href="#">Grocery <span>14</span></a></li>
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> -->
+                <!-- categories -->
+                <?php if (!empty($allCategories)): ?>
+                    <div class="tp-shop-widget mb-50">
+                        <h3 class="tp-shop-widget-title">Categories</h3>
+
+                        <div class="tp-shop-widget-content">
+                            <div class="tp-shop-widget-categories">
+                                <ul>
+                                    <?php foreach ($allCategories as $category): ?>
+                                        <li>
+                                            <a href="category/<?= $category->slug ?>">
+                                                <?= $category->category_name ?>
+                                                <?php
+                                                $is_sub_cate = $this->CategoryModel->is_sub_category($category->category_id);
+
+                                                if ($is_sub_cate == 'true') {
+                                                    $totalProducts = $this->db->where(['sub_category' => $category->category_id, 'status' => 1])->count_all_results('tbl_product');
+                                                } else {
+                                                    $totalProducts = $this->db->where(['category' => $category->category_id, 'status' => 1])->count_all_results('tbl_product');
+                                                }
+                                                ?>
+                                                <span><?= $totalProducts ?></span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -94,10 +107,12 @@
                 <div class="row">
                     <div class="col-xxl-12">
                         <div class="breadcrumb__content p-relative z-index-1">
-                            <h3 class="breadcrumb__title">Shop</h3>
+                            <h3 class="breadcrumb__title"><?= ucwords(str_replace('-', ' ', $this->uri->segment(2))); ?>
+                            </h3>
                             <div class="breadcrumb__list">
                                 <span><a href="#">Home</a></span>
-                                <span>Shop</span>
+                                <span>All Categories</span>
+                                <span><?= ucwords(str_replace('-', ' ', $this->uri->segment(2))); ?></span>
                             </div>
                         </div>
                     </div>
@@ -113,24 +128,29 @@
                     <div class="col-xl-3 col-lg-4 d-none d-lg-block">
                         <div class="tp-shop-sidebar mr-10">
                             <!-- filter -->
-                            <div class="tp-shop-widget mb-35">
-                                <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
+                            <form action="category/<?= $this->uri->segment(2); ?>/filter-by-price" method="post"
+                                class="d-inline">
+                                <div class="tp-shop-widget mb-35">
+                                    <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
 
-                                <div class="tp-shop-widget-content">
-                                    <div class="tp-shop-widget-filter">
-                                        <div id="slider-range" class="mb-10"></div>
-                                        <div
-                                            class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                                            <span class="input-range">
-                                                <input type="text" id="amount" readonly>
-                                            </span>
-                                            <button class="tp-shop-widget-filter-btn" type="button">Filter</button>
+                                    <div class="tp-shop-widget-content">
+                                        <div class="tp-shop-widget-filter">
+                                            <div id="slider-range" class="mb-10"></div>
+                                            <div
+                                                class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
+                                                <span class="input-range">
+                                                    <input type="text" id="amount" name="price_ranger" readonly>
+                                                </span>
+                                                <input type="hidden" name="category"
+                                                    value="<?= $this->uri->segment(2); ?>">
+                                                <button class="tp-shop-widget-filter-btn" type="submit">Filter</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                             <!-- status -->
-                            <div class="tp-shop-widget mb-50">
+                            <!-- <div class="tp-shop-widget mb-50">
                                 <h3 class="tp-shop-widget-title">Product Status</h3>
 
                                 <div class="tp-shop-widget-content">
@@ -144,31 +164,41 @@
                                                 <input id="in_stock" type="checkbox">
                                                 <label for="in_stock">In Stock</label>
                                             </li>
-                                        </ul><!-- .filter-items -->
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- categories -->
-                            <div class="tp-shop-widget mb-50">
-                                <h3 class="tp-shop-widget-title">Categories</h3>
-
-                                <div class="tp-shop-widget-content">
-                                    <div class="tp-shop-widget-categories">
-                                        <ul>
-                                            <li><a href="#">Leather <span>10</span></a></li>
-                                            <li><a href="#">Classic Watch <span>18</span></a></li>
-                                            <li><a href="#">Leather Man Wacth <span>22</span></a></li>
-                                            <li><a href="#">Trending Watch <span>17</span></a></li>
-                                            <li><a href="#">Google <span>22</span></a></li>
-                                            <li><a href="#">Woman Wacth <span>14</span></a></li>
-                                            <li><a href="#">Tables <span>19</span></a></li>
-                                            <li><a href="#">Electronics <span>29</span></a></li>
-                                            <li><a href="#">Phones <span>05</span></a></li>
-                                            <li><a href="#">Grocery <span>14</span></a></li>
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
+                            <!-- categories -->
+                            <?php if (!empty($allCategories)): ?>
+                                <div class="tp-shop-widget mb-50">
+                                    <h3 class="tp-shop-widget-title">Categories</h3>
+
+                                    <div class="tp-shop-widget-content">
+                                        <div class="tp-shop-widget-categories">
+                                            <ul>
+                                                <?php foreach ($allCategories as $category): ?>
+                                                    <li>
+                                                        <a href="category/<?= $category->slug ?>">
+                                                            <?= $category->category_name ?>
+                                                            <?php
+                                                            $is_sub_cate = $this->CategoryModel->is_sub_category($category->category_id);
+
+                                                            if ($is_sub_cate == 'true') {
+                                                                $totalProducts = $this->db->where(['sub_category' => $category->category_id, 'status' => 1])->count_all_results('tbl_product');
+                                                            } else {
+                                                                $totalProducts = $this->db->where(['category' => $category->category_id, 'status' => 1])->count_all_results('tbl_product');
+                                                            }
+                                                            ?>
+                                                            <span><?= $totalProducts ?></span>
+                                                        </a>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-xl-9 col-lg-8">
@@ -234,12 +264,12 @@
                                         <div
                                             class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end mt-lg-0">
                                             <div class="tp-shop-top-select">
-                                                <select>
-                                                    <option>Default Sorting</option>
-                                                    <option>Low to Hight</option>
-                                                    <option>High to Low</option>
-                                                    <option>New Added</option>
-                                                    <option>On Sale</option>
+                                                <select class="product-sorting"
+                                                    data-category-slug='<?= $this->uri->segment(2); ?>'>
+                                                    <option value="default" <?= !empty($slug) && $sort == 'default' ? 'selected' :''?>>Default Sorting</option>
+                                                    <option value="lowtohigh" <?= !empty($slug) && $sort == 'lowtohigh' ? 'selected' :''?>>Low to Hight</option>
+                                                    <option value="hightolow" <?= !empty($slug) && $sort == 'hightolow' ? 'selected' :''?>>High to Low</option>
+                                                    <option value="newadded" <?= !empty($slug) && $sort == 'newadded' ? 'selected' :''?>>New Added</option>
                                                 </select>
                                             </div>
                                             <div class="tp-shop-top-filter d-lg-none">
@@ -277,6 +307,10 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div id="product-listing">
+                                <!-- products will load here -->
                             </div>
                             <div class="tp-shop-items-wrapper tp-shop-item-primary">
                                 <div class="tab-content" id="productTabContent">
@@ -331,9 +365,9 @@
                                                                                         d="M13.9692 15.3092C13.874 15.3092 13.7958 15.3874 13.7958 15.4835C13.7966 15.6781 14.1451 15.6764 14.1443 15.4835C14.1443 15.3874 14.0652 15.3092 13.9692 15.3092ZM13.969 16.5815C13.3621 16.5815 12.8691 16.0884 12.8691 15.4826C12.8691 14.8767 13.3621 14.3845 13.969 14.3845C14.5768 14.3845 15.0706 14.8767 15.0706 15.4826C15.0706 16.0884 14.5768 16.5815 13.969 16.5815Z"
                                                                                         fill="currentColor" />
                                                                                 </svg>
-                                                                                <span
-                                                                                    class="tp-product-tooltip tp-product-tooltip-right">Add
-                                                                                    to Cart</span>
+                                                                                <span class="tp-product-tooltip tp-product-tooltip-right">
+                                                                                    Add to Cart
+                                                                                </span>
                                                                             </button>
                                                                         </form>
 
@@ -350,8 +384,9 @@
                                                                                     fill="currentColor" />
                                                                             </svg>
                                                                             <span
-                                                                                class="tp-product-tooltip tp-product-tooltip-right">Quick
-                                                                                View</span>
+                                                                                class="tp-product-tooltip tp-product-tooltip-right">
+                                                                                Quick View
+                                                                            </span>
                                                                         </button>
                                                                         <form
                                                                             action="<?= base_url('member/add-to-wishlist'); ?>"
@@ -372,9 +407,9 @@
                                                                                         d="M14.203 6.67473C13.8627 6.67473 13.5743 6.41474 13.5462 6.07159C13.4882 5.35202 13.0046 4.7445 12.3162 4.52302C11.9689 4.41097 11.779 4.04068 11.8906 3.69666C12.0041 3.35175 12.3724 3.16442 12.7206 3.27297C13.919 3.65901 14.7586 4.71561 14.8615 5.96479C14.8905 6.32632 14.6206 6.64322 14.2575 6.6721C14.239 6.67385 14.2214 6.67473 14.203 6.67473Z"
                                                                                         fill="currentColor" />
                                                                                 </svg>
-                                                                                <span
-                                                                                    class="tp-product-tooltip tp-product-tooltip-right">Add
-                                                                                    To Wishlist</span>
+                                                                                <span class="tp-product-tooltip tp-product-tooltip-right">
+                                                                                    Add To Wishlist
+                                                                                </span>
                                                                             </button>
                                                                         </form>
                                                                     </div>
@@ -704,7 +739,7 @@
 
     <?php $this->load->view('member/footer') ?>
 
-
+    <!-- Quick view script -->
     <script>
         $(document).on('click', '.tp-product-quick-view-btn', function () {
             var productId = $(this).data('product-id');
@@ -750,6 +785,51 @@
             });
         });
 
+    </script>
+
+    <!-- Filter by price filter update -->
+    <script>
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: ['<?= $min_range ?>', <?= $max_range ?>],
+            slide: function (event, ui) {
+                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+            }
+        });
+        $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+            " - $" + $("#slider-range").slider("values", 1));
+
+        $("#slider-range-offcanvas").slider({
+            range: true,
+            min: 0,
+            max: 10000,
+            values: ['<?= $min_range ?>', <?= $max_range ?>],
+            slide: function (event, ui) {
+                $("#amount-offcanvas").val("$" + ui.values[0] + " - $" + ui.values[1]);
+            }
+        });
+        $("#amount-offcanvas").val("$" + $("#slider-range-offcanvas").slider("values", 0) +
+            " - $" + $("#slider-range-offcanvas").slider("values", 1));
+    </script>
+
+    <!-- Filter by sorting -->
+    <script>
+        $(document).ready(function () {
+            $(".product-sorting").on("change", function () {
+                let sortValue = $(this).val();
+                let categorySlug = $(this).data("category-slug");
+
+                if (sortValue) {
+                    // reload page with sort parameter
+                    window.location.href = "category/" + categorySlug + "?sort=" + sortValue;
+                } else {
+                    // if default selected, just reload category without sort
+                    window.location.href = "category/" + categorySlug;
+                }
+            });
+        });
     </script>
 
 </body>

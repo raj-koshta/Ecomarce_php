@@ -1108,7 +1108,7 @@
 	var slider = new Swiper('.tp-product-related-slider-active', {
 		slidesPerView: 4,
 		spaceBetween: 24,
-		loop: true,
+		loop: false,
 		rtl: rtl_setting,
 		enteredSlides: false,
 		pagination: {
@@ -1721,8 +1721,8 @@
 		$("#slider-range").slider({
 			range: true,
 			min: 0,
-			max: 500,
-			values: [75, 300],
+			max: 10000,
+			values: [75, 10000],
 			slide: function (event, ui) {
 				$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
 			}
@@ -1733,8 +1733,8 @@
 		$("#slider-range-offcanvas").slider({
 			range: true,
 			min: 0,
-			max: 500,
-			values: [75, 300],
+			max: 10000,
+			values: [0, 10000],
 			slide: function (event, ui) {
 				$("#amount-offcanvas").val("$" + ui.values[0] + " - $" + ui.values[1]);
 			}
@@ -1786,8 +1786,8 @@
 		$("#slider-range").slider({
 			range: true,
 			min: 0,
-			max: 500,
-			values: [75, 300],
+			max: 10000,
+			values: [0, 10000],
 			slide: function (event, ui) {
 			  $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
 			},
@@ -1885,7 +1885,7 @@
 	}
 
 
-	if ($('#productTabMarker').length > 0) {
+	if ($('#productTabMarker').length >= 0) {
 		function tp_tab_line_2(){
 			var marker = document.querySelector('#productTabMarker');
 			var item = document.querySelectorAll('.tp-product-tab button');

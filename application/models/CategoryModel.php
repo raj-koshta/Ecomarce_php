@@ -26,7 +26,7 @@ class CategoryModel extends CI_Model
 
         if ($qry) {
             // ==================================
-            // 🔹 Cascade Product Status Update
+            // 🔹  Product Status Update
             // ==================================
             $status = $post['status'];
 
@@ -133,6 +133,22 @@ class CategoryModel extends CI_Model
         }
     }
 
+    public function is_sub_category($category_id)
+    {
+        $this->db->where('category_id', $category_id);
+        $this->db->group_start()
+            ->where('parent_id', '')
+            ->or_where('parent_id IS NULL', null, false)
+            ->group_end();
+        $qry = $this->db->get('tbl_category');
+
+        if ($qry->num_rows() > 0) {
+            return false;   // parent_id is NULL or ''
+        } else {
+            return true;  // parent exists
+        }
+
+    }
 
     public function slug($category_name)
     {

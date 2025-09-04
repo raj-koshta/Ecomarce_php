@@ -73,6 +73,16 @@ class CartModel extends CI_Model
 
     }
 
+    public function get_charge_by_pincode($pincode = null){
+        $qry = $this->db->where(['pincode' => $pincode, 'status' => 1])->get('tbl_pincode');
+
+        if($qry->num_rows()){
+            return $qry->row()->delivery_charge;
+        } else {
+            return false;
+        }
+    }
+
     public function total(){
         $qry = $this->db->select('sum(selling_price * product_qty) as total_price')->where('user_id',$this->get_userid())->get('tbl_cart');
         if($qry->num_rows()){

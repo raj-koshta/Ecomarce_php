@@ -173,7 +173,7 @@
                                     <span
                                         class="tp-cart-checkout-top-price">$<?php echo number_format($total_price['subtotal'], 2) ?></span>
                                 </div>
-                                <div class="tp-cart-checkout-shipping">
+                                <!-- <div class="tp-cart-checkout-shipping">
                                     <h4 class="tp-cart-checkout-shipping-title">Shipping</h4>
 
                                     <div class="tp-cart-checkout-shipping-option-wrapper">
@@ -200,11 +200,11 @@
                                             </div>
                                         <?php endif; ?>
                                     </div>
-                                </div>
-                                <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                                </div> -->
+                                <!-- <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
                                     <span>Total</span>
                                     <span>$<?php echo number_format($total_price['grandtotal'], 2); ?></span>
-                                </div>
+                                </div> -->
                                 <div class="tp-cart-checkout-proceed">
                                     <a href="member/checkout" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
                                 </div>

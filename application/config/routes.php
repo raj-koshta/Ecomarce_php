@@ -57,4 +57,5 @@ $route['translate_uri_dashes'] = true;
 $route['admin'] = 'admin/dashboard';
 $route['product/(:any)'] = 'member/product_details/$1';
 $route['category/(:any)'] = 'member/product_by_category/$1';
+$route['category/(:any)/filter-by-price'] = 'member/filter_by_price';
 $route['category/(:any)/(:any)'] = 'member/product_by_category/$1/$2';

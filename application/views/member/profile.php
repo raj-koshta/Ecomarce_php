@@ -24,14 +24,23 @@
             box-shadow: none;
         }
 
-        .btn-default{
+        .btn-default {
             background: #ddd;
         }
 
-        .btn-default:hover{
+        .btn-default:hover {
             color: #fff;
             background: black;
             border: 1px solid black;
+        }
+
+        .disabled-link {
+            pointer-events: none;
+            /* disables click */
+            opacity: 0.5;
+            /* faded look */
+            cursor: not-allowed;
+            /* show blocked cursor */
         }
     </style>
 </head>
@@ -554,12 +563,15 @@
                                                                 <td>$<?= number_format($order->total, 2) ?></td>
                                                                 <td><?= $order->payment_mode ?></td>
                                                                 <td><?= date('d/m/Y', strtotime($order->delivery_date)) ?></td>
-                                                                <td data-info="status pending"><?= $order->order_status ?> </td>
+                                                                <td data-info="status"
+                                                                    style="color: <?= $order->order_status_id == 5 ? 'red' : 'green' ?>">
+                                                                    <?= $order->status ?>
+                                                                </td>
                                                                 <td>
                                                                     <a href="member/order-details/<?= $order->id ?>"
                                                                         target="_blank" class="tp-logout-btn">Invoice</a>
                                                                     <a href="member/cancel-order/<?= $order->id ?>"
-                                                                        target="_blank" class="tp-logout-btn btn-default">Cancel</a>
+                                                                        class="tp-logout-btn btn-default <?= $order->order_status_id == 5 ? 'disabled-link' : '' ?>">Cancel</a>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; ?>

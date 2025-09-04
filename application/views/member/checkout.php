@@ -122,12 +122,12 @@ if (empty($this->CartModel->get_cart())) {
                             <h3 class="tp-checkout-bill-title">Billing Details</h3>
 
                             <div class="tp-checkout-bill-form">
-                                <form action="member/place_order" method="post" id="billing_address">
+                                <form action="member/place_order" method="post" id="billing_address" onsubmit="check_grand_total()">
                                     <div class="tp-checkout-bill-inner">
                                         <div class="row">
                                             <input type="hidden" name="billing_address_id">
-                                            <input type="hidden" name="delivery" value="<?= $total_price['delivery'] ?>">
-                                            <input type="hidden" name="grandtotal" value="<?= $total_price['grandtotal'] ?>">
+                                            <input type="hidden" name="delivery" id="delivery_charges_hidden" value="<?= $total_price['delivery'] ?>">
+                                            <input type="hidden" name="grandtotal" id="grand_total_price_hidden" value="<?= $total_price['grandtotal'] ?>">
                                             <input type="hidden" name="payment" id="payment_method" value="cod">
                                             <input type="hidden" name="checkout_token" value="<?= $checkout_token ?>">
                                             <div class="col-md-6">
@@ -150,7 +150,7 @@ if (empty($this->CartModel->get_cart())) {
                                             </div> -->
                                             <div class="col-md-12">
                                                 <div class="tp-checkout-input">
-                                                    <label>Street address</label>
+                                                    <label>Street address<span>*</span></label>
                                                     <input required type="text" placeholder="House number, street name, Apartment, suite, unit, etc. (optional)" name="street">
                                                 </div>
 
@@ -161,26 +161,26 @@ if (empty($this->CartModel->get_cart())) {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
-                                                    <label>Country / Region </label>
+                                                    <label>Country / Region<span>*</span></label>
                                                     <input type="text" placeholder="United States" name="country" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
-                                                    <label>Town / City</label>
+                                                    <label>Town / City<span>*</span></label>
                                                     <input type="text" placeholder="Texas" name="city" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
-                                                    <label>State / County</label>
+                                                    <label>State / County<span>*</span></label>
                                                     <input type="text" placeholder="Austin" name="state" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="tp-checkout-input">
-                                                    <label>Postcode ZIP</label>
-                                                    <input type="number" placeholder="45236" name="zip_code" required>
+                                                    <label>Postcode ZIP<span>*</span></label>
+                                                    <input type="number" placeholder="45236" id="zip_code_input" name="zip_code" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -257,11 +257,13 @@ if (empty($this->CartModel->get_cart())) {
 
                                         <li class="tp-order-info-list-subtotal">
                                             <span>Shipping Charges</span>
-                                            <?php if($total_price['subtotal'] > 999): ?>
+                                            <span class="delivery_charges" style="color: var(--tp-theme-primary);">$40.00</span>
+                                            <input type="hidden" id="subtotal_price" value="<?=$total_price['subtotal']?>">
+                                            <!-- <?php if($total_price['subtotal'] > 999): ?>
                                                 <span>$<?php echo number_format($total_price['delivery'],2)?></span>
                                             <?php else:?>
-                                                    <span>$<?php echo number_format($total_price['delivery'],2)?></span>
-                                            <?php endif;?>
+                                                    <span class="delivery_charges">$<?php echo number_format($total_price['delivery'],2)?></span>
+                                            <?php endif;?> -->
                                         </li>
 
                                         <li>
@@ -286,7 +288,7 @@ if (empty($this->CartModel->get_cart())) {
                                         <!-- total -->
                                         <li class="tp-order-info-list-total">
                                             <span>Total</span>
-                                            <span>$<?= number_format($total_price['grandtotal'],2)?></span>
+                                            <span id="grand_total_price" style="color: var(--tp-theme-primary);">$<?= number_format($total_price['grandtotal'],2)?></span>
                                         </li>
                                     </ul>
                                 </div>
@@ -375,6 +377,16 @@ if (empty($this->CartModel->get_cart())) {
                 $("input[name='phone']").val(card.data("phone"));
                 $("input[name='email']").val(card.data("email"));
                 $("input[name='billing_address_id']").val(card.data("billing_address_id"));
+
+                var sub_total = $('#subtotal_price').val().trim();
+
+                if(sub_total > 999) {
+                    $('.delivery_charges').text('$0.00');
+                    $('#delivery_charges_hidden').val('0');
+                    return;
+                } else {
+                    get_delivery_charges();
+                }
             } else {
                 // Optional: clear form if user unchecks the selected address
                 $("input[name='first_name'], input[name='last_name'], input[name='country'], input[name='street'], input[name='city'], input[name='state'], input[name='zip_code'], input[name='phone'], input[name='email']").val('');
@@ -388,6 +400,67 @@ if (empty($this->CartModel->get_cart())) {
             $("#payment_method").val($(this).attr("id"));
         });
 
+    </script>
+
+<!-- delivery charges update -->
+    <script>
+        $(document).on('change', '#zip_code_input', function (){
+            
+            var sub_total = $('#subtotal_price').val().trim();
+
+            if(sub_total > 999) {
+                $('.delivery_charges').text('$0.00');
+                $('#delivery_charges_hidden').val('0');
+                return;
+            }
+            get_delivery_charges();
+        })
+
+        function get_delivery_charges(){
+            var pincode = $('#zip_code_input').val().trim();
+            var sub_total = $('#subtotal_price').val().trim();
+
+            if (pincode.length < 4) {
+                // Less than 4 digits → set default charge
+                $('.delivery_charges').text('$40.00');
+                $('#delivery_charges_hidden').val('40');
+                return;
+            }
+            $.ajax({
+                url: 'member/get-delivery-charge', // <-- replace with your backend route
+                type: 'POST',
+                data: { pincode: pincode },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        $('.delivery_charges').text('$' + response.delivery_charge+'.00');
+                        $('#delivery_charges_hidden').val(response.delivery_charge);
+                        grandTotalPrice = parseInt(sub_total)+parseInt(response.delivery_charge);
+                        $('#grand_total_price').text('$'+grandTotalPrice+'.00');
+                        $('#grand_total_price_hidden').val(grandTotalPrice);
+                    } else {
+                        $('.delivery_charges').text('$40.00');
+                        $('#delivery_charges_hidden').val('40');
+                    }
+                },
+                error: function () {
+                    $('.delivery_charges').text('Error fetching charges');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function check_grand_total(){
+            var sub_total = $('#subtotal_price').val().trim();
+
+            if(sub_total > 999) {
+                $('.delivery_charges').text('$0.00');
+                $('#delivery_charges_hidden').val('0');
+                return;
+            }
+            get_delivery_charges();
+        }
     </script>
 </body>
 

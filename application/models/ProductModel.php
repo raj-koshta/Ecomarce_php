@@ -49,11 +49,40 @@ class ProductModel extends CI_Model
         }
     }
 
-    public function fetch_product($category_id)
+    public function fetch_product_category_id($slug)
+    {
+        $qry = $this->db
+            ->select("CASE 
+                    WHEN sub_category IS NULL OR sub_category = '' OR sub_category = '0' 
+                    THEN category 
+                    ELSE sub_category 
+                  END as category_id", false)
+            ->where('slug', $slug)
+            ->get('tbl_product');
+
+        if ($qry->num_rows()) {
+            return $qry->row()->category_id;
+        } else {
+            return false;
+        }
+
+    }
+
+    public function fetch_product($category_id, $sort = null)
     {
         $this->db->where(['status' => 1]);
         $this->db->like(['category' => $category_id]);
         $this->db->or_like(['sub_category' => $category_id]);
+
+        // ✅ Apply sorting
+        if ($sort === 'lowtohigh') {
+            $this->db->order_by('selling_price', 'ASC');
+        } elseif ($sort === 'hightolow') {
+            $this->db->order_by('selling_price', 'DESC');
+        } elseif ($sort === 'newadded') {
+            $this->db->order_by('id', 'DESC'); // assuming 'id' is auto-increment (newest first)
+        }
+
         $qry = $this->db->get('tbl_product');
         if ($qry->num_rows()) {
             return $qry->result();
@@ -61,6 +90,29 @@ class ProductModel extends CI_Model
             return false;
         }
     }
+
+    public function fetch_product_by_price($category_id, $min_price, $max_price, $is_sub_cate)
+    {
+        $this->db->where('status', 1);
+
+        $this->db->where('selling_price >=', $min_price);
+        $this->db->where('selling_price <=', $max_price);
+
+        if ($is_sub_cate == 'true') {
+            $this->db->where('sub_category', $category_id);
+        } else {
+            $this->db->where('category', $category_id);
+        }
+
+        $qry = $this->db->get('tbl_product');
+
+        if ($qry->num_rows() > 0) {
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
 
     public function get_product_by_id($product_id)
     {
@@ -94,5 +146,7 @@ class ProductModel extends CI_Model
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
         return $slug;
     }
+
+
 
 }

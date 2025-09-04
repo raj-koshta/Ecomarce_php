@@ -89,6 +89,8 @@ class Member extends CI_Controller
     {
         $data['product'] = $this->HomeModel->get_product_details($slug);
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $category_id = $this->ProductModel->fetch_product_category_id($slug);
+        $data['relatedProducts'] = $this->ProductModel->fetch_product($category_id);
         $this->load->view('member/product_details', $data);
     }
 
@@ -142,8 +144,14 @@ class Member extends CI_Controller
     {
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
         $category_id = $this->ProductModel->fetch_category_id(empty($slug2) ? $slug1 : $slug2);
-        $data['products'] = $this->ProductModel->fetch_product($category_id);
+
+        $data['sort'] = $this->input->get('sort'); // capture ?sort=lowtohigh, hightolow, newadded
+
+        $data['products'] = $this->ProductModel->fetch_product($category_id, $data['sort']);
+
+        $data['allCategories'] = $this->HomeModel->get_all_categories();
         $this->load->view('member/product', $data);
+
     }
 
     public function category()
@@ -353,6 +361,26 @@ class Member extends CI_Controller
         redirect('member/profile');
     }
 
+    public function get_delivery_charge()
+    {
+        $pincode = $this->input->post('pincode');
+
+        // If no zip code provided, fallback
+        if (empty($pincode)) {
+            echo json_encode(['success' => true, 'delivery_charge' => 40]);
+            return;
+        }
+
+        $delivery_charge = $this->CartModel->get_charge_by_pincode($pincode);
+
+        if ($delivery_charge !== false) {
+            echo json_encode(['success' => true, 'delivery_charge' => $delivery_charge]);
+        } else {
+            // fallback if zip not found in DB
+            echo json_encode(['success' => true, 'delivery_charge' => 40]);
+        }
+    }
+
     public function checkout()
     {
         if (!empty($this->session->userdata('login_id'))) {
@@ -381,6 +409,7 @@ class Member extends CI_Controller
         $post = $this->input->post();
         $session_token = $this->session->userdata('checkout_token');
 
+        // print_r($_POST); die;
         // Check if valid token
         if (empty($post['checkout_token']) || $post['checkout_token'] !== $session_token) {
             $this->session->set_flashdata('errorMsg', 'Invalid or duplicate submission');
@@ -453,20 +482,20 @@ class Member extends CI_Controller
             'delivery_date' => date('Y-m-d', strtotime(date('Y-m-d') . ' +10 days')),
             'order_date' => date('Y-m-d'),
             'note' => $post['order_note'],
-            'order_status' => 'Order Confirmed',
+            'order_status' => 1,
             'ip' => $_SERVER["REMOTE_ADDR"]
         ];
 
         $order_id = $this->CheckoutModel->insert_order($orderData);
 
         // Step 3: Insert Order Products
-        
+
 
         foreach ($carts as $cart) {
 
             $product_stock = $this->db->where('product_id', $cart->product_id)->get('tbl_product')->row()->stock;
 
-            $this->db->where('product_id', $cart->product_id)->update('tbl_product', ['stock'=> $product_stock - $cart->product_qty]);
+            $this->db->where('product_id', $cart->product_id)->update('tbl_product', ['stock' => $product_stock - $cart->product_qty]);
 
             $productData = [
                 'order_id' => $order_id,
@@ -509,6 +538,7 @@ class Member extends CI_Controller
         $data['order'] = $this->UserModel->get_order_details($order_id);
         $data['orderProducts'] = $this->UserModel->get_order_products($order_id);
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        // print_r($data['order']); die;
         if (empty($data['order'])) {
             redirect('member/profile');
         } else {
@@ -516,13 +546,28 @@ class Member extends CI_Controller
         }
     }
 
-    public function wishlist(){
-        $data['wishlists'] = $this->WishlistModel->get_wishlists();
-        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
-        $this->load->view('member/wishlist',$data);
+    public function cancel_order($order_id)
+    {
+        $check = $this->UserModel->cancel_order($order_id);
+
+        if ($check) {
+            $this->session->set_flashdata('successMsg', 'Order cancelled successfully.');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Unable to cancel your order right now, please try again after some time.');
+        }
+
+        redirect('member/profile');
     }
 
-    public function add_to_wishlist(){
+    public function wishlist()
+    {
+        $data['wishlists'] = $this->WishlistModel->get_wishlists();
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $this->load->view('member/wishlist', $data);
+    }
+
+    public function add_to_wishlist()
+    {
         $post = $this->input->post();
         $check = $this->WishlistModel->add($post['product_id']);
         if ($check) {
@@ -533,7 +578,8 @@ class Member extends CI_Controller
         redirect('member/wishlist');
     }
 
-    public function delete_wishlist($wishlist_id){
+    public function delete_wishlist($wishlist_id)
+    {
         $check = $this->WishlistModel->delete($wishlist_id);
         if ($check) {
             $this->session->set_flashdata('successMsg', 'Wishlist deleted Successfully');
@@ -542,6 +588,75 @@ class Member extends CI_Controller
         }
         redirect('member/wishlist');
     }
+
+    public function filter_by_price()
+    {
+        $price_range = $this->input->post('price_ranger'); // "$0 - $10000"
+        $category = $this->input->post('category');
+
+        // remove $ sign and spaces, then split by '-'
+        list($min, $max) = array_map('trim', explode('-', str_replace('$', '', $price_range)));
+
+        $category_id = $this->ProductModel->fetch_category_id($category);
+        $is_sub_cate = $this->CategoryModel->is_sub_category($category_id);
+
+        $data['products'] = $this->ProductModel->fetch_product_by_price($category_id, $min, $max, $is_sub_cate);
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories(); // for all category navbar dropdown
+        $data['allCategories'] = $this->HomeModel->get_all_categories(); // for category filter
+        $data['min_range'] = $min;
+        $data['max_range'] = $max;
+        $this->load->view('member/product', $data);
+    }
+
+    public function add_review()
+    {
+        $post = $this->input->post();
+        
+        if(empty($post['user_id'])){
+            $this->session->set_flashdata('errorMsg', 'Please Login.');
+            redirect('member/login');
+        }
+
+        $required = ['email' => 'Email', 'name' => 'Name', 'review_msg' => 'Review Message'];
+        $missing = [];
+
+        foreach ($required as $field => $label) {
+            if (empty($post[$field])) {
+                $missing[] = $label;
+            }
+        }
+
+        if (empty($missing)) {
+
+            $user_id = $this->UserModel->is_exist($post['user_id']);
+
+            if($user_id == false){
+                $this->session->set_flashdata('errorMsg', 'Please Login.');
+                redirect('member/login');
+                return;
+            }
+
+            $review_data = [
+                'product_id' => $post['product_id'],
+                'user_id' => $post['user_id'],
+                'rating' => $post['rating'],
+                'review_msg' => $post['review_msg'],
+                'status' => 1,
+                'added_on' => date('Y-m-d'),
+            ];
+
+            $check = $this->db->
+
+
+        } else {
+            $this->session->set_flashdata('errorMsg', 'The following fields are required: ' . implode(', ', $missing));
+            redirect('member/product_details/' . $post['slug']);
+        }
+
+
+
+    }
+
 
 
 }

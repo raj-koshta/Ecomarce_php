@@ -66,7 +66,15 @@
                                         <h3 class="tp-category-main-title">
                                             <a href="category/<?php echo $category->slug ?>"><?= $category->category_name?></a>
                                         </h3>
-                                        <?php $totalProducts =  $this->db->where('category', $category->category_id)->count_all_results('tbl_product');?>
+                                        <?php 
+                                        $is_sub_cate = $this->CategoryModel->is_sub_category($category->category_id);
+                                        
+                                        if($is_sub_cate == 'true'){
+                                            $totalProducts =  $this->db->where(['sub_category'=> $category->category_id,'status'=>1])->count_all_results('tbl_product');
+                                        } else {
+                                            $totalProducts =  $this->db->where(['category'=> $category->category_id,'status'=>1])->count_all_results('tbl_product');
+                                        }
+                                        ?>
                                         <span class="tp-category-main-item"><?= $totalProducts?> Products</span>
                                     </div>
                                 </div>
