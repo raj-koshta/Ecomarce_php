@@ -10,6 +10,7 @@ class Admin extends CI_Controller
         $this->load->model('SettingsModel');
         $this->load->model('CategoryModel');
         $this->load->model('ProductModel');
+        $this->load->model('AdminModel');
     }
 
     public function dashboard()
@@ -625,4 +626,49 @@ class Admin extends CI_Controller
         echo $this->CategoryModel->get_subcategories($category_id); // Echo only here
     }
 
+    public function order(){
+        $data['orders'] = $this->AdminModel->get_all_orders();
+        $this->load->view('admin/order', $data);
+    }
+    
+    public function update_order_status(){
+        $order_id = $this->input->post('order_id');
+        $status = $this->input->post('order_status');
+        
+        if($order_id !== null){
+            $update = $this->db->where('id',$order_id)->update('tbl_orders',['order_status' => $status]);
+            
+            if ($update) {
+                echo json_encode(['success' => true, 'msg' => 'Order status Updated']);
+            } else {
+                echo json_encode(['success' => false, 'msg' => 'Faild to update status']);
+            }
+            
+        } else {
+            echo json_encode(['success' => false, 'msg' => 'Unable to find Order in records']);
+        }
+        
+    }
+    
+    public function inquiry(){
+        $data['inquiries'] = $this->AdminModel->get_all_inquiries();
+        $this->load->view('admin/inquiry', $data);
+    }
+
+    public function update_inquiry_status(){
+        $id  = $this->input->post('id');
+        $status = $this->input->post('status');
+
+        if($id !== null){
+            $update = $this->db->where('id',$id)->update('tbl_inquiry',['status' => $status]);
+            
+            if ($update) {
+                echo json_encode(['success' => true, 'msg' => 'Inquiry status Updated.']);
+            } else {
+                echo json_encode(['success' => false, 'msg' => 'Faild to update status.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'msg' => 'Unable to find inquiry in records.']);
+        }
+    }
 }

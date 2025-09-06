@@ -301,7 +301,7 @@
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
 
-                    <div class="dropdown mx-3 sidebar-user user-dropdown select-dropdown">
+                    <!-- <div class="dropdown mx-3 sidebar-user user-dropdown select-dropdown">
                         <button type="button" class="btn btn-light w-100 waves-effect waves-light border-0"
                             id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
@@ -323,7 +323,7 @@
                             </span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end w-100">
-                            <!-- item-->
+                         
                             <a class="dropdown-item d-flex align-items-center px-3" href="#">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar-xs rounded-circle flex-shrink-0">
@@ -383,7 +383,7 @@
                                 View More..
                             </a>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Left Menu Start -->
                     <ul class="metismenu list-unstyled" id="side-menu">
                         <li class="menu-title">Menu</li>
@@ -396,21 +396,33 @@
                         </li>
                         <li>
                             <a href="admin/product" class="waves-effect">
-                                <i class="uim uim-airplay"></i>
+                                <i class="ri-file-list-fill"></i>
                                 <span>Product</span>
                             </a>
                         </li>
                         <li>
                             <a href="admin/category" class="waves-effect">
-                                <i class="uim uim-airplay"></i>
+                                <i class="ri-list-check-2"></i>
                                 <span>Category</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin/order" class="waves-effect">
+                                <i class="mdi mdi-cart"></i>
+                                <span>Order</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="admin/inquiry" class="waves-effect">
+                                <i class="mdi mdi-headphones"></i>
+                                <span>Inquiry</span>
                             </a>
                         </li>
                         
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="uim uim-comment-message"></i>
+                                <i class="ri-settings-2-fill"></i>
                                 <span>Settings</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">

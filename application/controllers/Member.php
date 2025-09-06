@@ -22,6 +22,8 @@ class Member extends CI_Controller
         $this->load->model('UserModel');
         $this->load->model('CheckoutModel');
         $this->load->model('WishlistModel');
+        $this->load->model('ReviewModel');
+        $this->load->model('ContactModel');
     }
 
     public function index()
@@ -91,6 +93,33 @@ class Member extends CI_Controller
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
         $category_id = $this->ProductModel->fetch_product_category_id($slug);
         $data['relatedProducts'] = $this->ProductModel->fetch_product($category_id);
+        $data['reviews'] = $this->ReviewModel->get_all_reviews($data['product']->product_id);
+        // $data['reviews_count'] = $this->ReviewModel->get_reviews_count($data['product']->product_id);
+
+        // get review stats
+        $review_data = $this->ReviewModel->get_review_stats($data['product']->product_id);
+
+        $reviews_count = $review_data['total'];
+        $stats = $review_data['stats'];
+
+        // calculate percentages
+        $percentages = [];
+        $total_score = 0;
+        foreach ($stats as $star => $count) {
+            $percentages[$star] = $reviews_count > 0 ? round(($count / $reviews_count) * 100) : 0;
+            $total_score += $star * $count;
+        }
+
+        // average rating
+        $average_rating = $reviews_count > 0 ? round($total_score / $reviews_count, 1) : 0;
+
+        // pass to view
+        $data['review_stats'] = $stats;
+        $data['percentages'] = $percentages;
+        $data['reviews_count'] = $reviews_count;
+        $data['average_rating'] = $average_rating;
+
+
         $this->load->view('member/product_details', $data);
     }
 
@@ -133,11 +162,13 @@ class Member extends CI_Controller
         $post = $this->input->post();
         $check = $this->CartModel->add($post);
         if ($check) {
-            $this->session->set_flashdata('successMsg', 'Product Added Successfully');
+            $this->session->set_flashdata('successMsg', 'Product Added Successfully.');
         } else {
-            $this->session->set_flashdata('errorMsg', 'Unable to add the product. Please try again..');
+            $this->session->set_flashdata('errorMsg', 'Product already exists in cart.');
         }
-        redirect('member/cart');
+        // redirect('member/cart');
+        $this->load->library('user_agent');
+        redirect($this->agent->referrer());
     }
 
     public function product_by_category($slug1, $slug2 = null)
@@ -517,6 +548,7 @@ class Member extends CI_Controller
 
         // Redirect to thank you page
         $this->session->set_userdata('order_id', $order_id);
+        $this->session->set_flashdata('successMsg', 'Thank you for placing order');
         redirect('member/thank_you');
     }
 
@@ -530,6 +562,8 @@ class Member extends CI_Controller
         $data['order_id'] = $order_id;
         $this->session->unset_userdata('order_id'); // clear so refresh doesn’t repeat
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+        $data['order'] = $this->UserModel->get_order_details($order_id);
+        $data['orderProducts'] = $this->UserModel->get_order_products($order_id);
         $this->load->view('member/thank_you', $data);
     }
 
@@ -556,7 +590,7 @@ class Member extends CI_Controller
             $this->session->set_flashdata('errorMsg', 'Unable to cancel your order right now, please try again after some time.');
         }
 
-        redirect('member/profile');
+        redirect('member/order_history');
     }
 
     public function wishlist()
@@ -573,9 +607,11 @@ class Member extends CI_Controller
         if ($check) {
             $this->session->set_flashdata('successMsg', 'Product Added to wishlist Successfully');
         } else {
-            $this->session->set_flashdata('errorMsg', 'Unable to add the product into wishlist. Please try again..');
+            $this->session->set_flashdata('errorMsg', 'Product already exists in wishlist.');
         }
-        redirect('member/wishlist');
+        // redirect('member/wishlist');
+        $this->load->library('user_agent');
+        redirect($this->agent->referrer());
     }
 
     public function delete_wishlist($wishlist_id)
@@ -611,52 +647,89 @@ class Member extends CI_Controller
     public function add_review()
     {
         $post = $this->input->post();
-        
-        if(empty($post['user_id'])){
+
+        if (empty($post['user_id'])) {
             $this->session->set_flashdata('errorMsg', 'Please Login.');
             redirect('member/login');
         }
 
-        $required = ['email' => 'Email', 'name' => 'Name', 'review_msg' => 'Review Message'];
-        $missing = [];
-
-        foreach ($required as $field => $label) {
-            if (empty($post[$field])) {
-                $missing[] = $label;
-            }
-        }
-
-        if (empty($missing)) {
-
-            $user_id = $this->UserModel->is_exist($post['user_id']);
-
-            if($user_id == false){
-                $this->session->set_flashdata('errorMsg', 'Please Login.');
-                redirect('member/login');
-                return;
-            }
-
-            $review_data = [
-                'product_id' => $post['product_id'],
-                'user_id' => $post['user_id'],
-                'rating' => $post['rating'],
-                'review_msg' => $post['review_msg'],
-                'status' => 1,
-                'added_on' => date('Y-m-d'),
-            ];
-
-            $check = $this->db->
-
-
-        } else {
-            $this->session->set_flashdata('errorMsg', 'The following fields are required: ' . implode(', ', $missing));
+        // only check for review_msg
+        if (empty($post['review_msg'])) {
+            $this->session->set_flashdata('errorMsg', 'Review message is required.');
             redirect('member/product_details/' . $post['slug']);
+            return;
         }
 
+        // validate user
+        $user_id = $this->UserModel->is_exist($post['user_id']);
 
+        if ($user_id == false) {
+            $this->session->set_flashdata('errorMsg', 'Please Login.');
+            redirect('member/login');
+            return;
+        }
 
+        $review_data = [
+            'product_id' => $post['product_id'],
+            'user_id' => $post['user_id'],
+            'rating' => $post['rating'],
+            'review_msg' => $post['review_msg'],
+            'status' => 1,
+            'added_on' => date('Y-m-d'),
+        ];
+
+        $check = $this->ReviewModel->add($review_data);
+
+        if ($check) {
+            $this->session->set_flashdata('successMsg', 'Thank you for your review.');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Something went wrong! Please try again.');
+        }
+
+        redirect('member/product_details/' . $post['slug']);
     }
 
+    public function contact()
+    {
+        $data['parentCategories'] = $this->HomeModel->get_parent_categories(); // for all category navbar dropdown
+        $this->load->view('member/contact', $data);
+    }
 
+    public function add_inquiry()
+    {
+
+        $post = $this->input->post();
+
+        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
+        $this->form_validation->set_rules('name', 'Name', 'required|trim');
+        $this->form_validation->set_rules('subject', 'Subject', 'required|trim');
+        $this->form_validation->set_rules('message', 'Message', 'required|trim');
+
+        if ($this->form_validation->run()) {
+            
+            $post['status'] = 1;
+            $post['added_on'] = date('Y-m-d');
+            $check = $this->ContactModel->add($post);
+            if($check){
+                $this->session->set_flashdata('successMsg', 'Thank you for contacting us. We will get back to you soon.');
+            } else {
+                $this->session->set_flashdata('errorMsg', 'Something went wrong! Please try again.');
+            }
+            redirect('member/contact');
+        } else {
+            $this->load->view('member/contact', $post);
+        }
+    }
+
+    public function order_history(){
+
+        if (!empty($this->session->userdata('login_id'))) {
+            $data['parentCategories'] = $this->HomeModel->get_parent_categories();
+            $data['orders'] = $this->UserModel->get_orders();
+            $this->load->view('member/order_history', $data);
+        } else {
+            redirect('member/login');
+        }
+    }
 
 }

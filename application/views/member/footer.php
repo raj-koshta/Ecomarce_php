@@ -29,12 +29,9 @@
                             <h4 class="tp-footer-widget-title">My Account</h4>
                             <div class="tp-footer-widget-content">
                                 <ul>
-                                    <li><a href="#">Track Orders</a></li>
-                                    <li><a href="#">Shipping</a></li>
-                                    <li><a href="#">Wishlist</a></li>
-                                    <li><a href="#">My Account</a></li>
-                                    <li><a href="#">Order History</a></li>
-                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="member/wishlist">Wishlist</a></li>
+                                    <li><a href="member/<?= !empty($this->session->userdata('login_id')) ? 'profile' : 'login'?>">My Account</a></li>
+                                    <li><a href="member/order-history">Order History</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -45,11 +42,9 @@
                             <div class="tp-footer-widget-content">
                                 <ul>
                                     <li><a href="#">Our Story</a></li>
-                                    <li><a href="#">Careers</a></li>
                                     <li><a href="#">Privacy Policy</a></li>
                                     <li><a href="#">Terms & Conditions</a></li>
-                                    <li><a href="#">Latest News</a></li>
-                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="member/contact">Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -60,7 +55,7 @@
                             <div class="tp-footer-widget-content">
                                 <div class="tp-footer-talk mb-20">
                                     <span>Got Questions? Call us</span>
-                                    <h4><a href="tel:670-413-90-762">+670 413 90 762</a></h4>
+                                    <h4><a href="tel:670-413-90-762">+123 456 67 789</a></h4>
                                 </div>
                                 <div class="tp-footer-contact">
                                     <div class="tp-footer-contact-item d-flex align-items-start">

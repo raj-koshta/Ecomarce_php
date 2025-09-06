@@ -266,10 +266,10 @@
                                             <div class="tp-shop-top-select">
                                                 <select class="product-sorting"
                                                     data-category-slug='<?= $this->uri->segment(2); ?>'>
-                                                    <option value="default" <?= !empty($slug) && $sort == 'default' ? 'selected' :''?>>Default Sorting</option>
-                                                    <option value="lowtohigh" <?= !empty($slug) && $sort == 'lowtohigh' ? 'selected' :''?>>Low to Hight</option>
-                                                    <option value="hightolow" <?= !empty($slug) && $sort == 'hightolow' ? 'selected' :''?>>High to Low</option>
-                                                    <option value="newadded" <?= !empty($slug) && $sort == 'newadded' ? 'selected' :''?>>New Added</option>
+                                                    <option value="default" <?= !empty($slug) && ($sort == 'default') ? 'selected' :''?>>Default Sorting</option>
+                                                    <option value="lowtohigh" <?= !empty($slug) && ($sort == 'lowtohigh') ? 'selected' :''?>>Low to Hight</option>
+                                                    <option value="hightolow" <?= !empty($slug) && ($sort == 'hightolow') ? 'selected' :''?>>High to Low</option>
+                                                    <option value="newadded" <?= !empty($slug) && ($sort == 'newadded') ? 'selected' :''?>>New Added</option>
                                                 </select>
                                             </div>
                                             <div class="tp-shop-top-filter d-lg-none">

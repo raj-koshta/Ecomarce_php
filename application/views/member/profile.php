@@ -100,11 +100,11 @@
                                             aria-controls="nav-address" aria-selected="false"><span><i
                                                     class="fa-light fa-location-dot"></i></span> Billing Address
                                         </button>
-                                        <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab"
+                                        <!-- <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab"
                                             data-bs-target="#nav-order" type="button" role="tab"
                                             aria-controls="nav-order" aria-selected="false"><span><i
                                                     class="fa-light fa-clipboard-list-check"></i></span> My Orders
-                                        </button>
+                                        </button> -->
 
                                         <button class="nav-link" id="nav-password-tab" data-bs-toggle="tab"
                                             data-bs-target="#nav-password" type="button" role="tab"
@@ -526,7 +526,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="nav-order" role="tabpanel"
+                                    <!-- <div class="tab-pane fade" id="nav-order" role="tabpanel"
                                         aria-labelledby="nav-order-tab">
                                         <div class="profile__ticket table-responsive">
                                             <table class="table" style="min-width: 1100px;">
@@ -583,7 +583,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>

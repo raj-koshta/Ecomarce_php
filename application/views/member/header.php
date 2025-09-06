@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div class="offcanvas__btn">
-                <a href="contact.html" class="tp-btn-2 tp-btn-border-2">Contact Us</a>
+                <a href="member/contact" class="tp-btn-2 tp-btn-border-2">Contact Us</a>
             </div>
         </div>
         <div class="offcanvas__bottom">
@@ -573,6 +573,7 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
                                             <li><a class="dropdown-item" href="member/profile">My Account</a></li>
+                                            <li><a class="dropdown-item" href="member/order-history">Order History</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
@@ -727,7 +728,7 @@
                                         <li><a href="">Home</a></li>
                                         <li><a href="member/category">Shop</a></li>
                                         <li><a href="javascript:void(0)">About</a></li>
-                                        <li><a href="javascript:void(0)">Contact</a></li>
+                                        <li><a href="member/contact">Contact</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -812,7 +813,7 @@
 
                                 <li><a href="member/category">Shop</a></li>
                                 <li><a href="">About</a></li>
-                                <li><a href="">Contact</a></li>
+                                <li><a href="member/contact">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -920,6 +921,7 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end custom-profile-dropdown smooth-dropdown">
                                         <li><a class="dropdown-item" href="member/profile">My Account</a></li>
+                                        <li><a class="dropdown-item" href="member/order-history">Order History</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
