@@ -732,4 +732,8 @@ class Member extends CI_Controller
         }
     }
 
+    public function about(){
+        $this->load->view('member/about');
+    }
+
 }

@@ -727,7 +727,7 @@
                                     <ul>
                                         <li><a href="">Home</a></li>
                                         <li><a href="member/category">Shop</a></li>
-                                        <li><a href="javascript:void(0)">About</a></li>
+                                        <li><a href="member/about">About</a></li>
                                         <li><a href="member/contact">Contact</a></li>
                                     </ul>
                                 </nav>
@@ -812,7 +812,7 @@
                                 <?php endif; ?>
 
                                 <li><a href="member/category">Shop</a></li>
-                                <li><a href="">About</a></li>
+                                <li><a href="member/about">About</a></li>
                                 <li><a href="member/contact">Contact</a></li>
                             </ul>
                         </nav>

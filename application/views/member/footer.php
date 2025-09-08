@@ -41,7 +41,7 @@
                             <h4 class="tp-footer-widget-title">Infomation</h4>
                             <div class="tp-footer-widget-content">
                                 <ul>
-                                    <li><a href="#">Our Story</a></li>
+                                    <li><a href="member/about">About</a></li>
                                     <li><a href="#">Privacy Policy</a></li>
                                     <li><a href="#">Terms & Conditions</a></li>
                                     <li><a href="member/contact">Contact Us</a></li>
