@@ -92,7 +92,7 @@
                                     <div class="tp-login-input-box">
                                         <div class="tp-login-input">
                                             <input id="tp_password" name="password" type="password"
-                                                placeholder="Enter your password">
+                                                placeholder="Enter your password" autocomplete="false">
                                         </div>
                                         <div class="tp-login-input-eye" id="password-show-toggle">
                                             <span id="open-eye" class="open-eye">
@@ -140,13 +140,13 @@
                                 </div>
                                 <div
                                     class="tp-login-suggetions d-sm-flex align-items-center justify-content-between mb-20">
-                                    <!-- <div class="tp-login-remeber">
-                                        <input id="remeber" type="checkbox">
-                                        <label for="remeber">Remember me</label>
+                                    <div class="tp-login-remeber">
+                                        <!-- <input id="remeber" type="checkbox">
+                                        <label for="remeber">Remember me</label> -->
                                     </div>
                                     <div class="tp-login-forgot">
-                                        <a href="forgot.html">Forgot Password?</a>
-                                    </div> -->
+                                        <a href="member/forgot">Forgot Password?</a>
+                                    </div>
                                 </div>
                                 <div class="tp-login-bottom">
                                     <button type="submit" class="tp-login-btn w-100">Login</button>

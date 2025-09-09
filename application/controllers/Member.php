@@ -30,7 +30,8 @@ class Member extends CI_Controller
     {
         $data['banners'] = $this->HomeModel->get_banners();
         $data['parentCategories'] = $this->HomeModel->get_parent_categories();
-        $data['products'] = $this->HomeModel->get_products();
+        // $data['products'] = $this->HomeModel->get_products();
+        $data['products'] = $this->ProductModel->get_some_products();
 
         $this->load->view('member/index', $data);
     }
@@ -177,6 +178,7 @@ class Member extends CI_Controller
         $category_id = $this->ProductModel->fetch_category_id(empty($slug2) ? $slug1 : $slug2);
 
         $data['sort'] = $this->input->get('sort'); // capture ?sort=lowtohigh, hightolow, newadded
+        $data['slug'] = empty($slug2) ? $slug1 : $slug2;
 
         $data['products'] = $this->ProductModel->fetch_product($category_id, $data['sort']);
 
@@ -734,6 +736,10 @@ class Member extends CI_Controller
 
     public function about(){
         $this->load->view('member/about');
+    }
+
+    public function forgot(){
+        $this->load->view('member/forgot');
     }
 
 }

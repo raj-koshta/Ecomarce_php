@@ -15,6 +15,17 @@ class ProductModel extends CI_Model
         }
     }
 
+    public function get_some_products()
+    {
+        $qry = $this->db->where('status', '1')->limit(8)->get('tbl_product');
+
+        if ($qry->num_rows()) {
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
     public function add_Product($post)
     {
         $post['added_on'] = date('d M, Y');
