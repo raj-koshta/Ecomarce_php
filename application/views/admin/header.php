@@ -12,7 +12,7 @@
                 <div class="d-flex">
                     <!-- LOGO -->
                     <div class="navbar-brand-box">
-                        <a href="index.html" class="logo logo-dark">
+                        <a href="admin" class="logo logo-dark">
                             <span class="logo-sm">
                                 <img src="assets/admin/images/logo-dark.png" alt="logo-sm-dark" height="24">
                             </span>
@@ -21,7 +21,7 @@
                             </span>
                         </a>
 
-                        <a href="index.html" class="logo logo-light">
+                        <a href="admin" class="logo logo-light">
                             <span class="logo-sm">
                                 <img src="assets/admin/images/logo-light.png" alt="logo-sm-light" height="24">
                             </span>
@@ -39,7 +39,7 @@
 
                     <!-- start page title -->
                     <div class="page-title-box align-self-center d-none d-md-block">
-                        <h4 class="page-title mb-0">Dashboard</h4>
+                        <h4 class="page-title mb-0"><?= $this->session->userdata('admin_name')?></h4>
                     </div>
                     <!-- end page title -->
                 </div>
@@ -272,7 +272,7 @@
 
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="index.html" class="logo logo-dark">
+                <a href="<?= base_url('admin')?>" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="assets/admin/images/logo-sm-dark.png" alt="logo-sm-dark" height="24">
                     </span>
@@ -281,7 +281,7 @@
                     </span>
                 </a>
 
-                <a href="index.html" class="logo logo-light">
+                <a href="<?= base_url('admin')?>" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="assets/admin/images/logo-sm-light.png" alt="logo-sm-light" height="24">
                     </span>
@@ -389,16 +389,23 @@
                         <li class="menu-title">Menu</li>
 
                         <li>
-                            <a href="admin" class="waves-effect">
+                            <a href="admin/dashboard" class="waves-effect">
                                 <i class="uim uim-airplay"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="admin/product" class="waves-effect">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-file-list-fill"></i>
                                 <span>Product</span>
                             </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="admin/product">All Products List</a></li>
+                                <li><a href="admin/add-product">Add Product</a></li>
+                                <li><a href="admin/active-product">Active Products</a></li>
+                                <li><a href="admin/inactive-product">Inactive Products</a></li>
+                                <li><a href="admin/oos-product">Out Of Stock Products</a></li>
+                            </ul>
                         </li>
                         <li>
                             <a href="admin/category" class="waves-effect">
@@ -428,7 +435,15 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="admin/pincode">Pincode</a></li>
                                 <li><a href="admin/banner">Banner</a></li>
+                                <li><a href="admin/forgot_password">Change Password</a></li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a href="admin/logout" class="waves-effect">
+                                <i class="mdi mdi-headphones"></i>
+                                <span>Logout</span>
+                            </a>
                         </li>
 
 

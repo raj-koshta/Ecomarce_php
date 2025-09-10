@@ -50,4 +50,32 @@ class AdminModel extends CI_Model
         }
 
     }
+
+    public function get_orders_count(){
+        return $this->db->count_all_results('tbl_orders');
+    }
+
+    public function get_pending_orders_count(){
+        return $this->db->where_not_in('order_status', [1, 5, 6])->count_all_results('tbl_orders');
+    }
+
+    public function get_completed_orders_count(){
+        return $this->db->where('order_status',6)->count_all_results('tbl_orders');
+    }
+
+    public function get_cancelled_orders_count(){
+        return $this->db->where('order_status',5)->count_all_results('tbl_orders');
+    }
+
+    public function get_inquiries_count(){
+        return $this->db->count_all_results('tbl_inquiry');
+    }
+
+    public function get_open_inquiries_count(){
+        return $this->db->where('status',1)->count_all_results('tbl_inquiry');
+    }
+
+    public function get_closed_inquiries_count(){
+        return $this->db->where('status',0)->count_all_results('tbl_inquiry');
+    }
 }

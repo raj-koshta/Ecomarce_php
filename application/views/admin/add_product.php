@@ -33,9 +33,9 @@
                             <div class="card">
                                 <div class="card-header border-0 align-items-center d-flex pb-0">
                                     <h4 class="card-title mb-0 flex-grow-1">Product</h4>
-                                    <a href="javascript: void(0);"
+                                    <!-- <a href="javascript: void(0);"
                                         class="btn btn-primary waves-effect waves-light btn-sm">View More <i
-                                            class="mdi mdi-arrow-right ms-1"></i></a>
+                                            class="mdi mdi-arrow-right ms-1"></i></a> -->
                                 </div>
                                 <div class="card-body">
                                     <?php if (!empty($product)): ?>

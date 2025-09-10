@@ -54,7 +54,7 @@ $route['default_controller'] = 'Member';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = true;
 
-$route['admin'] = 'admin/dashboard';
+$route['admin'] = 'admin';
 $route['product/(:any)'] = 'member/product_details/$1';
 $route['category/(:any)'] = 'member/product_by_category/$1';
 $route['category/(:any)/filter-by-price'] = 'member/filter_by_price';

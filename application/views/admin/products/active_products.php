@@ -38,8 +38,8 @@
 
                             <div class="card-header border-0 align-items-center d-flex mb-2 p-0 pt-2">
                                 <h4 class="card-title mb-0 flex-grow-1"><?= $title?></h4>
-                                <a href="admin/add-product" class="btn btn-primary waves-effect waves-light btn-sm">Add
-                                    Product <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                <!-- <a href="admin/add-product" class="btn btn-primary waves-effect waves-light btn-sm">Add
+                                    Product <i class="mdi mdi-arrow-right ms-1"></i></a> -->
                             </div>
                             <!-- <div class="mb-4 text-danger">
                                 Note: Categories that do not have a parent category name are considered parent categories.
@@ -52,7 +52,6 @@
                                     <tr>
                                         <th>SN</th>
                                         <th>Product Name</th>
-                                        <th>Brand</th>
                                         <th>Category</th>
                                         <th>Main Image</th>
                                         <th>Stock</th>
@@ -73,7 +72,6 @@
                                                 <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
                                                     <?= $product->product_name; ?>
                                                 </td>
-                                                <td><?= $product->brand; ?></td>
                                                 <!-- <td><?= $product->category; ?></td> -->
 
                                                 <td>
@@ -160,6 +158,8 @@
                             title: res.msg,
                             showConfirmButton: false,
                             timer: 2500
+                        }).then(() => {
+                            location.reload();
                         });
                     } else {
                         Swal.fire({

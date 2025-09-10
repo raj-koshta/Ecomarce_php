@@ -11,15 +11,172 @@ class Admin extends CI_Controller
         $this->load->model('CategoryModel');
         $this->load->model('ProductModel');
         $this->load->model('AdminModel');
+
+        // Allow public methods
+        $public_methods = ['login', 'logout', 'index'];
+
+        if (!in_array($this->router->fetch_method(), $public_methods)) {
+            check_admin_login();
+        }
+
     }
+
+    public function index()
+    {
+        // If logged in → go to dashboard
+        if ($this->session->userdata('admin_login_id')) {
+            redirect('admin/dashboard');
+        }
+        // Else → go to login
+        redirect('admin/login');
+    }
+
+
+    public function login()
+    {
+        // Check if POST request (form submitted)
+        if ($this->input->method() === 'post') {
+            $email = $this->input->post('email');
+            $password = $this->input->post('password');
+
+            // Get user from DB
+            $user = $this->db->where('email', $email)->get('tbl_admins')->row();
+
+            if ($user && password_verify($password, $user->password)) {
+                // Success → set session
+                $this->session->set_userdata([
+                    'admin_user_id' => $user->admin_id,
+                    'admin_name' => $user->name,
+                    'admin_email' => $user->email,
+                    'admin_login_id' => $user->admin_id
+                ]);
+
+                // Redirect to dashboard
+                redirect('admin/dashboard');
+            } else {
+                // Failure → reload login with error
+                $this->session->set_flashdata('errorMsg', "Invalid email or password");
+                $this->load->view('admin/login');
+            }
+        } else {
+            // First load → just show login page
+            $this->load->view('admin/login');
+        }
+    }
+
+    public function logout()
+    {
+        // Remove only specific session keys
+        $this->session->unset_userdata(['user_id', 'email', 'admin_login_id']);
+
+        // OR remove all session data
+        // $this->session->sess_destroy();
+
+        // Optional: flash message
+        $this->session->set_flashdata('successMsg', 'You have been logged out successfully.');
+
+        // Redirect to login page
+        redirect('admin/login');
+    }
+
+
 
     public function dashboard()
     {
-        $this->load->view('admin/index');
+        check_admin_login();
+
+        $kpis = [
+            'Products' => [
+                (object) [
+                    'label' => 'Total Products',
+                    'icon' => 'ri-file-list-fill',
+                    'count' => $this->ProductModel->get_products_count(),
+                ],
+                (object) [
+                    'label' => 'Active Products',
+                    'icon' => 'ri-file-list-fill',
+                    'count' => $this->ProductModel->get_active_products_count(),
+                ],
+                (object) [
+                    'label' => 'Inactive Products',
+                    'icon' => 'ri-file-list-fill',
+                    'count' => $this->ProductModel->get_inactive_products_count(),
+                ],
+                (object) [
+                    'label' => 'Out Of Stock Products',
+                    'icon' => 'ri-file-list-fill',
+                    'count' => $this->ProductModel->get_outofstock_products_count(),
+                ],
+            ],
+
+            'Categories' => [
+                (object) [
+                    'label' => 'Total Categories',
+                    'icon' => 'ri-list-check-2',
+                    'count' => $this->CategoryModel->get_categories_count(),
+                ],
+                (object) [
+                    'label' => 'Active Categories',
+                    'icon' => 'ri-list-check-2',
+                    'count' => $this->CategoryModel->get_active_categories_count(),
+                ],
+                (object) [
+                    'label' => 'Inactive Categories',
+                    'icon' => 'ri-list-check-2',
+                    'count' => $this->CategoryModel->get_inactive_categories_count(),
+                ],
+            ],
+
+            'Orders' => [
+                (object) [
+                    'label' => 'Total Orders',
+                    'icon' => 'mdi mdi-cart',
+                    'count' => $this->AdminModel->get_orders_count(),
+                ],
+                (object) [
+                    'label' => 'Pending Orders',
+                    'icon' => 'mdi mdi-cart',
+                    'count' => $this->AdminModel->get_pending_orders_count(),
+                ],
+                (object) [
+                    'label' => 'Completed Orders',
+                    'icon' => 'mdi mdi-cart',
+                    'count' => $this->AdminModel->get_completed_orders_count(),
+                ],
+                (object) [
+                    'label' => 'Cancelled Orders',
+                    'icon' => 'mdi mdi-cart',
+                    'count' => $this->AdminModel->get_cancelled_orders_count(),
+                ],
+            ],
+
+            'Inquiries' => [
+                (object) [
+                    'label' => 'Total Inquiries',
+                    'icon' => 'mdi mdi-headphones',
+                    'count' => $this->AdminModel->get_inquiries_count(),
+                ],
+                (object) [
+                    'label' => 'Open Inquiries',
+                    'icon' => 'mdi mdi-headphones',
+                    'count' => $this->AdminModel->get_open_inquiries_count(),
+                ],
+                (object) [
+                    'label' => 'Closed Inquiries',
+                    'icon' => 'mdi mdi-headphones',
+                    'count' => $this->AdminModel->get_closed_inquiries_count(),
+                ],
+            ],
+        ];
+
+        $data['kpis'] = $kpis;
+        $this->load->view('admin/index', $data);
+
     }
 
     public function pincode()
     {
+        check_admin_login();
         $data['pincodes'] = $this->SettingsModel->get_all_pincode();
         $this->load->view('admin/pincode', $data);
     }
@@ -103,6 +260,7 @@ class Admin extends CI_Controller
 
     public function banner()
     {
+        check_admin_login();
         $data['banners'] = $this->SettingsModel->get_all_banners();
         $this->load->view('admin/banner', $data);
     }
@@ -228,6 +386,7 @@ class Admin extends CI_Controller
 
     public function category()
     {
+        check_admin_login();
         $data['categories'] = $this->CategoryModel->get_all_category();
         $this->load->view('admin/category', $data);
     }
@@ -380,7 +539,7 @@ class Admin extends CI_Controller
                 $check = $this->CategoryModel->update_category($post);
 
                 if ($check) {
-                    
+
                     $this->session->set_flashdata('successMsg', "Category and Products updated Successfully");
                     redirect('admin/category');
                 } else {
@@ -444,8 +603,28 @@ class Admin extends CI_Controller
 
     public function product()
     {
+        check_admin_login();
+        $data['title'] = 'All Products';
         $data['products'] = $this->ProductModel->get_all_products();
         $this->load->view('admin/product', $data);
+    }
+
+    public function active_product(){
+        $data['title'] = 'Active Products';
+        $data['products'] = $this->ProductModel->get_active_products();
+        $this->load->view('admin/products/active_products', $data);
+    }
+
+    public function inactive_product(){
+        $data['title'] = 'Inactive Products';
+        $data['products'] = $this->ProductModel->get_inactive_products();
+        $this->load->view('admin/products/inactive_products', $data);
+    }
+
+    public function oos_product(){
+        $data['title'] = 'Out Of Stock Products';
+        $data['products'] = $this->ProductModel->get_oos_products();
+        $this->load->view('admin/products/out_of_stock_products', $data);
     }
 
     public function add_product()
@@ -626,42 +805,48 @@ class Admin extends CI_Controller
         echo $this->CategoryModel->get_subcategories($category_id); // Echo only here
     }
 
-    public function order(){
+    public function order()
+    {
+        check_admin_login();
         $data['orders'] = $this->AdminModel->get_all_orders();
         $this->load->view('admin/order', $data);
     }
-    
-    public function update_order_status(){
+
+    public function update_order_status()
+    {
         $order_id = $this->input->post('order_id');
         $status = $this->input->post('order_status');
-        
-        if($order_id !== null){
-            $update = $this->db->where('id',$order_id)->update('tbl_orders',['order_status' => $status]);
-            
+
+        if ($order_id !== null) {
+            $update = $this->db->where('id', $order_id)->update('tbl_orders', ['order_status' => $status]);
+
             if ($update) {
                 echo json_encode(['success' => true, 'msg' => 'Order status Updated']);
             } else {
                 echo json_encode(['success' => false, 'msg' => 'Faild to update status']);
             }
-            
+
         } else {
             echo json_encode(['success' => false, 'msg' => 'Unable to find Order in records']);
         }
-        
+
     }
-    
-    public function inquiry(){
+
+    public function inquiry()
+    {
+        check_admin_login();
         $data['inquiries'] = $this->AdminModel->get_all_inquiries();
         $this->load->view('admin/inquiry', $data);
     }
 
-    public function update_inquiry_status(){
-        $id  = $this->input->post('id');
+    public function update_inquiry_status()
+    {
+        $id = $this->input->post('id');
         $status = $this->input->post('status');
 
-        if($id !== null){
-            $update = $this->db->where('id',$id)->update('tbl_inquiry',['status' => $status]);
-            
+        if ($id !== null) {
+            $update = $this->db->where('id', $id)->update('tbl_inquiry', ['status' => $status]);
+
             if ($update) {
                 echo json_encode(['success' => true, 'msg' => 'Inquiry status Updated.']);
             } else {

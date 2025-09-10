@@ -152,6 +152,49 @@ class ProductModel extends CI_Model
         return $this->db->where('product_id', $product_id)->delete('tbl_product');
     }
 
+    public function get_products_count(){
+        return $this->db->count_all_results('tbl_product');
+    }
+
+    public function get_active_products_count(){
+        return $this->db->where('status',1)->count_all_results('tbl_product');
+    }
+
+    public function get_active_products(){
+        $qry = $this->db->where('status',1)->get('tbl_product');
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_inactive_products(){
+        $qry = $this->db->where('status',0)->get('tbl_product');
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_oos_products(){
+        $qry = $this->db->where('stock',0)->get('tbl_product');
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_inactive_products_count(){
+        return $this->db->where('status',0)->count_all_results('tbl_product');
+    }
+
+    public function get_outofstock_products_count(){
+        return $this->db->where('stock',0)->count_all_results('tbl_product');
+    }
+
     public function slug($string)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
