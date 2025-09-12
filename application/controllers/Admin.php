@@ -17,6 +17,7 @@ class Admin extends CI_Controller
 
         if (!in_array($this->router->fetch_method(), $public_methods)) {
             check_admin_login();
+            check_is_admin_active();
         }
 
     }
@@ -31,7 +32,6 @@ class Admin extends CI_Controller
         redirect('admin/login');
     }
 
-
     public function login()
     {
         // Check if POST request (form submitted)
@@ -39,18 +39,27 @@ class Admin extends CI_Controller
             $email = $this->input->post('email');
             $password = $this->input->post('password');
 
-            // Get user from DB
-            $user = $this->db->where('email', $email)->get('tbl_admins')->row();
+            if ($this->AdminModel->check_is_active($email) == false) {
+                // Failure → reload login with error
+                $this->session->set_flashdata('errorMsg', "Invalid email or your account is blocked.");
+                $this->load->view('admin/login');
+                return;
+            }
 
+            // Get user from DB
+            $user = $this->db->where(['email' => $email, 'status' => 1])->get('tbl_admins')->row();
+            
             if ($user && password_verify($password, $user->password)) {
                 // Success → set session
                 $this->session->set_userdata([
                     'admin_user_id' => $user->admin_id,
                     'admin_name' => $user->name,
                     'admin_email' => $user->email,
-                    'admin_login_id' => $user->admin_id
+                    'admin_login_id' => $user->admin_id,
+                    'is_admin_active' => true,
+                    'is_super_admin' => $user->role_id == 1 ? true : false
                 ]);
-
+               
                 // Redirect to dashboard
                 redirect('admin/dashboard');
             } else {
@@ -91,21 +100,25 @@ class Admin extends CI_Controller
                     'label' => 'Total Products',
                     'icon' => 'ri-file-list-fill',
                     'count' => $this->ProductModel->get_products_count(),
+                    'link' => 'admin/product',
                 ],
                 (object) [
                     'label' => 'Active Products',
                     'icon' => 'ri-file-list-fill',
                     'count' => $this->ProductModel->get_active_products_count(),
+                    'link' => 'admin/active-product',
                 ],
                 (object) [
                     'label' => 'Inactive Products',
                     'icon' => 'ri-file-list-fill',
                     'count' => $this->ProductModel->get_inactive_products_count(),
+                    'link' => 'admin/inactive-product',
                 ],
                 (object) [
                     'label' => 'Out Of Stock Products',
                     'icon' => 'ri-file-list-fill',
                     'count' => $this->ProductModel->get_outofstock_products_count(),
+                    'link' => 'admin/oos-product',
                 ],
             ],
 
@@ -114,16 +127,19 @@ class Admin extends CI_Controller
                     'label' => 'Total Categories',
                     'icon' => 'ri-list-check-2',
                     'count' => $this->CategoryModel->get_categories_count(),
+                    'link' => 'admin/category',
                 ],
                 (object) [
                     'label' => 'Active Categories',
                     'icon' => 'ri-list-check-2',
                     'count' => $this->CategoryModel->get_active_categories_count(),
+                    'link' => 'admin/active-categories',
                 ],
                 (object) [
                     'label' => 'Inactive Categories',
                     'icon' => 'ri-list-check-2',
                     'count' => $this->CategoryModel->get_inactive_categories_count(),
+                    'link' => 'admin/inactive-categories',
                 ],
             ],
 
@@ -132,21 +148,31 @@ class Admin extends CI_Controller
                     'label' => 'Total Orders',
                     'icon' => 'mdi mdi-cart',
                     'count' => $this->AdminModel->get_orders_count(),
+                    'link' => 'admin/order',
                 ],
                 (object) [
                     'label' => 'Pending Orders',
                     'icon' => 'mdi mdi-cart',
                     'count' => $this->AdminModel->get_pending_orders_count(),
+                    'link' => 'admin/pending-orders',
                 ],
                 (object) [
                     'label' => 'Completed Orders',
                     'icon' => 'mdi mdi-cart',
                     'count' => $this->AdminModel->get_completed_orders_count(),
+                    'link' => 'admin/completed-orders',
                 ],
                 (object) [
                     'label' => 'Cancelled Orders',
                     'icon' => 'mdi mdi-cart',
                     'count' => $this->AdminModel->get_cancelled_orders_count(),
+                    'link' => 'admin/cancelled-orders',
+                ],
+                (object) [
+                    'label' => "Today's Orders",
+                    'icon' => 'mdi mdi-cart',
+                    'count' => $this->AdminModel->get_today_orders_count(),
+                    'link' => 'admin/today-orders',
                 ],
             ],
 
@@ -155,16 +181,19 @@ class Admin extends CI_Controller
                     'label' => 'Total Inquiries',
                     'icon' => 'mdi mdi-headphones',
                     'count' => $this->AdminModel->get_inquiries_count(),
+                    'link' => 'admin/inquiry',
                 ],
                 (object) [
                     'label' => 'Open Inquiries',
                     'icon' => 'mdi mdi-headphones',
                     'count' => $this->AdminModel->get_open_inquiries_count(),
+                    'link' => 'admin/open-inquiry',
                 ],
                 (object) [
                     'label' => 'Closed Inquiries',
                     'icon' => 'mdi mdi-headphones',
                     'count' => $this->AdminModel->get_closed_inquiries_count(),
+                    'link' => 'admin/closed-inquiry',
                 ],
             ],
         ];
@@ -387,8 +416,23 @@ class Admin extends CI_Controller
     public function category()
     {
         check_admin_login();
+        $data['title'] = 'All Categories';
         $data['categories'] = $this->CategoryModel->get_all_category();
-        $this->load->view('admin/category', $data);
+        $this->load->view('admin/categories/category', $data);
+    }
+
+    public function active_categories()
+    {
+        $data['title'] = 'Active Categories';
+        $data['categories'] = $this->CategoryModel->get_active_categories();
+        $this->load->view('admin/categories/active_categories', $data);
+    }
+
+    public function inactive_categories()
+    {
+        $data['title'] = 'Inactive Categories';
+        $data['categories'] = $this->CategoryModel->get_inactive_categories();
+        $this->load->view('admin/categories/inactive_categories', $data);
     }
 
     public function add_category()
@@ -420,11 +464,11 @@ class Admin extends CI_Controller
                 redirect('admin/category');
             } else {
                 $this->session->set_flashdata('errorMsg', "Unable to add category. Please try again..");
-                redirect('admin/add_category');
+                redirect('admin/categories/add_category');
             }
         } else {
             $data['categories'] = $this->CategoryModel->get_all_categories();
-            $this->load->view('admin/add_category', $data);
+            $this->load->view('admin/categories/add_category', $data);
         }
 
     }
@@ -549,12 +593,12 @@ class Admin extends CI_Controller
             } else {
                 $data['cate'] = $this->CategoryModel->get_category_by_id($category_id);
                 $data['categories'] = $this->CategoryModel->get_all_categories();
-                $this->load->view('admin/add_category', $data);
+                $this->load->view('admin/categories/add_category', $data);
             }
         } else {
             $data['cate'] = $this->CategoryModel->get_category_by_id($category_id);
             $data['categories'] = $this->CategoryModel->get_all_categories();
-            $this->load->view('admin/add_category', $data);
+            $this->load->view('admin/categories/add_category', $data);
         }
     }
 
@@ -606,22 +650,25 @@ class Admin extends CI_Controller
         check_admin_login();
         $data['title'] = 'All Products';
         $data['products'] = $this->ProductModel->get_all_products();
-        $this->load->view('admin/product', $data);
+        $this->load->view('admin/products/product', $data);
     }
 
-    public function active_product(){
+    public function active_product()
+    {
         $data['title'] = 'Active Products';
         $data['products'] = $this->ProductModel->get_active_products();
         $this->load->view('admin/products/active_products', $data);
     }
 
-    public function inactive_product(){
+    public function inactive_product()
+    {
         $data['title'] = 'Inactive Products';
         $data['products'] = $this->ProductModel->get_inactive_products();
         $this->load->view('admin/products/inactive_products', $data);
     }
 
-    public function oos_product(){
+    public function oos_product()
+    {
         $data['title'] = 'Out Of Stock Products';
         $data['products'] = $this->ProductModel->get_oos_products();
         $this->load->view('admin/products/out_of_stock_products', $data);
@@ -675,7 +722,7 @@ class Admin extends CI_Controller
             }
             $data['categories'] = $this->CategoryModel->get_all_categories();
             $data['product_id'] = $product_id;
-            $this->load->view('admin/add_product', $data);
+            $this->load->view('admin/products/add_product', $data);
         }
     }
 
@@ -758,14 +805,14 @@ class Admin extends CI_Controller
                 $data['categories'] = $this->CategoryModel->get_all_categories();
                 $data['product_id'] = $product_id;
                 $data['product'] = $this->ProductModel->get_product_by_id($product_id);
-                $this->load->view('admin/add_product', $data);
+                $this->load->view('admin/products/add_product', $data);
             }
         } else {
 
             $data['categories'] = $this->CategoryModel->get_all_categories();
             $data['product_id'] = $product_id;
             $data['product'] = $this->ProductModel->get_product_by_id($product_id);
-            $this->load->view('admin/add_product', $data);
+            $this->load->view('admin/products/add_product', $data);
         }
     }
 
@@ -808,8 +855,37 @@ class Admin extends CI_Controller
     public function order()
     {
         check_admin_login();
+        $data['title'] = "All Orders List";
         $data['orders'] = $this->AdminModel->get_all_orders();
-        $this->load->view('admin/order', $data);
+        $this->load->view('admin/orders/order', $data);
+    }
+
+    public function pending_orders()
+    {
+        $data['title'] = "Pending Orders";
+        $data['orders'] = $this->AdminModel->get_pending_orders();
+        $this->load->view('admin/orders/pending_orders', $data);
+    }
+
+    public function completed_orders()
+    {
+        $data['title'] = "Completed Orders";
+        $data['orders'] = $this->AdminModel->get_completed_orders();
+        $this->load->view('admin/orders/completed_orders', $data);
+    }
+
+    public function cancelled_orders()
+    {
+        $data['title'] = "Cancelled Orders";
+        $data['orders'] = $this->AdminModel->get_cancelled_orders();
+        $this->load->view('admin/orders/cancelled_orders', $data);
+    }
+
+    public function today_orders()
+    {
+        $data['title'] = "Today Orders";
+        $data['orders'] = $this->AdminModel->get_today_orders();
+        $this->load->view('admin/orders/today_orders', $data);
     }
 
     public function update_order_status()
@@ -835,8 +911,23 @@ class Admin extends CI_Controller
     public function inquiry()
     {
         check_admin_login();
+        $data['title'] = "All Inquiry List";
         $data['inquiries'] = $this->AdminModel->get_all_inquiries();
-        $this->load->view('admin/inquiry', $data);
+        $this->load->view('admin/inquiries/inquiry', $data);
+    }
+
+    public function open_inquiry()
+    {
+        $data['title'] = "Open Inquiry";
+        $data['inquiries'] = $this->AdminModel->get_open_inquiries();
+        $this->load->view('admin/inquiries/open_inquiries', $data);
+    }
+
+    public function closed_inquiry()
+    {
+        $data['title'] = "Open Inquiry";
+        $data['inquiries'] = $this->AdminModel->get_closed_inquiries();
+        $this->load->view('admin/inquiries/closed_inquiries', $data);
     }
 
     public function update_inquiry_status()
@@ -855,5 +946,95 @@ class Admin extends CI_Controller
         } else {
             echo json_encode(['success' => false, 'msg' => 'Unable to find inquiry in records.']);
         }
+    }
+
+    public function my_account()
+    {
+        $data['title'] = "My Account";
+        $data['admin'] = $this->AdminModel->get_account_details();
+        $data['roles'] = $this->AdminModel->get_all_roles();
+        $this->load->view('admin/profile/my_account', $data);
+    }
+
+    public function update_account_information()
+    {
+        $post = $this->input->post();
+
+        $this->form_validation->set_rules('name', 'Name', 'required|trim');
+        $this->form_validation->set_rules('email', 'Email', 'required|trim');
+        $this->form_validation->set_rules('gender', 'Gender', 'required|trim');
+        $this->form_validation->set_rules('phone', 'Phone', 'required|trim');
+
+        if ($this->form_validation->run()) {
+            $check = $this->AdminModel->update_admin_info($post);
+            if ($check) {
+                $this->session->set_flashdata('successMsg', 'Information Updated Successfully');
+            } else {
+                $this->session->set_flashdata('errorMsg', 'Unable to update information. Please Try again later.');
+            }
+            redirect('admin/my_account');
+        } else {
+            $data['title'] = "My Account";
+            $data['admin'] = $this->AdminModel->get_account_details();
+            $data['roles'] = $this->AdminModel->get_all_roles();
+            $this->load->view('admin/profile/my_account', $data);
+        }
+    }
+
+    public function change_password()
+    {
+        $data['title'] = "Change Password";
+        $data['admin'] = $this->AdminModel->get_account_details();
+        $this->load->view('admin/profile/change_password', $data);
+    }
+
+    public function check_old_password()
+    {
+        // Always set JSON header
+        $this->output->set_content_type('application/json');
+
+        $old_pass = $this->input->post('old_password', TRUE);
+        $user_id = $this->session->userdata('admin_login_id');
+
+        if (!$user_id) {
+            echo json_encode(['valid' => false, 'error' => 'Not logged in']);
+            return;
+        }
+
+        $stored_hash = $this->db->select('password')
+            ->where('admin_id', $user_id)
+            ->get('tbl_admins')
+            ->row()
+            ->password ?? '';
+
+
+        $is_valid = password_verify($old_pass, $stored_hash);
+
+        echo json_encode(['valid' => $is_valid]);
+    }
+
+    public function forgot_admin_password()
+    {
+        $admin_id = $this->session->userdata('admin_login_id');
+        $post = $this->input->post();
+        $post['updated_on'] = date('Y-m-d');
+        $post['ip'] = $_SERVER["REMOTE_ADDR"];
+        $qry = $this->db
+            ->where([
+                'admin_id' => $admin_id,
+                'email' => $post['email']
+            ])
+            ->update('tbl_admins', [
+                'password' => password_hash($post['new_password'], PASSWORD_BCRYPT),
+                'updated_on' => $post['updated_on']
+            ]);
+
+        if ($qry) {
+            $this->session->set_flashdata('successMsg', 'Password updated successfully.');
+        } else {
+            $this->session->set_flashdata('errorMsg', 'Failed to update password.');
+        }
+
+        redirect('admin/change_password');
     }
 }

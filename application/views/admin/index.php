@@ -32,12 +32,12 @@
 							<div class="card">
 								<div class="card-body">
 									<div class="d-flex align-items-center">
-										<div class="avatar-md flex-shrink-0">
+										<div class="avatar-md flex-shrink-0" onclick="openLink('<?= $kpi->link ?>')" style="cursor: pointer;">
 											<span class="avatar-title bg-subtle-primary text-primary rounded fs-2">
 												<i class="<?= $kpi->icon ?>"></i>
 											</span>
 										</div>
-										<div class="flex-grow-1 overflow-hidden ms-4">
+										<div class="flex-grow-1 overflow-hidden ms-4" onclick="openLink('<?= $kpi->link ?>')" style="cursor: pointer;">
 											<p class="text-muted text-truncate font-size-15 mb-2"> <?= $kpi->label ?></p>
 											<h3 class="fs-4 flex-grow-1 mb-3">
 												<?= $kpi->count ?>
@@ -840,3 +840,10 @@
 	<!-- End Page-content -->
 
 	<?php $this->load->view('admin/footer'); ?>
+
+	<script>
+		function openLink(link) {
+			// Example: redirect to a page with query parameter
+			window.location.href = "<?= base_url()?>" + link;
+		}
+	</script>

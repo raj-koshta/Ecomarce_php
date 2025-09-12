@@ -39,7 +39,7 @@
 
                     <!-- start page title -->
                     <div class="page-title-box align-self-center d-none d-md-block">
-                        <h4 class="page-title mb-0"><?= $this->session->userdata('admin_name')?></h4>
+                        <h4 class="page-title mb-0"><?= $this->session->userdata('admin_name') ?></h4>
                     </div>
                     <!-- end page title -->
                 </div>
@@ -47,14 +47,14 @@
                 <div class="d-flex">
 
                     <!-- App Search-->
-                    <form class="app-search d-none d-lg-block">
+                    <!-- <form class="app-search d-none d-lg-block">
                         <div class="position-relative">
                             <input type="text" class="form-control" placeholder="Search...">
                             <span class="ri-search-line"></span>
                         </div>
-                    </form>
+                    </form> -->
 
-                    <div class="dropdown d-inline-block d-lg-none ms-2">
+                    <!-- <div class="dropdown d-inline-block d-lg-none ms-2">
                         <button type="button" class="btn header-item noti-icon waves-effect"
                             id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
@@ -75,42 +75,45 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <div class="dropdown d-none d-sm-inline-block">
+                    <!-- <div class="dropdown d-none d-sm-inline-block">
                         <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                             <img class="" src="assets/admin/images/flags/us.jpg" alt="Header Language" height="16">
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
 
-                            <!-- item-->
+                            
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <img src="assets/admin/images/flags/spain.jpg" alt="user-image" class="me-1" height="12">
+                                <img src="assets/admin/images/flags/spain.jpg" alt="user-image" class="me-1"
+                                    height="12">
                                 <span class="align-middle">Spanish</span>
                             </a>
 
-                            <!-- item-->
+                   
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <img src="assets/admin/images/flags/germany.jpg" alt="user-image" class="me-1" height="12">
+                                <img src="assets/admin/images/flags/germany.jpg" alt="user-image" class="me-1"
+                                    height="12">
                                 <span class="align-middle">German</span>
                             </a>
 
-                            <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <img src="assets/admin/images/flags/italy.jpg" alt="user-image" class="me-1" height="12">
+                                <img src="assets/admin/images/flags/italy.jpg" alt="user-image" class="me-1"
+                                    height="12">
                                 <span class="align-middle">Italian</span>
                             </a>
 
-                            <!-- item-->
+                        
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <img src="assets/admin/images/flags/russia.jpg" alt="user-image" class="me-1" height="12">
+                                <img src="assets/admin/images/flags/russia.jpg" alt="user-image" class="me-1"
+                                    height="12">
                                 <span class="align-middle">Russian</span>
                             </a>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <div class="dropdown d-none d-lg-inline-block ms-1">
+                    <!-- <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                             <i class="ri-apps-2-line"></i>
@@ -160,7 +163,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="dropdown d-none d-lg-inline-block ms-1">
                         <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
@@ -168,7 +171,7 @@
                         </button>
                     </div>
 
-                    <div class="dropdown d-inline-block">
+                    <!-- <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item noti-icon waves-effect"
                             id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="ri-notification-3-line"></i>
@@ -255,7 +258,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
@@ -272,7 +275,7 @@
 
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="<?= base_url('admin')?>" class="logo logo-dark">
+                <a href="<?= base_url('admin') ?>" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="assets/admin/images/logo-sm-dark.png" alt="logo-sm-dark" height="24">
                     </span>
@@ -281,7 +284,7 @@
                     </span>
                 </a>
 
-                <a href="<?= base_url('admin')?>" class="logo logo-light">
+                <a href="<?= base_url('admin') ?>" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="assets/admin/images/logo-sm-light.png" alt="logo-sm-light" height="24">
                     </span>
@@ -408,24 +411,53 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="admin/category" class="waves-effect">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-list-check-2"></i>
                                 <span>Category</span>
                             </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="admin/category">All Category List</a></li>
+                                <li><a href="admin/add-category">Add Category</a></li>
+                                <li><a href="admin/active-categories">Active Category</a></li>
+                                <li><a href="admin/inactive-categories">Inactive Category</a></li>
+                            </ul>
                         </li>
                         <li>
-                            <a href="admin/order" class="waves-effect">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="mdi mdi-cart"></i>
                                 <span>Order</span>
                             </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="admin/order">All Orders List</a></li>
+                                <li><a href="admin/pending-orders">Pending Orders</a></li>
+                                <li><a href="admin/completed-orders">Completed Orders</a></li>
+                                <li><a href="admin/cancelled-orders">Cancelled Orders</a></li>
+                                <li><a href="admin/today-orders">Today Orders</a></li>
+                            </ul>
                         </li>
                         <li>
-                            <a href="admin/inquiry" class="waves-effect">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="mdi mdi-headphones"></i>
                                 <span>Inquiry</span>
                             </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="admin/inquiry">All Inquiries List</a></li>
+                                <li><a href="admin/open-inquiry">Open Inquiries</a></li>
+                                <li><a href="admin/closed-inquiry">Closed Inquiries List</a></li>
+                            </ul>
                         </li>
-                        
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-user-fill"></i>
+                                <span>Profile</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="admin/my-account">My Account</a></li>
+                                <li><a href="admin/change_password">Change Password</a></li>
+                            </ul>
+                        </li>
+
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -435,7 +467,6 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="admin/pincode">Pincode</a></li>
                                 <li><a href="admin/banner">Banner</a></li>
-                                <li><a href="admin/forgot_password">Change Password</a></li>
                             </ul>
                         </li>
 
@@ -445,6 +476,25 @@
                                 <span>Logout</span>
                             </a>
                         </li>
+
+                        <?php if($this->session->userdata('is_super_admin') == true):?>
+                            <li class="menu-title">Super Admin</li>
+                            
+                            <li>
+                                <a href="superadmin/admins-list" class="waves-effect">
+                                    <i class="ri-list-unordered"></i>
+                                    <span>Admin's List</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="superadmin/add-admin" class="waves-effect">
+                                    <i class="ri-list-unordered"></i>
+                                    <span>Add Admin</span>
+                                </a>
+                            </li>
+                        <?php endif;?>
+                        
+                        
 
 
                         <!-- <li>
@@ -650,7 +700,7 @@
                 <!-- Sidebar -->
             </div>
 
-            <div class="dropdown px-3 sidebar-user sidebar-user-info">
+            <!-- <div class="dropdown px-3 sidebar-user sidebar-user-info">
                 <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="d-flex align-items-center">
@@ -669,7 +719,7 @@
                     </span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <!-- item-->
+                   
                     <a class="dropdown-item" href="pages-profile.html"><i
                             class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span
                             class="align-middle">Profile</span></a>
@@ -690,7 +740,7 @@
                             class="mdi mdi-lock text-muted font-size-16 align-middle me-1"></i> <span
                             class="align-middle">Lock screen</span></a>
                 </div>
-            </div>
+            </div> -->
 
         </div>
         <!-- Left Sidebar End -->

@@ -6,7 +6,7 @@
             </div>
             <div class="col-sm-6">
                 <div class="text-sm-end d-none d-sm-block">
-                    Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesdesign
+                    Crafted with <i class="mdi mdi-heart text-danger"></i> by RajKoshta
                 </div>
             </div>
         </div>
@@ -55,14 +55,14 @@
                 <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
             </div>
 
-            <div class="mb-2">
+            <!-- <div class="mb-2">
                 <img src="assets/admin/images/layouts/layout-3.jpg" class="img-fluid img-thumbnail" alt="layout-3">
             </div>
             <div class="form-check form-switch mb-5">
                 <input class="form-check-input theme-choice" type="checkbox" id="rtl-mode-switch"
                     data-appStyle="assets/admin/css/app-rtl.min.css">
                 <label class="form-check-label" for="rtl-mode-switch">RTL Mode</label>
-            </div>
+            </div> -->
 
 
         </div>

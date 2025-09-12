@@ -99,14 +99,14 @@
                                                 </td>
 
                                                 <td style="width: 10%;">
-                                                    <a href="admin/update-product/<?= $product->product_id ?>"
+                                                    <a href="javascript:void(0)"
                                                         class="btn btn-outline-primary btn-sm edit me-2">
-                                                        <i class="fas fa-pencil-alt"></i> Edit
+                                                        <i class="fas fa-plus"></i> Add Stock
                                                     </a>
-                                                    <a href="admin/delete-product/<?= $product->product_id ?>"
+                                                    <!-- <a href="admin/delete-product/<?= $product->product_id ?>"
                                                         class="btn btn-outline-danger btn-sm delete">
                                                         <i class="fas fa-trash"></i> Delete
-                                                    </a>
+                                                    </a> -->
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

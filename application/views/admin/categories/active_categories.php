@@ -7,7 +7,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Category</title>
+    <title><?php echo $title?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesdesign" name="author" />
@@ -32,9 +32,9 @@
                         <div class="card-body">
 
                             <div class="card-header border-0 align-items-center d-flex mb-2 p-0 pt-2">
-                                <h4 class="card-title mb-0 flex-grow-1">Category</h4>
-                                <a href="admin/add-category" class="btn btn-primary waves-effect waves-light btn-sm">Add
-                                    Category <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                <h4 class="card-title mb-0 flex-grow-1"><?= $title?></h4>
+                                <!-- <a href="admin/add-category" class="btn btn-primary waves-effect waves-light btn-sm">Add
+                                    Category <i class="mdi mdi-arrow-right ms-1"></i></a> -->
                             </div>
                             <div class="mb-4 text-danger">
                                 Note: Categories that do not have a parent category name are considered parent categories.
@@ -165,6 +165,8 @@
                             title: res.msg,
                             showConfirmButton: false,
                             timer: 2500
+                        }).then(() => {
+                            location.reload();
                         });
                     } else {
                         Swal.fire({

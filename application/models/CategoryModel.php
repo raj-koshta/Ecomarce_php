@@ -162,6 +162,24 @@ class CategoryModel extends CI_Model
         return $this->db->where('status',0)->count_all_results('tbl_category');
     }
 
+    public function get_active_categories(){
+        $qry = $this->db->where('status',1)->order_by('parent_id', 'desc')->get('tbl_category');
+        if ($qry->num_rows()) {
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
+    public function get_inactive_categories(){
+        $qry = $this->db->where('status',0)->order_by('parent_id', 'desc')->get('tbl_category');
+        if ($qry->num_rows()) {
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
+
     public function slug($category_name)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $category_name)));
