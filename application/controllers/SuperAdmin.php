@@ -158,19 +158,49 @@ class SuperAdmin extends CI_Controller
     public function update_role_access()
     {
         $admin_id = $this->input->post('admin_id');
-        $postData = $this->input->post();
-        unset($postData['admin_id']);
 
-        // Convert ON/OFF → 1/0
+        // Get all access keys from role_control()
+        $accesses = (object) [
+            'all_products_list' => 'All Products List',
+            'add_product' => 'Add Product',
+            'active_products' => 'Active Products',
+            'inactive_products' => 'Inactive Products',
+            'oos_products' => 'Out Of Stock Products',
+            'all_category_list' => 'All Category List',
+            'add_category' => 'Add Category',
+            'active_category' => 'Active Category',
+            'inactive_category' => 'Inactive Category',
+            'all_orders_list' => 'All Orders List',
+            'pending_orders' => 'Pending Orders',
+            'completed_orders' => 'Completed Orders',
+            'cancelled_orders' => 'Cancelled Orders',
+            'today_placed_orders' => 'Today Placed Orders',
+            'all_inquiry_list' => 'All Inquiry List',
+            'open_inquiries' => 'Open Inquiries',
+            'closed_inquiries' => 'Closed Inquiries',
+            'pincode' => 'Pincode',
+            'banner' => 'Banner',
+        ];
+
+        // Convert object → array keys
+        $allKeys = array_keys((array) $accesses);
+
+        $post = $this->input->post();
+        unset($post['admin_id']);
+
         $data = [];
-        foreach ($postData as $key => $val) {
-            $data[$key] = ($val == "on") ? 1 : 0;
+
+        // Loop through ALL access keys
+        foreach ($allKeys as $key) {
+
+            // If checkbox exists = ON else OFF
+            $data[$key] = isset($post[$key]) ? 1 : 0;
         }
 
         // Update DB
         $check = $this->AdminModel->update_role_access_controls($admin_id, $data);
 
-        if($check){
+        if ($check) {
             $this->session->set_flashdata('successMsg', 'Role access updated successfully.');
         } else {
             $this->session->set_flashdata('errorMsg', 'Unable to update Role access. Please try again later.');
