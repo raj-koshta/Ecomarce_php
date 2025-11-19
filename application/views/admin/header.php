@@ -315,7 +315,7 @@
 
                     <!-- Left Menu Start -->
                     <ul class="metismenu list-unstyled" id="side-menu">
-                        <li class="menu-title">Menu (<?= $this->session->userdata('admin_login_id') ?>)</li>
+                        <li class="menu-title">Menu</li>
 
                         <li>
                             <a href="admin/dashboard" class="waves-effect">
@@ -330,19 +330,19 @@
                                     <span>Product</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_products_list != 0): ?>
+                                    <?php if ($accesses->all_products_list != 0): ?>
                                         <li><a href="admin/product">All Products List</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->add_product != 0): ?>
+                                    <?php if ($accesses->add_product != 0): ?>
                                         <li><a href="admin/add-product">Add Product</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->active_products != 0): ?>
+                                    <?php if ($accesses->active_products != 0): ?>
                                         <li><a href="admin/active-product">Active Products</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->inactive_products != 0): ?>
+                                    <?php if ($accesses->inactive_products != 0): ?>
                                         <li><a href="admin/inactive-product">Inactive Products</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->oos_products != 0): ?>
+                                    <?php if ($accesses->oos_products != 0): ?>
                                         <li><a href="admin/oos-product">Out Of Stock Products</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -355,16 +355,16 @@
                                     <span>Category</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_category_list != 0): ?>
+                                    <?php if ($accesses->all_category_list != 0): ?>
                                         <li><a href="admin/category">All Category List</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->add_category != 0): ?>
+                                    <?php if ($accesses->add_category != 0): ?>
                                         <li><a href="admin/add-category">Add Category</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->active_category != 0): ?>
+                                    <?php if ($accesses->active_category != 0): ?>
                                         <li><a href="admin/active-categories">Active Category</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->inactive_category != 0): ?>
+                                    <?php if ($accesses->inactive_category != 0): ?>
                                         <li><a href="admin/inactive-categories">Inactive Category</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -378,19 +378,19 @@
                                     <span>Order</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_orders_list != 0): ?>
+                                    <?php if ($accesses->all_orders_list != 0): ?>
                                         <li><a href="admin/order">All Orders List</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->pending_orders != 0): ?>
+                                    <?php if ($accesses->pending_orders != 0): ?>
                                         <li><a href="admin/pending-orders">Pending Orders</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->completed_orders != 0): ?>
+                                    <?php if ($accesses->completed_orders != 0): ?>
                                         <li><a href="admin/completed-orders">Completed Orders</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->cancelled_orders != 0): ?>
+                                    <?php if ($accesses->cancelled_orders != 0): ?>
                                         <li><a href="admin/cancelled-orders">Cancelled Orders</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->today_placed_orders != 0): ?>
+                                    <?php if ($accesses->today_placed_orders != 0): ?>
                                         <li><a href="admin/today-orders">Today Orders</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -403,13 +403,13 @@
                                     <span>Inquiry</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_inquiry_list != 0): ?>
+                                    <?php if ($accesses->all_inquiry_list != 0): ?>
                                         <li><a href="admin/inquiry">All Inquiries List</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->open_inquiries != 0): ?>
+                                    <?php if ($accesses->open_inquiries != 0): ?>
                                         <li><a href="admin/open-inquiry">Open Inquiries</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->closed_inquiries != 0): ?>
+                                    <?php if ($accesses->closed_inquiries != 0): ?>
                                         <li><a href="admin/closed-inquiry">Closed Inquiries List</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -434,10 +434,10 @@
                                     <span>Settings</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->pincode != 0): ?>
+                                    <?php if ($accesses->pincode != 0): ?>
                                         <li><a href="admin/pincode">Pincode</a></li>
                                     <?php endif; ?>
-                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->banner != 0): ?>
+                                    <?php if ($accesses->banner != 0): ?>
                                         <li><a href="admin/banner">Banner</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -473,6 +473,9 @@
                                 </a>
                             </li>
                         <?php endif; ?>
+
+
+
 
                         <!-- <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
