@@ -36,7 +36,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title mb-5"><?= $title ?></h5>
 
-                                    <?= form_open('admin/add_admin', ['id' => 'adminForm']); ?>
+                                    <?= form_open('superadmin/add_admin', ['id' => 'adminForm']); ?>
 
                                     <div class="row">
                                         <div class="col-md-6">
@@ -50,28 +50,35 @@
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <input type="email" class="form-control" id="email" name="email"
-                                                    placeholder="Enter Your Email" value="" readonly>
+                                                    placeholder="Enter Your Email">
                                                 <label for="email">Email</label>
                                                 <?php echo form_error('email') ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-floating mb-3">
+                                            <div class="form-floating mb-3 position-relative">
                                                 <input type="password" class="form-control" id="password"
                                                     name="password" placeholder="Enter Your Password"
                                                     autocomplete="false">
                                                 <label for="password">Password</label>
+                                                <i class="fa fa-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                                                    id="togglePassword" style="cursor: pointer;"></i>
                                                 <?php echo form_error('password') ?>
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
-                                            <div class="form-floating mb-3">
+                                            <div class="form-floating mb-3 position-relative">
                                                 <input type="password" class="form-control" id="confirm_password"
                                                     name="confirm_password" placeholder="Enter Your Confirm Password"
                                                     autocomplete="false">
                                                 <label for="confirm_password">Confirm Password</label>
+                                                <i class="fa fa-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                                                    id="toggleConfirmPassword" style="cursor: pointer;"></i>
+                                                <?php echo form_error('confirm_password') ?>
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3">
                                                 <select class="form-control" name="role_id" id="role_id">
@@ -155,5 +162,25 @@
                     confirmButtonColor: '#3085d6',
                 });
             }
+        });
+    </script>
+
+    <script>
+        // Toggle for main password
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            let password = document.getElementById("password");
+            let type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+
+            this.classList.toggle("fa-eye-slash"); // toggle icon
+        });
+
+        // Toggle for confirm password
+        document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+            let confirmPassword = document.getElementById("confirm_password");
+            let type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+            confirmPassword.setAttribute("type", type);
+
+            this.classList.toggle("fa-eye-slash");
         });
     </script>
