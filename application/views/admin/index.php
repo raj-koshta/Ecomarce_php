@@ -32,21 +32,19 @@
 							<div class="card">
 								<div class="card-body">
 									<div class="d-flex align-items-center">
-										<div class="avatar-md flex-shrink-0" onclick="openLink('<?= $kpi->link ?>')" style="cursor: pointer;">
+										<div class="avatar-md flex-shrink-0" onclick="openLink('<?= $kpi->link ?>')"
+											style="cursor: pointer;">
 											<span class="avatar-title bg-subtle-primary text-primary rounded fs-2">
 												<i class="<?= $kpi->icon ?>"></i>
 											</span>
 										</div>
-										<div class="flex-grow-1 overflow-hidden ms-4" onclick="openLink('<?= $kpi->link ?>')" style="cursor: pointer;">
+										<div class="flex-grow-1 overflow-hidden ms-4" onclick="openLink('<?= $kpi->link ?>')"
+											style="cursor: pointer;">
 											<p class="text-muted text-truncate font-size-15 mb-2"> <?= $kpi->label ?></p>
 											<h3 class="fs-4 flex-grow-1 mb-3">
 												<?= $kpi->count ?>
 												<!-- <span class="text-muted font-size-16">USD</span> -->
 											</h3>
-											<!-- <p class="text-muted mb-0 text-truncate"><span
-											class="badge bg-subtle-success text-success font-size-12 fw-normal me-1"><i
-												class="mdi mdi-arrow-top-right"></i> 2.8% Increase</span> vs
-										last month</p> -->
 										</div>
 										<div class="flex-shrink-0 align-self-start">
 											<div class="dropdown">
@@ -844,6 +842,6 @@
 	<script>
 		function openLink(link) {
 			// Example: redirect to a page with query parameter
-			window.location.href = "<?= base_url()?>" + link;
+			window.location.href = "<?= base_url() ?>" + link;
 		}
 	</script>
