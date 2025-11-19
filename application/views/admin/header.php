@@ -304,89 +304,15 @@
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
 
-                    <!-- <div class="dropdown mx-3 sidebar-user user-dropdown select-dropdown">
-                        <button type="button" class="btn btn-light w-100 waves-effect waves-light border-0"
-                            id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                            <span class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar-xs rounded-circle flex-shrink-0">
-                                        <div
-                                            class="avatar-title border bg-light text-primary rounded-circle text-uppercase user-sort-name">
-                                            R</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-2 text-start">
-                                    <h6 class="mb-1 fw-medium user-name-text"> Reporting </h6>
-                                    <p class="font-size-13 text-muted user-name-sub-text mb-0"> Team Reporting </p>
-                                </div>
-                                <div class="flex-shrink-0 text-end">
-                                    <i class="mdi mdi-chevron-down font-size-16"></i>
-                                </div>
-                            </span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end w-100">
-                         
-                            <a class="dropdown-item d-flex align-items-center px-3" href="#">
-                                <div class="flex-shrink-0 me-2">
-                                    <div class="avatar-xs rounded-circle flex-shrink-0">
-                                        <div
-                                            class="avatar-title border rounded-circle text-uppercase dropdown-sort-name">
-                                            C</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 dropdown-name">CRM</h6>
-                                    <p class="text-muted font-size-13 mb-0 dropdown-sub-desc">Designer Team</p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item d-flex align-items-center px-3" href="#">
-                                <div class="flex-shrink-0 me-2">
-                                    <div class="avatar-xs rounded-circle flex-shrink-0">
-                                        <div
-                                            class="avatar-title border rounded-circle text-uppercase dropdown-sort-name">
-                                            A</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 dropdown-name">Application Design</h6>
-                                    <p class="text-muted font-size-13 mb-0 dropdown-sub-desc">Flutter Devs</p>
-                                </div>
-                            </a>
+                    <?php
+                    $accesses = $this->AdminModel->get_access_details($this->session->userdata('admin_login_id'));
 
-                            <a class="dropdown-item d-flex align-items-center px-3" href="#">
-                                <div class="flex-shrink-0 me-2">
-                                    <div class="avatar-xs rounded-circle flex-shrink-0">
-                                        <div
-                                            class="avatar-title border rounded-circle text-uppercase dropdown-sort-name">
-                                            E</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 dropdown-name">Ecommerce</h6>
-                                    <p class="text-muted font-size-13 mb-0 dropdown-sub-desc">Developer Team</p>
-                                </div>
-                            </a>
+                    if ($accesses == false && $this->session->userdata('is_super_admin') == false) {
+                        $this->session->set_flashdata('errorMsg', 'You dont have access of admin panel. Please contact administator');
+                        redirect('admin/login');
+                    }
+                    ?>
 
-                            <a class="dropdown-item d-flex align-items-center px-3" href="#">
-                                <div class="flex-shrink-0 me-2">
-                                    <div class="avatar-xs rounded-circle flex-shrink-0">
-                                        <div
-                                            class="avatar-title border rounded-circle text-uppercase dropdown-sort-name">
-                                            R</div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 dropdown-name">Reporting</h6>
-                                    <p class="text-muted font-size-13 mb-0 dropdown-sub-desc">Team Reporting</p>
-                                </div>
-                            </a>
-
-                            <a class="btn btn-sm btn-link font-size-14 text-center w-100" href="javascript:void(0)">
-                                View More..
-                            </a>
-                        </div>
-                    </div> -->
                     <!-- Left Menu Start -->
                     <ul class="metismenu list-unstyled" id="side-menu">
                         <li class="menu-title">Menu</li>
@@ -397,55 +323,98 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-file-list-fill"></i>
-                                <span>Product</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/product">All Products List</a></li>
-                                <li><a href="admin/add-product">Add Product</a></li>
-                                <li><a href="admin/active-product">Active Products</a></li>
-                                <li><a href="admin/inactive-product">Inactive Products</a></li>
-                                <li><a href="admin/oos-product">Out Of Stock Products</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-list-check-2"></i>
-                                <span>Category</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/category">All Category List</a></li>
-                                <li><a href="admin/add-category">Add Category</a></li>
-                                <li><a href="admin/active-categories">Active Category</a></li>
-                                <li><a href="admin/inactive-categories">Inactive Category</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="mdi mdi-cart"></i>
-                                <span>Order</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/order">All Orders List</a></li>
-                                <li><a href="admin/pending-orders">Pending Orders</a></li>
-                                <li><a href="admin/completed-orders">Completed Orders</a></li>
-                                <li><a href="admin/cancelled-orders">Cancelled Orders</a></li>
-                                <li><a href="admin/today-orders">Today Orders</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="mdi mdi-headphones"></i>
-                                <span>Inquiry</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/inquiry">All Inquiries List</a></li>
-                                <li><a href="admin/open-inquiry">Open Inquiries</a></li>
-                                <li><a href="admin/closed-inquiry">Closed Inquiries List</a></li>
-                            </ul>
-                        </li>
+                        <?php if ($this->session->userdata('is_super_admin') == true || ($accesses->all_products_list != 0 || $accesses->add_product != 0 || $accesses->active_products != 0 || $accesses->inactive_products != 0 || $accesses->oos_products != 0)): ?>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="ri-file-list-fill"></i>
+                                    <span>Product</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_products_list != 0): ?>
+                                        <li><a href="admin/product">All Products List</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->add_product != 0): ?>
+                                        <li><a href="admin/add-product">Add Product</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->active_products != 0): ?>
+                                        <li><a href="admin/active-product">Active Products</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->inactive_products != 0): ?>
+                                        <li><a href="admin/inactive-product">Inactive Products</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->oos_products != 0): ?>
+                                        <li><a href="admin/oos-product">Out Of Stock Products</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($this->session->userdata('is_super_admin') == true || ($accesses->all_category_list != 0 || $accesses->add_category != 0 || $accesses->active_category != 0 || $accesses->inactive_category != 0)): ?>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="ri-list-check-2"></i>
+                                    <span>Category</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_category_list != 0): ?>
+                                        <li><a href="admin/category">All Category List</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->add_category != 0): ?>
+                                        <li><a href="admin/add-category">Add Category</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->active_category != 0): ?>
+                                        <li><a href="admin/active-categories">Active Category</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->inactive_category != 0): ?>
+                                        <li><a href="admin/inactive-categories">Inactive Category</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if ($this->session->userdata('is_super_admin') == true || ($accesses->all_orders_list != 0 || $accesses->pending_orders != 0 || $accesses->completed_orders != 0 || $accesses->cancelled_orders != 0 || $accesses->today_placed_orders != 0)): ?>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="mdi mdi-cart"></i>
+                                    <span>Order</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <?php if ( $this->session->userdata('is_super_admin') == true || $accesses->all_orders_list != 0): ?>
+                                        <li><a href="admin/order">All Orders List</a></li>
+                                    <?php endif; ?>
+                                    <?php if ( $this->session->userdata('is_super_admin') == true || $accesses->pending_orders != 0): ?>
+                                        <li><a href="admin/pending-orders">Pending Orders</a></li>
+                                    <?php endif; ?>
+                                    <?php if ( $this->session->userdata('is_super_admin') == true || $accesses->completed_orders != 0): ?>
+                                        <li><a href="admin/completed-orders">Completed Orders</a></li>
+                                    <?php endif; ?>
+                                    <?php if ( $this->session->userdata('is_super_admin') == true || $accesses->cancelled_orders != 0): ?>
+                                        <li><a href="admin/cancelled-orders">Cancelled Orders</a></li>
+                                    <?php endif; ?>
+                                    <?php if ( $this->session->userdata('is_super_admin') == true || $accesses->today_placed_orders != 0): ?>
+                                        <li><a href="admin/today-orders">Today Orders</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($this->session->userdata('is_super_admin') == true || ($accesses->all_inquiry_list != 0 || $accesses->open_inquiries != 0 || $accesses->closed_inquiries != 0)): ?>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="mdi mdi-headphones"></i>
+                                    <span>Inquiry</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->all_inquiry_list != 0): ?>
+                                        <li><a href="admin/inquiry">All Inquiries List</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->open_inquiries != 0): ?>
+                                        <li><a href="admin/open-inquiry">Open Inquiries</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->closed_inquiries != 0): ?>
+                                        <li><a href="admin/closed-inquiry">Closed Inquiries List</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
 
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -458,17 +427,22 @@
                             </ul>
                         </li>
 
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="ri-settings-2-fill"></i>
-                                <span>Settings</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="admin/pincode">Pincode</a></li>
-                                <li><a href="admin/banner">Banner</a></li>
-                            </ul>
-                        </li>
+                        <?php if ($this->session->userdata('is_super_admin') == true || ($accesses->pincode != 0 || $accesses->banner != 0)): ?>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="ri-settings-2-fill"></i>
+                                    <span>Settings</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->pincode != 0): ?>
+                                        <li><a href="admin/pincode">Pincode</a></li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('is_super_admin') == true || $accesses->banner != 0): ?>
+                                        <li><a href="admin/banner">Banner</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
 
                         <li>
                             <a href="admin/logout" class="waves-effect">
@@ -477,24 +451,30 @@
                             </a>
                         </li>
 
-                        <?php if($this->session->userdata('is_super_admin') == true):?>
+                        <?php if ($this->session->userdata('is_super_admin') == true): ?>
                             <li class="menu-title">Super Admin</li>
-                            
+
                             <li>
                                 <a href="superadmin/admins-list" class="waves-effect">
-                                    <i class="ri-list-unordered"></i>
+                                    <i class="ri-survey-fill"></i>
                                     <span>Admin's List</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="superadmin/add-admin" class="waves-effect">
-                                    <i class="ri-list-unordered"></i>
+                                    <i class="ri-user-add-fill"></i>
                                     <span>Add Admin</span>
                                 </a>
                             </li>
-                        <?php endif;?>
-                        
-                        
+                            <li>
+                                <a href="superadmin/role-control" class="waves-effect">
+                                    <i class="ri-home-gear-fill"></i>
+                                    <span>Role Access Controls</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+
 
 
                         <!-- <li>
@@ -699,48 +679,6 @@
                 </div>
                 <!-- Sidebar -->
             </div>
-
-            <!-- <div class="dropdown px-3 sidebar-user sidebar-user-info">
-                <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <img src="assets/admin/images/users/avatar-2.jpg"
-                                class="img-fluid header-profile-user rounded-circle" alt="">
-                        </div>
-
-                        <div class="flex-grow-1 ms-2 text-start">
-                            <span class="ms-1 fw-medium user-name-text">Steven Deese</span>
-                        </div>
-
-                        <div class="flex-shrink-0 text-end">
-                            <i class="mdi mdi-dots-vertical font-size-16"></i>
-                        </div>
-                    </span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                   
-                    <a class="dropdown-item" href="pages-profile.html"><i
-                            class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Profile</span></a>
-                    <a class="dropdown-item" href="apps-chat.html"><i
-                            class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Messages</span></a>
-                    <a class="dropdown-item" href="pages-faq.html"><i
-                            class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Help</span></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="pages-profile.html"><i
-                            class="mdi mdi-wallet text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Balance : <b>$5971.67</b></span></a>
-                    <a class="dropdown-item" href="#"><span class="badge bg-primary mt-1 float-end">New</span><i
-                            class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Settings</span></a>
-                    <a class="dropdown-item" href="auth-lock-screen.html"><i
-                            class="mdi mdi-lock text-muted font-size-16 align-middle me-1"></i> <span
-                            class="align-middle">Lock screen</span></a>
-                </div>
-            </div> -->
 
         </div>
         <!-- Left Sidebar End -->

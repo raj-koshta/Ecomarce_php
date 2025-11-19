@@ -220,12 +220,54 @@ class AdminModel extends CI_Model
             return false;
         }
     }
+
+    public function get_subadmins(){
+        $qry = $this->db->where('role_id !=',1)->get('tbl_admins');
+
+        if($qry->num_rows()){
+            return $qry->result();
+        } else {
+            return false;
+        }
+    }
     
     public function check_is_active($email){
         $qry = $this->db->where('email',$email)->get('tbl_admins');
 
         if($qry->num_rows()){
             return $qry->row()->status == 1 ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    public function add($data){
+        $qry = $this->db->insert('tbl_admins',$data);
+
+        if($qry){
+            $admin_id = $this->db->insert_id();
+
+            $this->db->insert('tbl_role_access_controls',['admin_id' =>$admin_id,'added_on' => date('Y-m-d')]);
+
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public function update_role_access_controls($admin_id, $data){
+        $qry = $this->db->where('admin_id', $admin_id)->update('tbl_role_access_controls', $data);
+
+        return $qry;
+    }
+
+    public function get_access_details($admin_id){
+        $qry = $this->db->where('admin_id', $admin_id)->get('tbl_role_access_controls');
+
+        if($qry->num_rows()){
+            return $qry->row();
         } else {
             return false;
         }

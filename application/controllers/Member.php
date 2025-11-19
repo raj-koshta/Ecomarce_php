@@ -67,6 +67,9 @@ class Member extends CI_Controller
         if ($this->form_validation->run()) {
             $check = $this->RegisterModel->register($post);
             if ($check) {
+                // $this->load->model('EmailModel');
+                // $mail_check = $this->EmailModel->send_mail($post['email'],'Test 2 Subject','welcome_email.php',['name' => $post['username']]);
+               
                 $this->session->set_flashdata('registerSuccessMsg', "Registration successful.");
                 redirect('member/login');
             } else {
@@ -435,6 +438,51 @@ class Member extends CI_Controller
         } else {
             redirect('member/login');
         }
+    }
+
+    // ----- Placing order using stripe --------------
+    public function place_order_via_stripe(){
+        $post = $this->input->post();
+        $session_token = $this->session->userdata('checkout_token');
+
+        // Check if valid token
+        if (empty($post['checkout_token']) || $post['checkout_token'] !== $session_token) {
+            $this->session->set_flashdata('errorMsg', 'Invalid or duplicate submission');
+            redirect('member/cart'); // invalid/duplicate submission
+            return;
+        }
+
+        // Invalidate token immediately (so it can’t be reused)
+        $this->session->unset_userdata('checkout_token');
+
+        $user_id = $this->session->userdata('user_id'); // assuming login required
+
+        // If cart is already empty, don’t create a new order
+        $carts = $this->CartModel->get_cart();
+        if (empty($carts)) {
+            $this->session->set_flashdata('errorMsg', 'Cart is Empty.');
+            redirect('member/cart');
+            return;
+        }
+        
+        $carts = $this->CartModel->get_cart(); // or however you load $carts
+
+        foreach ($carts as $cart) {
+
+            $product_stock = $this->db->where('product_id', $cart->product_id)->get('tbl_product')->row()->stock;
+
+            if (!($product_stock >= $cart->product_qty)) {
+                $this->session->set_flashdata('errorMsg', $cart->product_name . ' are out of stock.');
+                redirect('member/cart');
+                return;
+            }
+        }
+
+        // ✅ Store checkout data temporarily in session
+        $this->session->set_userdata('checkout_post', $post);
+
+        // Redirect to Stripe checkout with total price
+        redirect('stripecontroller/checkout/' . $post['grandtotal']);
     }
 
     public function place_order()

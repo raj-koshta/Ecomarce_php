@@ -619,42 +619,44 @@
                                 </button>
                                 <nav class="tp-category-menu-content">
                                     <ul>
-                                        <?php foreach ($parentCategories as $pCategory): ?>
-                                            <?php $check_subcategory = $this->HomeModel->check_subcategory($pCategory->category_id); ?>
-                                            <?php if ($check_subcategory): ?>
-                                                <li class="has-dropdown">
-                                                    <a href="category/<?php echo $pCategory->slug ?>">
-                                                        <?php echo $pCategory->category_name ?>
-                                                    </a>
-
-                                                    <?php $subcategories = $this->HomeModel->get_sub_categories($pCategory->category_id); ?>
-                                                    <?php if ($subcategories != false): ?>
-                                                        <ul class="tp-submenu">
-                                                            <?php foreach ($subcategories as $subcategory): ?>
-                                                                <li><a
-                                                                        href="category/<?php echo $pCategory->slug . '/' . $subcategory->slug ?>"><?php echo $subcategory->category_name ?></a>
-                                                                </li>
-                                                            <?php endforeach; ?>
-                                                            <!-- <li class="has-dropdown">
-                                                                <a href="shop.html">Desktop</a>
-                                                                <ul class="tp-submenu">
-                                                                    <li><a href="shop.html">Gaming</a></li>
-                                                                    <li><a href="shop.html">WorkSpace</a></li>
-                                                                    <li><a href="shop.html">Customize</a></li>
-                                                                    <li><a href="shop.html">Luxury</a></li>
-                                                                </ul>
-                                                            </li> -->
-                                                        </ul>
-                                                    <?php endif; ?>
-                                                </li>
-                                            <?php else: ?>
-                                                <li>
-                                                    <a href="category/<?php echo $pCategory->slug ?>">
-                                                        <?php echo $pCategory->category_name ?>
-                                                    </a>
-                                                </li>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                        <?php if(!empty($parentCategories)):?>
+                                            <?php foreach ($parentCategories as $pCategory): ?>
+                                                <?php $check_subcategory = $this->HomeModel->check_subcategory($pCategory->category_id); ?>
+                                                <?php if ($check_subcategory): ?>
+                                                    <li class="has-dropdown">
+                                                        <a href="category/<?php echo $pCategory->slug ?>">
+                                                            <?php echo $pCategory->category_name ?>
+                                                        </a>
+    
+                                                        <?php $subcategories = $this->HomeModel->get_sub_categories($pCategory->category_id); ?>
+                                                        <?php if ($subcategories != false): ?>
+                                                            <ul class="tp-submenu">
+                                                                <?php foreach ($subcategories as $subcategory): ?>
+                                                                    <li><a
+                                                                            href="category/<?php echo $pCategory->slug . '/' . $subcategory->slug ?>"><?php echo $subcategory->category_name ?></a>
+                                                                    </li>
+                                                                <?php endforeach; ?>
+                                                                <!-- <li class="has-dropdown">
+                                                                    <a href="shop.html">Desktop</a>
+                                                                    <ul class="tp-submenu">
+                                                                        <li><a href="shop.html">Gaming</a></li>
+                                                                        <li><a href="shop.html">WorkSpace</a></li>
+                                                                        <li><a href="shop.html">Customize</a></li>
+                                                                        <li><a href="shop.html">Luxury</a></li>
+                                                                    </ul>
+                                                                </li> -->
+                                                            </ul>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                <?php else: ?>
+                                                    <li>
+                                                        <a href="category/<?php echo $pCategory->slug ?>">
+                                                            <?php echo $pCategory->category_name ?>
+                                                        </a>
+                                                    </li>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        <?php endif;?>
                                         <li class="has-dropdown">
                                             <a href="shop.html" class="has-mega-menu">
                                                 Electronics
